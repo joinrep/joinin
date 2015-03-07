@@ -3,6 +3,7 @@
     <style name="AppTheme" parent="AppTheme.Base"/>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
         <!-- Main theme colors -->
         <!--   your app branding color for the app bar -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -17,4 +18,20 @@
              colorControlHighlight & colorSwitchThumbNormal. -->
     </style>
 
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/black_12</item>
+    </style>
+
+    <style name="Subheader">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:textColor">@color/black_54</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_gravity">start|center_vertical</item>
+        <item name="android:gravity">start|center_vertical</item>
+    </style>
 </resources>

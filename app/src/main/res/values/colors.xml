@@ -3,5 +3,10 @@
 
     <item name="colorPrimary" type="color">#009688</item>
     <item name="colorPrimaryDark" type="color">#00796B</item>
-    <item name="colorAccent" type="color">#FFFF00</item>
+    <item name="colorAccent" type="color">#EF5350</item>
+
+    <item name="black_12" type="color">#1F000000</item>
+    <item name="black_54" type="color">#8A000000</item>
+    <item name="black_87" type="color">#DE000000</item>
+    <item name="white_100" type="color">#ffffff</item>
 </resources>
