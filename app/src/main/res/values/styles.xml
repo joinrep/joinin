@@ -14,6 +14,7 @@
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="android:activatedBackgroundIndicator">@drawable/custom_activated_background</item>
         <!-- You can also set colorControlNormal, colorControlActivated
              colorControlHighlight & colorSwitchThumbNormal. -->
     </style>
