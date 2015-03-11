@@ -1,40 +1,62 @@
 package com.zpi.team.joinin.entities;
 
+import java.util.List;
+
 /**
  * Created by MK on 2015-03-04.
  */
 public class Category {
-    private int categoryId;
-    private String categoryName;
-    private String categoryIcon;
 
-    public Category(int categoryId, String categoryName, String categoryIcon) {
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.categoryIcon = categoryIcon;
+    private int id;
+    private String name;
+    private String iconPath;
+
+    private List<User> subscribers;
+    private List<Event> events;
+
+    public Category(int id, String name, String iconPath) {
+        this.id = id;
+        this.name = name;
+        this.iconPath = iconPath;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public int getId() {
+        return id;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getName() {
+        return name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCategoryIcon() {
-        return categoryIcon;
+    public String getIconPath() {
+        return iconPath;
     }
 
-    public void setCategoryIcon(String categoryIcon) {
-        this.categoryIcon = categoryIcon;
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
+    }
+
+    public List<User> getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(List<User> subscribers) {
+        this.subscribers = subscribers;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 }
