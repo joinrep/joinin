@@ -19,4 +19,7 @@
 
     !--Categories -->
     <string name="category_event_bike">Jazda rowerem</string>
+
+    !--Card -->
+    <string name="join">Dołącz</string>
 </resources>
