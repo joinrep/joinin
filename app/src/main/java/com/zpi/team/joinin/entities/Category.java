@@ -7,25 +7,15 @@ import java.util.List;
  */
 public class Category {
 
-    private int id;
     private String name;
     private String iconPath;
 
     private List<User> subscribers;
     private List<Event> events;
 
-    public Category(int id, String name, String iconPath) {
-        this.id = id;
+    public Category(String name, String iconPath) {
         this.name = name;
         this.iconPath = iconPath;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {

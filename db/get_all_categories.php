@@ -26,9 +26,8 @@ if (mysql_num_rows($result) > 0) {
     while ($row = mysql_fetch_array($result)) {
         // temp user array
         $category = array();
-        $category["category_id"] = $row["category_id"];
-        $category["category_name"] = $row["category_name"];
-        $category["category_icon"] = $row["category_icon"];
+        $category["name"] = $row["category_name"];
+        $category["icon_path"] = $row["icon_path"];
 
         // push single category into final response array
         array_push($response["categories"], $category);

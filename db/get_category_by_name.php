@@ -15,11 +15,11 @@ require_once(dirname(__FILE__). '/db_connect.php');
 $db = new DB_CONNECT();
  
 // check for post data
-if (isset($_GET["category_id"])) {
-    $category_id = $_GET['category_id'];
+if (isset($_GET["category_name"])) {
+    $category_name = $_GET['category_name'];
  
     // get a product from products table
-    $result = mysql_query("SELECT *FROM Category WHERE category_id = $category_id");
+    $result = mysql_query("SELECT * FROM Category WHERE category_name = $category_name");
  
     if (!empty($result)) {
         // check for empty result
@@ -31,9 +31,8 @@ if (isset($_GET["category_id"])) {
 			
 			 // temp user array
 			$category = array();
-			$category["category_id"] = $row["category_id"];
-			$category["category_name"] = $row["category_name"];
-			$category["category_icon"] = $row["category_icon"];
+			$category["name"] = $row["category_name"];
+			$category["icon_path"] = $row["icon_path"];
 	 
 			// push category into final response array
 			array_push($response["categories"], $category);

@@ -1,6 +1,8 @@
 package com.zpi.team.joinin.entities;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -10,8 +12,8 @@ public class Event {
 
     private int id;
     private String name;
-    private Date startTime;
-    private Date endTime;
+    private Calendar startTime;
+    private Calendar endTime;
     private String description;
     private int limit;
     private double cost;
@@ -23,7 +25,7 @@ public class Event {
     private List<User> participants;
     private List<Comment> comments;
 
-    public Event(int id, String name, Date startTime, Date endTime, String description, int limit, double cost, boolean canceled) {
+    public Event(int id, String name, Calendar startTime, Calendar endTime, String description, int limit, double cost, boolean canceled) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -50,19 +52,19 @@ public class Event {
         this.name = name;
     }
 
-    public Date getStartTime() {
+    public Calendar getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Calendar startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public Calendar getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Calendar endTime) {
         this.endTime = endTime;
     }
 

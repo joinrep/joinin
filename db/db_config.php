@@ -4,8 +4,9 @@
  * All database connection variables
  */
  
-define('DB_USER', "1066572_ZgE"); // db user
-define('DB_PASSWORD', "aWTdyK56W938wQ"); // db password (mention your db password here)
-define('DB_DATABASE', "1066572_ZgE"); // database name
-define('DB_SERVER', "userdb1"); // db server
+define('DB_USER', "a9649108_joinin"); // db user
+define('DB_PASSWORD', "qwerty123"); // db password (mention your db password here)
+define('DB_DATABASE', "a9649108_joinin"); // database name
+define('DB_SERVER', "mysql9.000webhost.com"); // db server
+
 ?>
