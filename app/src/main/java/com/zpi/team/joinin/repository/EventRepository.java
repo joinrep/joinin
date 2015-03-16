@@ -1,5 +1,6 @@
 package com.zpi.team.joinin.repository;
 
+import com.zpi.team.joinin.entities.Address;
 import com.zpi.team.joinin.entities.Event;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class EventRepository implements IRepository<Event> {
     public List<Event> getAll() {
         try{Thread.sleep(1000);} catch (InterruptedException e){};
         List<Event> events = new ArrayList<Event>();
+
         events.add(new Event(1,"eventName1", new Date(), new Date(), "eventDescription1", 10, 0, false));
         events.add(new Event(2,"eventName2", new Date(), new Date(), "eventDescription2", 20, 10, false));
         events.add(new Event(3,"eventName3", new Date(), new Date(), "eventDescription3", 30, 0, false));
