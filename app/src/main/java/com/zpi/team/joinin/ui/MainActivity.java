@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +26,7 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private ArrayList<NavDrawerItem> mNavDrawerItems;
 
+    private boolean isFirstLaunch = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +34,6 @@ public class MainActivity extends ActionBarActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
             mDrawerLayout.setStatusBarBackgroundColor(
@@ -42,13 +43,11 @@ public class MainActivity extends ActionBarActivity {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-//                mToolbar.setTitle("po zamknieciu");
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-//                mToolbar.setTitle("po otwarciu");
                 invalidateOptionsMenu();
             }
         };
@@ -75,7 +74,16 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.fragmentContainer, fragment)
                     .commit();
         }
+
+        int position = 1;
+        if(savedInstanceState != null)
+            position = savedInstanceState.getInt("menuPosition", 1);
+
+//        selectMenuItem(1); // na start uruchamia pierwszy element menu. kiepski sposob
+        syncToolbarTitleAndMenuItemCheckedState(position);
+        Log.d("onCreate", (String)mToolbar.getTitle());
     }
+
 
     private void prepareNavDrawerItems(){
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_events,R.string.navdrawer_events));
@@ -92,11 +100,11 @@ public class MainActivity extends ActionBarActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
+            selectMenuItem(position);
         }
     }
 
-    private void selectItem(int position) {
+    private void selectMenuItem(int position) {
         Fragment fragment = null;
         switch (position) {
             case 1:
@@ -109,23 +117,33 @@ public class MainActivity extends ActionBarActivity {
                 break;
         }
 
+
+
         if (fragment != null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("menuPosition", position);
+            fragment.setArguments(bundle);
+            Log.d("Bundle", Integer.toString(position));
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, fragment)
                     .commit();
 
-//          mDrawerList.setItemChecked(position, true);
-            CharSequence title = getResources().getString(mNavDrawerItems.get(--position).getTitle()); //listener is 1-based
-            setTitle(title);
+            syncToolbarTitleAndMenuItemCheckedState(position);
             mDrawerLayout.closeDrawer(mDrawerList);
         }
+    }
+
+    private void syncToolbarTitleAndMenuItemCheckedState(int position){
+        mDrawerList.setItemChecked(position, true);
+        CharSequence title = getResources().getString(mNavDrawerItems.get(--position).getTitle()); //listener is 1-based
+        setTitle(title);
     }
 
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        mToolbar.setTitle(title);
+        getSupportActionBar().setTitle(title);
     }
 
     @Override

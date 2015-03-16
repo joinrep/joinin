@@ -29,31 +29,27 @@ public class EventsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_events, container, false);
 
         mEventsList = (RecyclerView) view.findViewById(R.id.eventsList);
-
         mEventsList.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mEventsList.setLayoutManager(mLayoutManager);
 
-
         new LoadAllEvents().execute();
+
         return view;
     }
 
     private class LoadAllEvents extends AsyncTask<String, String, String> {
-
         List<Event> events;
 
         protected String doInBackground(String... args) {
-
             events = new EventRepository().getAll();
             return "dumb";
 
         }
 
         protected void onPostExecute(String s) {
-            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity().getApplicationContext(), events);
+            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(events);
             mEventsList.setAdapter(adapter);
-
         }
     }
 }

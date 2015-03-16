@@ -17,20 +17,24 @@ import java.util.List;
  */
 public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
-    private Context mContext;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTitle;
+        public TextView mAddress;
+        public TextView mTime;
+        public TextView mDate;
 
         public ViewHolder(View v) {
             super(v);
             mTitle = (TextView)v.findViewById(R.id.eventName);
+            mAddress = (TextView)v.findViewById(R.id.eventAddress);
+            mTime = (TextView)v.findViewById(R.id.eventTime);
+            mDate = (TextView)v.findViewById(R.id.eventDate);
         }
     }
 
-    public EventsRecyclerAdapter(Context context, List<Event> events) {
+    public EventsRecyclerAdapter(List<Event> events) {
         mEvents = events;
-        mContext = context;
     }
 
     @Override
@@ -44,7 +48,9 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTitle.setText(mEvents.get(position).getName());
+        Event event = mEvents.get(position);
+        holder.mTitle.setText(event.getName());
+//        holder.mAddress.setText(event.getLocation().getLocationName());
 
     }
 
