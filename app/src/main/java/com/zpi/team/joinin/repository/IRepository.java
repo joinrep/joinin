@@ -9,7 +9,6 @@ public interface IRepository<T> {
 
     String hostname = "http://joinin.comxa.com/db/";
 
-    T getById();
     List<T> getAll();
     void create(T entity);
     void delete(T entity);

@@ -31,8 +31,7 @@ public class CategoryRepository implements IRepository<Category> {
     private static final String TAG_NAME = "name";
     private static final String TAG_ICON = "icon_path";
 
-    @Override
-    public Category getById() {
+    public Category getByName(String categoryName) {
         // TODO
         Category result =  new Category("Sample category", "sample.png");
         result.setEvents(Arrays.asList(new Event[]{

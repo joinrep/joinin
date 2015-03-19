@@ -1,5 +1,6 @@
 package com.zpi.team.joinin.entities;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public class Comment {
 
     private int id;
-    private Date timestamp;
+    private Calendar timestamp;
     private String commentBody;
 
     private User author;
@@ -17,7 +18,7 @@ public class Comment {
     private List<Comment> childrenComments;
     private Event commentedEvent;
 
-    public Comment(int id, Date timestamp, String commentBody) {
+    public Comment(int id, Calendar timestamp, String commentBody) {
         this.id = id;
         this.timestamp = timestamp;
         this.commentBody = commentBody;
@@ -31,11 +32,11 @@ public class Comment {
         this.id = id;
     }
 
-    public Date getTimestamp() {
+    public Calendar getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Calendar timestamp) {
         this.timestamp = timestamp;
     }
 

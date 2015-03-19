@@ -1,8 +1,11 @@
 package com.zpi.team.joinin.repository;
 
 import com.zpi.team.joinin.database.JSONParser;
+import com.zpi.team.joinin.entities.Address;
 import com.zpi.team.joinin.entities.Category;
+import com.zpi.team.joinin.entities.Comment;
 import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.entities.User;
 
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
@@ -13,6 +16,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -42,11 +46,24 @@ public class EventRepository implements IRepository<Event> {
     private static final String TAG_CATEGORY_NAME = "category_name";
     private static final String TAG_CATEGORY_ICON = "category_icon";
 
-    @Override
-    public Event getById() {
+    public Event getById(int eventID) {
         // TODO
         try{Thread.sleep(1000);} catch (InterruptedException e){};
         Event event = new Event(1,"eventName1", Calendar.getInstance(), Calendar.getInstance(), "eventDescription1", 10, 0, false);
+        event.setOrganizer(new User("1","organizerFName1", "organizerLName1"));
+        event.setParticipants(Arrays.asList(new User[]{new User("2","participantFName1", "participantLName1"), new User("3","participantFName2", "participantLName2")}));
+        event.setCategory(new Category("kategoria", "iconPath"));
+        event.setLocation(new Address(1, "Wrocław", "Żelazna 40", "", "Hala sportowa"));
+
+        Comment comment = new Comment(1,Calendar.getInstance(), "Komentarz1");
+        Comment subcomment = new Comment(1,Calendar.getInstance(), "Komentarz1");
+        comment.setAuthor(new User("2","participantFName1", "participantLName1"));
+        subcomment.setAuthor(new User("2","participantFName1", "participantLName1"));
+        subcomment.setParentComment(comment);
+        comment.setChildrenComments(Arrays.asList(new Comment[]{subcomment}));
+        comment.setCommentedEvent(event);
+        subcomment.setCommentedEvent(event);
+
         return event;
     }
 
