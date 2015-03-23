@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by MK on 2015-03-19.
  */
-public class UserRepository implements IRepository {
+public class UserRepository implements IRepository<User> {
 
     public User getById(String userID) {
         User user = new User("1", "FName", "LName");
@@ -17,24 +17,5 @@ public class UserRepository implements IRepository {
         user.setFriends(Arrays.asList(new User[]{new User("2", "FName2", "LName2")}));
         return user;
     }
-    
-    @Override
-    public List<User> getAll() {
-        return null;
-    }
 
-    @Override
-    public void create(Object entity) {
-
-    }
-
-    @Override
-    public void delete(Object entity) {
-
-    }
-
-    @Override
-    public void update(Object entity) {
-
-    }
 }

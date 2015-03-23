@@ -8,8 +8,8 @@ import java.util.List;
 public class User {
 
     private String facebookId;
-    private String imie;
-    private String nazwisko;
+    private String firstName;
+    private String lastName;
 
     private List<Category> favoriteCategories;
     private List<Event> organizedEvents;
@@ -18,10 +18,10 @@ public class User {
     private List<User> friends;
     private List<User> followers;
 
-    public User(String facebookId, String imie, String nazwisko) {
+    public User(String facebookId, String firstName, String lastName) {
         this.facebookId = facebookId;
-        this.imie = imie;
-        this.nazwisko = nazwisko;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getFacebookId() {
@@ -32,20 +32,20 @@ public class User {
         this.facebookId = facebookId;
     }
 
-    public String getImie() {
-        return imie;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setImie(String imie) {
-        this.imie = imie;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getNazwisko() {
-        return nazwisko;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setNazwisko(String nazwisko) {
-        this.nazwisko = nazwisko;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public List<Category> getFavoriteCategories() {

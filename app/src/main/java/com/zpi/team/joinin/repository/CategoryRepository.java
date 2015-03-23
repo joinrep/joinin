@@ -41,7 +41,6 @@ public class CategoryRepository implements IRepository<Category> {
         return result;
     }
 
-    @Override
     public List<Category> getAll() {
 
         // Building Parameters
@@ -79,13 +78,4 @@ public class CategoryRepository implements IRepository<Category> {
         }
         return result;
     }
-
-    @Override
-    public void create(Category entity) {}
-
-    @Override
-    public void delete(Category entity) {}
-
-    @Override
-    public void update(Category entity) {}
 }

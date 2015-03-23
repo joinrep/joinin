@@ -8,6 +8,7 @@ import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,13 +68,19 @@ public class EventRepository implements IRepository<Event> {
         return event;
     }
 
-    @Override
     public List<Event> getAll() {
+        return getAll(false);
+    }
+
+    public List<Event> getAll(boolean canceled) {
+
         List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         JSONObject json = jParser.makeHttpRequest(url_all_events, "GET", params);
 
         List<Event> result = new ArrayList<Event>();
+
         try {
             int success = json.getInt(TAG_SUCCESS);
             if (success == 1) {
@@ -105,17 +112,14 @@ public class EventRepository implements IRepository<Event> {
         return result;
     }
 
-    @Override
     public void create(Event entity) {
         // TODO
     }
 
-    @Override
     public void delete(Event entity) {
         // TODO
     }
 
-    @Override
     public void update(Event entity) {
         // TODO
     }
