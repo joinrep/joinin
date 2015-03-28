@@ -33,10 +33,10 @@ public class CategoryRepository implements IRepository<Category> {
 
     public Category getByName(String categoryName) {
         // TODO
-        Category result =  new Category("Sample category", "sample.png");
+        Category result =  new Category(1, "Sample category", "sample.png");
         result.setEvents(Arrays.asList(new Event[]{
-            new Event(1,"eventName1", Calendar.getInstance(),  Calendar.getInstance(), "eventDescription1", 10, 0, false),
-            new Event(2,"eventName2",  Calendar.getInstance(),  Calendar.getInstance(), "eventDescription2", 20, 10, false)
+            new Event(1,"eventName1", Calendar.getInstance(),  Calendar.getInstance(), "eventDescription1", "notatka1", 10, 0, false),
+            new Event(2,"eventName2",  Calendar.getInstance(),  Calendar.getInstance(), "eventDescription2", "notatka2", 20, 10, false)
         }));
         return result;
     }
@@ -70,7 +70,7 @@ public class CategoryRepository implements IRepository<Category> {
                     String name = category.getString(TAG_NAME);
                     String iconPath = category.getString(TAG_ICON);
 
-                    result.add(new Category(name, iconPath));
+                    result.add(new Category(1, name, iconPath));
                 }
             }
         } catch (JSONException e) {

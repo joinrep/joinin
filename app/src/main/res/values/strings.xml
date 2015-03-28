@@ -7,19 +7,16 @@
     <string name="drawer_close">Drawer close</string>
     <string name="title_activity_create_event">Nowe wydarzenie</string>
 
-    <!--Navigation Drawer items -->
+    <!-- Navigation Drawer items -->
     <string name="navdrawer_header_login_source">Zalogowany przez Facebook</string>
-
     <string name="navdrawer_events">Wydarzenia</string>
     <string name="navdrawer_participate">Biorę udział</string>
     <string name="navdrawer_myevents">Moje wydarzenia</string>
     <string name="navdrawer_settings">Ustawienia</string>
     <string name="navdrawer_help">Pomoc i opinie</string>
     <string name="navdrawer_subheader_favorites">ULUBIONE KATEGORIE</string>
+    !--Categories -->    <string name="category_event_bike">Jazda rowerem</string>
+    !--Card -->    <string name="join">Dołącz</string>
+    <string name="hello_world">Hello world!</string>
 
-    !--Categories -->
-    <string name="category_event_bike">Jazda rowerem</string>
-
-    !--Card -->
-    <string name="join">Dołącz</string>
 </resources>

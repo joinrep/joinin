@@ -10,4 +10,20 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <ImageButton
+        android:id="@+id/add_event_button"
+        android:layout_width="@dimen/diameter"
+        android:layout_height="@dimen/diameter"
+        android:layout_marginBottom="@dimen/add_button_margin"
+        android:layout_marginEnd="@dimen/add_button_margin"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="@android:color/white"
+        android:background="@drawable/oval"
+        android:stateListAnimator="@anim/button_elevation"
+        android:elevation="@dimen/elevation_low"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
 </RelativeLayout>

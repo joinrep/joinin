@@ -26,11 +26,11 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private ArrayList<NavDrawerItem> mNavDrawerItems;
 
-    private boolean isFirstLaunch = true;
+    private int mCurrentPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fragment);
+        setContentView(R.layout.activity_main);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -75,15 +75,21 @@ public class MainActivity extends ActionBarActivity {
                     .commit();
         }
 
-        int position = 1;
+        mCurrentPosition = 1;
         if(savedInstanceState != null)
-            position = savedInstanceState.getInt("menuPosition", 1);
+            mCurrentPosition = savedInstanceState.getInt("menuPosition", 1);
 
 //        selectMenuItem(1); // na start uruchamia pierwszy element menu. kiepski sposob
-        syncToolbarTitleAndMenuItemCheckedState(position);
+        syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
         Log.d("onCreate", (String)mToolbar.getTitle());
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("menuPosition", mCurrentPosition);
+        Log.d("onsave", Integer.toString(mCurrentPosition));
+    }
 
     private void prepareNavDrawerItems(){
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_events,R.string.navdrawer_events));
@@ -120,9 +126,10 @@ public class MainActivity extends ActionBarActivity {
 
 
         if (fragment != null) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("menuPosition", position);
-            fragment.setArguments(bundle);
+//            Bundle bundle = new Bundle();
+//            bundle.putInt("menuPosition", position);
+//            fragment.setArguments(bundle);
+            mCurrentPosition = position;
             Log.d("Bundle", Integer.toString(position));
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()

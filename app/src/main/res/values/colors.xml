@@ -3,10 +3,17 @@
 
     <item name="colorPrimary" type="color">#009688</item>
     <item name="colorPrimaryDark" type="color">#00796B</item>
-    <item name="colorAccent" type="color">#EF5350</item>
+    <item name="colorAccent" type="color">#F04155</item>
 
     <item name="black_12" type="color">#1F000000</item>
     <item name="black_54" type="color">#8A000000</item>
     <item name="black_87" type="color">#DE000000</item>
     <item name="white_100" type="color">#ffffff</item>
+
+    <!--Palette-->
+    <array name="imageBackgroundColors">
+        <item name="yellow_A100" type="color">#FFFF8D</item>
+        <item name="lightGreen_A100" type="color">#CCFF90</item>
+        <item name="lightBlue_A100" type="color">#80D8FF</item>
+    </array>
 </resources>

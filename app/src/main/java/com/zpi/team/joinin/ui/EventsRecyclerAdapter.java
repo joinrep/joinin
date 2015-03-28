@@ -5,24 +5,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Arkadiusz on 2015-03-15.
  */
 public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
+    private Context mContext;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTitle;
         public TextView mAddress;
         public TextView mTime;
         public TextView mDate;
+        public ImageView mImage;
 
         public ViewHolder(View v) {
             super(v);
@@ -30,11 +34,13 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
             mAddress = (TextView)v.findViewById(R.id.eventAddress);
             mTime = (TextView)v.findViewById(R.id.eventTime);
             mDate = (TextView)v.findViewById(R.id.eventDate);
+            mImage = (ImageView)v.findViewById(R.id.eventImage);
         }
     }
 
-    public EventsRecyclerAdapter(List<Event> events) {
+    public EventsRecyclerAdapter(Context context, List<Event> events) {
         mEvents = events;
+        mContext = context;
     }
 
     @Override
@@ -50,6 +56,10 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         Event event = mEvents.get(position);
         holder.mTitle.setText(event.getName());
+
+        int[] colors = mContext.getResources().getIntArray(R.array.imageBackgroundColors);
+
+        holder.mImage.setBackgroundColor(colors[new Random().nextInt(colors.length)]);
 //        holder.mAddress.setText(event.getLocation().getLocationName());
 
     }
