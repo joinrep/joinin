@@ -7,8 +7,8 @@ if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['e
 	isset($_POST['city']) && isset($_POST['street1']) && isset($_POST['street2']) && isset($_POST['location_name'])&& isset($_POST['organizer'])) {
 	
 	$event_name = $_POST['event_name'];
-	$start_time = $_POST['start_time'];
-	$end_time = $_POST['end_time'];
+	$start_time = date($_POST['start_time']);
+	$end_time = date($_POST['end_time']);
 	$description = $_POST['description'];
 	$notes = $_POST['notes'];
 	$limit = $_POST['limit'];
@@ -37,8 +37,8 @@ if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['e
 		//$location = mysql_insert_id()
 	}
 	
-    $result = mysql_query("INSERT INTO Events(event_id, event_name, start_time, end_time, description, notes, limit, cost, canceled, #category, #location, 
-		#organizer)  VALUES(NULL, '$event_name', '$start_time', '$end_time', '$description', '$notes', $limit, $cost, 'N', $category, $location, $organizer)");
+	$query = "INSERT INTO Event(event_id, event_name, start_time, end_time, description, size_limit, cost, canceled, category, organizer, address) VALUES (NULL, '$event_name', '$start_time', '$end_time', '$description', $limit, $cost, 'N', $category, $organizer, $location)";
+    $result = mysql_query($query);
  
     // check if row inserted or not
     if ($result) {
@@ -51,7 +51,7 @@ if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['e
     } else {
         // failed to insert row
         $response["success"] = 0;
-        $response["message"] = "Oops! An error occurred.";
+        $response["message"] = "Oops! An error occurred. Query: ".$query;
  
         // echoing JSON response
         echo json_encode($response);

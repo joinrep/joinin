@@ -121,7 +121,7 @@ public class EventRepository implements IRepository<Event> {
         // TODO
         entity = new Event(0,"eventName", Calendar.getInstance(), Calendar.getInstance(), "eventDescription", "eventNotes", 10, 0, false);
         entity.setCategory(new Category(1, "", ""));
-        entity.setLocation(new Address(0, "city", "street1", "street2", "locationName"));
+        entity.setLocation(new Address(1, "", "", "", ""));
         entity.setOrganizer(new User("1", "", ""));
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
