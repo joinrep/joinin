@@ -21,14 +21,20 @@ if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['e
 	$location_name = $_POST['location_name'];
 	$organizer = $_POST['organizer'];
 	
+	$response = array();
 	require_once(dirname(__FILE__).'/db_connect.php');
 	$db = new DB_CONNECT();
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 	
 
 	if ($location == 0) {
-		$result = mysql_query("INSERT INTO Address(address_id, city, street1, street2, location_name) VALUES(NULL, '$city', '$street1', '$street2', '$location_name')");
-		$location = mysql_insert_id()
+		mysql_query("INSERT INTO Address(address_id, city, street1, street2, location_name) VALUES(NULL, '$city', '$street1', '$street2', '$location_name')");
+		$result = mysql_query("SELECT address_id FROM Address WHERE city=$city AND street1=$street1 AND street2=$street2 AND location_name=$location_name");
+		if ($row = mysql_fetch_array($result)) {
+			$location = $row["address_id"];
+		}	
+		//$result = mysql_query("INSERT INTO Address(address_id, city, street1, street2, location_name) VALUES(NULL, '$city', '$street1', '$street2', '$location_name')");
+		//$location = mysql_insert_id()
 	}
 	
     $result = mysql_query("INSERT INTO Events(event_id, event_name, start_time, end_time, description, notes, limit, cost, canceled, #category, #location, 

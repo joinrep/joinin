@@ -35,6 +35,7 @@ public class EventRepository implements IRepository<Event> {
     private static String url_event_by_id = hostname + "get_event_by_id.php";
     private static String url_events_by_catgory = hostname + "get_events_by_catgory.php";
     private static String url_create_event = hostname + "create_event.php";
+    private static String url_participate_event = hostname + "participate_event.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -151,6 +152,29 @@ public class EventRepository implements IRepository<Event> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void participate(Event event, User user) {
+        participate(event, user, true);
+    }
+
+    public void participate(Event event, User user, boolean participate) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("event_id", "" + event.getId()));
+            params.add(new BasicNameValuePair("user_id", user.getFacebookId()));
+            params.add(new BasicNameValuePair("participate", "" + participate));
+            JSONObject json = jParser.makeHttpRequest(url_participate_event, "POST", params);
+            // check for success tag
+            try {
+                int success = json.getInt(TAG_SUCCESS);
+                if (success == 1) {
+                    // successfully created
+                } else {
+                    // failed to create
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
     }
 
     public void delete(Event entity) {
