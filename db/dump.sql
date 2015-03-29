@@ -1,39 +1,4 @@
 ﻿
-DROP TABLE Event;
-DROP TABLE Category;
-DROP TABLE Address;
-
-CREATE TABLE Category (
-	category_name VARCHAR(255) COLLATE utf8_polish_ci NOT NULL,
-	icon_path VARCHAR(255) COLLATE utf8_polish_ci NOT NULL,
-	PRIMARY KEY (category_name)
-) DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
-
-CREATE TABLE Event (
-	event_id INT(10) unsigned NOT NULL AUTO_INCREMENT,
-	event_name VARCHAR(255) COLLATE utf8_polish_ci NOT NULL,
-	start_time DATETIME NOT NULL,
-	end_time DATETIME NOT NULL,
-	description TEXT,
-	size_limit INT(10),
-	cost DECIMAL(11,2),
-	canceled VARCHAR(1) DEFAULT 'N' CHECK(canceled IN ('Y','N')),
-	category VARCHAR(255) REFERENCES Category(category_name),
-	PRIMARY KEY (event_id)
-) DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
-
-INSERT INTO Category (category_name, icon_path) VALUES
-('Piłka nożna', 'icon.png'),
-('Koszykówka', 'icon.png');
-
-INSERT INTO Event (event_id, event_name, start_time, end_time, description, size_limit, cost, canceled, category) VALUES
-(1, 'Gała po szkole', '2015-03-15 15:00:00', '2015-03-15 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 20, 0, 'N', 'Piłka nożna'),
-(2, 'Faza grupowa klubu seniora', '2015-03-15 16:00:00', '2015-03-15 17:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 5, 'N', 'Piłka nożna'),
-(3, 'DUNK MASTER', '2015-03-22 12:00:00', '2015-03-22 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 2.50, 'Y', 'Koszykówka'),
-(4, 'Wiosenne niedzielne popołudnie z przyjaciółmi grając w koszykówkę', '2015-03-21 15:00:00', '2015-03-21 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 100, 5.50, 'N', 'Koszykówka');
-
-FILIP:
-
 DROP TABLE Following;
 DROP TABLE Favorites;
 DROP TABLE Points;
@@ -114,7 +79,7 @@ CREATE TABLE Favorites (
 
 CREATE TABLE Following (
 	follower INT(10) unsigned NOT NULL REFERENCES MyUser(facebook_id),
-	follows INT(10) unsigned NOT NULL REFERNCES MyUser(facebook_id),
+	follows INT(10) unsigned NOT NULL REFERENCES MyUser(facebook_id),
 	PRIMARY KEY (follower, follows)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
@@ -126,10 +91,10 @@ INSERT INTO MyUser (facebook_id, first_name, last_name) VALUES
 
 INSERT INTO Category (category_id, category_name, icon_path) VALUES
 (1, 'Piłka nożna', 'icon.png'),
-(1, 'Koszykówka', 'icon.png');
+(2, 'Koszykówka', 'icon.png');
 
 INSERT INTO Event (event_id, event_name, start_time, end_time, description, size_limit, cost, canceled, category, organizer, address) VALUES
-(1, 'Gała po szkole', '2015-03-15 15:00:00', '2015-03-15 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 20, 0, 'N', 1, 1),
-(2, 'Faza grupowa klubu seniora', '2015-03-15 16:00:00', '2015-03-15 17:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 5, 'N', 1, 1),
-(3, 'DUNK MASTER', '2015-03-22 12:00:00', '2015-03-22 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 2.50, 'Y', 2, 1),
-(4, 'Wiosenne niedzielne popołudnie z przyjaciółmi grając w koszykówkę', '2015-03-21 15:00:00', '2015-03-21 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 100, 5.50, 'N', 2, 1);
+(1, 'Gała po szkole', '2015-03-15 15:00:00', '2015-03-15 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 20, 0, 'N', 1, 1, 1),
+(2, 'Faza grupowa klubu seniora', '2015-03-15 16:00:00', '2015-03-15 17:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 5, 'N', 1, 1, 1),
+(3, 'DUNK MASTER', '2015-03-22 12:00:00', '2015-03-22 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 2.50, 'Y', 2, 1, 1),
+(4, 'Wiosenne niedzielne popołudnie z przyjaciółmi grając w koszykówkę', '2015-03-21 15:00:00', '2015-03-21 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 100, 5.50, 'N', 2, 1, 1);
