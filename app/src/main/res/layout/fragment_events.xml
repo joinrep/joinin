@@ -17,7 +17,7 @@
         android:layout_height="@dimen/diameter"
         android:layout_marginBottom="@dimen/add_button_margin"
         android:layout_marginEnd="@dimen/add_button_margin"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_add"
         android:tint="@android:color/white"
         android:background="@drawable/oval"
         android:stateListAnimator="@anim/button_elevation"

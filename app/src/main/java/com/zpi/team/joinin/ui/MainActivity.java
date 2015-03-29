@@ -97,7 +97,7 @@ public class MainActivity extends ActionBarActivity {
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_my_events,R.string.navdrawer_myevents));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.NO_ICON,R.string.navdrawer_subheader_favorites,NavDrawerItem.TYPE_SUBHEADER));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_category_bike,R.string.category_event_bike));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_bike,R.string.category_event_bike));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_settings,R.string.navdrawer_settings));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_help,R.string.navdrawer_help));
