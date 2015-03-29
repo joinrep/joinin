@@ -7,8 +7,8 @@ if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['e
 	isset($_POST['city']) && isset($_POST['street1']) && isset($_POST['street2']) && isset($_POST['location_name'])&& isset($_POST['organizer'])) {
 	
 	$event_name = $_POST['event_name'];
-	$start_time = date($_POST['start_time']);
-	$end_time = date($_POST['end_time']);
+	$start_time = date("Y-m-d H:i:s",$_POST['start_time']/1000);
+	$end_time = date("Y-m-d H:i:s",$_POST['end_time']/1000);
 	$description = $_POST['description'];
 	$notes = $_POST['notes'];
 	$limit = $_POST['limit'];
@@ -44,7 +44,7 @@ if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['e
     if ($result) {
         // successfully inserted into database
         $response["success"] = 1;
-        $response["message"] = "Event successfully created.";
+        $response["message"] = "Event successfully created. Query: ".$query;
  
         // echoing JSON response
         echo json_encode($response);

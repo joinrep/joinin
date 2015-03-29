@@ -119,7 +119,11 @@ public class EventRepository implements IRepository<Event> {
 
     public void create(Event entity) {
         // TODO
-        entity = new Event(0,"eventName", Calendar.getInstance(), Calendar.getInstance(), "eventDescription", "eventNotes", 10, 0, false);
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+        startDate.setTime(new Date(new Date().getTime()));
+        endDate.setTime(new Date(new Date().getTime()+1000*60*60*2));
+        entity = new Event(0,"eventName", startDate, endDate, "eventDescription", "eventNotes", 10, 0, false);
         entity.setCategory(new Category(1, "", ""));
         entity.setLocation(new Address(1, "", "", "", ""));
         entity.setOrganizer(new User("1", "", ""));
