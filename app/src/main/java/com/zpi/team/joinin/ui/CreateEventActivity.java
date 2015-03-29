@@ -1,14 +1,21 @@
 package com.zpi.team.joinin.ui;
 
+import android.app.FragmentManager;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
 
@@ -23,17 +30,29 @@ public class CreateEventActivity extends ActionBarActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragmentContainer, new PlaceholderFragment())
+        mToolbar.setNavigationIcon(R.drawable.ic_close);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_CANCELED);
+                finish();
+
+            }
+        });
+
+        FragmentManager fm = getFragmentManager();
+        android.app.Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
+        if (fragment == null) {
+            fragment = new CreateEventFragment();
+            fm.beginTransaction()
+                    .add(R.id.fragmentContainer, fragment)
                     .commit();
         }
-    }
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_create_event, menu);
         return true;
     }
@@ -51,21 +70,5 @@ public class CreateEventActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_create_event, container, false);
-            return rootView;
-        }
     }
 }

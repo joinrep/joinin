@@ -2,6 +2,7 @@ package com.zpi.team.joinin.ui;
 
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Outline;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +77,13 @@ public class EventsFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CREATE_EVENT_REQUEST) {
+            if(resultCode == Activity.RESULT_OK){
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+            }
+        }
     }
 
     private class LoadAllEvents extends AsyncTask<String, String, String> {

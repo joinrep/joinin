@@ -17,6 +17,10 @@
     <string name="navdrawer_subheader_favorites">ULUBIONE KATEGORIE</string>
     !--Categories -->    <string name="category_event_bike">Jazda rowerem</string>
     !--Card -->    <string name="join">Dołącz</string>
-    <string name="hello_world">Hello world!</string>
+    !--New event-->    <string name="action_save">Zapisz</string>
+    <string name="enter_title">Wpisz tytuł</string>
+    <string name="add_localization">Dodaj lokalizację</string>
+    <string name="add_description">Dodaj opis</string>
+    <string name="choose_category">Wybierz kategorię</string>
 
 </resources>

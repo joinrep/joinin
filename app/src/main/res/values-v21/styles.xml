@@ -1,0 +1,16 @@
+<resources>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="android:windowTranslucentStatus">false</item>
+
+        <!--<item name="android:dialogTheme">@style/AppTheme.DialogTheme</item>-->
+    </style>
+
+    <!--<style name="AppTheme.DialogTheme" parent="Theme.AppCompat.Light.Dialog">-->
+
+        <!--<item name="android:colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="android:colorAccent">@color/colorAccent</item>-->
+
+    <!--</style>-->
+</resources>
