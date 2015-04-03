@@ -97,6 +97,8 @@ public class MainActivity extends ActionBarActivity {
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_my_events,R.string.navdrawer_myevents));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.NO_ICON,R.string.navdrawer_subheader_favorites,NavDrawerItem.TYPE_SUBHEADER));
+        // TODO change icon of Przeglądaj ketegorie
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_plus_circle,R.string.add_favorite_category));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_bike,R.string.category_event_bike));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_settings,R.string.navdrawer_settings));
@@ -118,6 +120,9 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case 2:
                 fragment = new ParticipateEventsFragment();
+                break;
+            case 6:
+                fragment = new CategoriesFragment();
                 break;
             default:
                 break;

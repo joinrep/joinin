@@ -15,6 +15,7 @@
     <string name="navdrawer_settings">Ustawienia</string>
     <string name="navdrawer_help">Pomoc i opinie</string>
     <string name="navdrawer_subheader_favorites">ULUBIONE KATEGORIE</string>
+    <string name="add_favorite_category">Przeglądaj kategorie</string>
     !--Categories -->    <string name="category_event_bike">Jazda rowerem</string>
     !--Card -->    <string name="join">Dołącz</string>
     !--New event-->    <string name="action_save">Zapisz</string>

@@ -18,7 +18,9 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.repository.EventRepository;
 import java.util.List;
 
@@ -91,6 +93,7 @@ public class EventsFragment extends Fragment {
 
         protected String doInBackground(String... args) {
             events = new EventRepository().getAll();
+            List<Category> c = new CategoryRepository().getAll();
             return "dumb";
 
         }
