@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TableRow
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
@@ -18,8 +18,20 @@
                 android:layout_marginLeft="@dimen/keyline_1"
                 android:hint="@string/enter_title"
                 android:singleLine="true"
-                android:textStyle="bold" />
-        </TableRow>
+                android:textStyle="bold"
+                android:maxLength="15"
+                android:inputType="textCapSentences"/>
+
+            <TextView
+                android:id="@+id/counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/15"
+                android:textColor="@color/colorAccent"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/keyline_1" />
+        </RelativeLayout>
 
         <View style="@style/Divider" />
 
@@ -88,10 +100,12 @@
                 android:layout_marginTop="12dp"
                 android:layout_gravity="top" />
 
-            <EditText
-                android:id="@+id/category"
-                style="@style/FormEditText"
-                android:hint="@string/choose_category" />
+            <Spinner
+                android:id="@+id/categorySpinner"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:prompt="@string/choose_category"
+                android:spinnerMode="dropdown"/>
         </LinearLayout>
 
 

@@ -32,7 +32,7 @@ public class EventsFragment extends Fragment {
 
     private RecyclerView.LayoutManager mLayoutManager;
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
@@ -50,15 +50,18 @@ public class EventsFragment extends Fragment {
 
         View addEventButton = view.findViewById(R.id.add_event_button);
 
-        addEventButton.setOutlineProvider(new ViewOutlineProvider() {
-            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void getOutline(View view, Outline outline) {
-                int diameter = getResources().getDimensionPixelSize(R.dimen.diameter);
-                outline.setOval(0, 0, diameter, diameter);
-            }
-        });
-        addEventButton.setClipToOutline(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            addEventButton.setOutlineProvider(new ViewOutlineProvider() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    int diameter = getResources().getDimensionPixelSize(R.dimen.diameter);
+                    outline.setOval(0, 0, diameter, diameter);
+                }
+            });
+            addEventButton.setClipToOutline(true);
+        }
+
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,9 +82,10 @@ public class EventsFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CREATE_EVENT_REQUEST) {
             if(resultCode == Activity.RESULT_OK){
-
+                Log.d("onresult", "result_ok");
             }
             if (resultCode == Activity.RESULT_CANCELED) {
+                Log.d("onresult", "result_cancled");
             }
         }
     }

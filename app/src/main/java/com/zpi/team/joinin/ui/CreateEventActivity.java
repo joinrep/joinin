@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
 
-public class CreateEventActivity extends ActionBarActivity {
+public class CreateEventActivity extends ActionBarActivity  {
 
     private Toolbar mToolbar;
 
@@ -65,7 +65,11 @@ public class CreateEventActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_save) {
+            Log.d("zapisz", "saved");
+//            CreateEventFragment f =  (CreateEventFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+            setResult(RESULT_OK);
+            finish();
             return true;
         }
 

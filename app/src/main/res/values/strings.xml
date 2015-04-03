@@ -15,10 +15,14 @@
     <string name="navdrawer_settings">Ustawienia</string>
     <string name="navdrawer_help">Pomoc i opinie</string>
     <string name="navdrawer_subheader_favorites">ULUBIONE KATEGORIE</string>
-    !--Categories -->    <string name="category_event_bike">Jazda rowerem</string>
-    !--Card -->    <string name="join">Dołącz</string>
-    !--New event-->    <string name="action_save">Zapisz</string>
+    !--Categories -->
+    <string name="category_event_bike">Jazda rowerem</string>
+    !--Card -->
+    <string name="join">Dołącz</string>
+    !--New event-->
+    <string name="action_save">Zapisz</string>
     <string name="enter_title">Wpisz tytuł</string>
+    <string name="max_title_length">/15</string>
     <string name="add_localization">Dodaj lokalizację</string>
     <string name="add_description">Dodaj opis</string>
     <string name="choose_category">Wybierz kategorię</string>

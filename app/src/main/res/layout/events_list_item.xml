@@ -51,10 +51,9 @@
                 android:layout_centerInParent="true"
                 android:layout_toRightOf="@id/eventImage"
                 android:gravity="left"
-                android:text="Rower bo tak"
+                android:text="Tylko 15 znakow!"
                 android:paddingBottom="8dp"
                 android:textStyle="bold"
-                android:maxLines="1"
                 android:textColor="@color/black_87"
                 android:textSize="24sp" />
 

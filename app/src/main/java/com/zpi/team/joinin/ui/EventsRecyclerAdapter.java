@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -55,12 +57,19 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Event event = mEvents.get(position);
-        holder.mTitle.setText(event.getName());
 
         int[] colors = mContext.getResources().getIntArray(R.array.imageBackgroundColors);
-
         holder.mImage.setBackgroundColor(colors[new Random().nextInt(colors.length)]);
+
+        holder.mTitle.setText(event.getName());
 //        holder.mAddress.setText(event.getLocation().getLocationName());
+
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        String start = format.format(event.getStartTime().getTime());
+        String end = format.format(event.getEndTime().getTime());
+        holder.mTime.setText(start + "-" + end);
+
+
 
     }
 
