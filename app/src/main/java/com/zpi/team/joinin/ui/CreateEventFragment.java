@@ -1,7 +1,6 @@
 package com.zpi.team.joinin.ui;
 
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -16,8 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -25,9 +22,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.entities.Address;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
-import com.zpi.team.joinin.repository.CategoryRepository;
+import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
 
 import java.text.SimpleDateFormat;
@@ -38,16 +36,10 @@ import java.util.List;
 
 public class CreateEventFragment extends Fragment {
     private TextView mStartDate, mEndDate, mStartTime, mEndTime, mCounter;
-    private EditText mTitle;
+    private EditText mTitle, mDescription, mAddress;
     private Spinner mCategory;
-    private Calendar mCalendar;
+    private Calendar mCalendarStart, mCalendarEnd;
     private SimpleDateFormat mDateFormat, mTimeFormat;
-
-    private OnNewEventListener mOnNewEventListener;
-
-    public interface OnNewEventListener{
-       public String onNewEvent();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,17 +80,21 @@ public class CreateEventFragment extends Fragment {
         mStartTime.setOnClickListener(listener);
         mEndTime.setOnClickListener(listener);
 
-        mCalendar = Calendar.getInstance();
+        mCalendarStart = Calendar.getInstance();
+        mCalendarEnd = Calendar.getInstance();
         mDateFormat = new SimpleDateFormat("EEEE, d MMM yyyy");
-        String date = mDateFormat.format(mCalendar.getTime());
+        String date = mDateFormat.format(mCalendarStart.getTime());
         mStartDate.setText(date);
         mEndDate.setText(date);
 
         mTimeFormat = new SimpleDateFormat("HH:mm");
-        mStartTime.setText(mTimeFormat.format(mCalendar.getTime()));
-        int h = mCalendar.get(Calendar.HOUR_OF_DAY)+1;
-        String time = "" + h  + ":" + new SimpleDateFormat("mm").format(mCalendar.getTime());
+        mStartTime.setText(mTimeFormat.format(mCalendarStart.getTime()));
+        int h = mCalendarEnd.get(Calendar.HOUR_OF_DAY)+1;
+        String time = "" + h  + ":" + new SimpleDateFormat("mm").format(mCalendarEnd.getTime());
         mEndTime.setText(time);
+
+        mDescription = (EditText) rootView.findViewById(R.id.description);
+        mAddress = (EditText) rootView.findViewById(R.id.localization);
 
         /**TODO
          * pociagnac z sharedpreferences
@@ -113,27 +109,38 @@ public class CreateEventFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mOnNewEventListener = (OnNewEventListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnNewEventListener");
-        }
+    public void saveNewEvent(){
+        /**
+         * TODO
+         * prompty gdy niewypelnione pola!
+         */
+        String title = mTitle.getText().toString();
+        String description = mDescription.getText().toString();
+        String address = mAddress.getText().toString();
+
+        final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, 10, 10, false);
+        newEvent.setLocation(new Address(0, "city", "street", "street", address));
+        newEvent.setOrganizer(new User("12","jan", "probny"));
+        newEvent.setCategory(new Category(0, "PIlka test", "paff"));
+
+        new SaveNewEvent().execute(newEvent);
     }
 
-    public String onNewEvent(){
-        return "hurej";
+    private class SaveNewEvent extends AsyncTask<Event, Void, Void> {
+
+        protected Void doInBackground(Event... event) {
+            new EventRepository().create(event[0]);
+            Log.d("Saving new event:", "success");
+            return null;
+        }
     }
 
     private class DateAndTimeListener implements View.OnClickListener {
         DatePickerDialog.OnDateSetListener mStartDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mCalendar.set(year, monthOfYear, dayOfMonth);
-                String date = mDateFormat.format(mCalendar.getTime());
+                mCalendarStart.set(year, monthOfYear, dayOfMonth);
+                String date = mDateFormat.format(mCalendarStart.getTime());
                 mStartDate.setText(date);
             }
         };
@@ -141,8 +148,8 @@ public class CreateEventFragment extends Fragment {
         DatePickerDialog.OnDateSetListener mEndDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mCalendar.set(year, monthOfYear, dayOfMonth);
-                String date = mDateFormat.format(mCalendar.getTime());
+                mCalendarEnd.set(year, monthOfYear, dayOfMonth);
+                String date = mDateFormat.format(mCalendarEnd.getTime());
                 mEndDate.setText(date);
             }
         };
@@ -150,18 +157,18 @@ public class CreateEventFragment extends Fragment {
         TimePickerDialog.OnTimeSetListener mStartTimeListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                mCalendar.set(Calendar.MINUTE, minute);
-                mStartTime.setText(mTimeFormat.format(mCalendar.getTime()));
+                mCalendarStart.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                mCalendarStart.set(Calendar.MINUTE, minute);
+                mStartTime.setText(mTimeFormat.format(mCalendarStart.getTime()));
             }
         };
 
         TimePickerDialog.OnTimeSetListener mEndTimeListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                mCalendar.set(Calendar.MINUTE, minute);
-                mEndTime.setText(mTimeFormat.format(mCalendar.getTime()));
+                mCalendarEnd.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                mCalendarEnd.set(Calendar.MINUTE, minute);
+                mEndTime.setText(mTimeFormat.format(mCalendarEnd.getTime()));
             }
         };
 

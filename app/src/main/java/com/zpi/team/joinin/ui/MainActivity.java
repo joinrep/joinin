@@ -126,9 +126,6 @@ public class MainActivity extends ActionBarActivity {
 
 
         if (fragment != null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putInt("menuPosition", position);
-//            fragment.setArguments(bundle);
             mCurrentPosition = position;
             Log.d("Bundle", Integer.toString(position));
             FragmentManager fragmentManager = getFragmentManager();

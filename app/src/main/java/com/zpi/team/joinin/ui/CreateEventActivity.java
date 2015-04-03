@@ -59,15 +59,12 @@ public class CreateEventActivity extends ActionBarActivity  {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
             Log.d("zapisz", "saved");
-//            CreateEventFragment f =  (CreateEventFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+            CreateEventFragment f =  (CreateEventFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
+            f.saveNewEvent();
             setResult(RESULT_OK);
             finish();
             return true;

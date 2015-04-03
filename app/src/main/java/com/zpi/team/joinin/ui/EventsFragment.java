@@ -85,7 +85,6 @@ public class EventsFragment extends Fragment {
                 Log.d("onresult", "result_ok");
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                Log.d("onresult", "result_cancled");
             }
         }
     }
