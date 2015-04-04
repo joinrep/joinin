@@ -63,10 +63,17 @@ public class CreateEventActivity extends ActionBarActivity  {
 
         if (id == R.id.action_save) {
             Log.d("zapisz", "saved");
-            CreateEventFragment f =  (CreateEventFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
-            f.saveNewEvent();
-            setResult(RESULT_OK);
-            finish();
+            CreateEventFragment form =  (CreateEventFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
+
+            if(form.isFilled()){
+                form.saveNewEvent();
+                setResult(RESULT_OK);
+                finish();
+            }
+            else{
+                form.highlightInputs();
+            }
+
             return true;
         }
 

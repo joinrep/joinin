@@ -51,7 +51,7 @@ public class CreateEventFragment extends Fragment {
         mTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) mCounter.setVisibility(View.VISIBLE);
+                if (hasFocus) mCounter.setVisibility(View.VISIBLE);
                 else mCounter.setVisibility(View.INVISIBLE);
             }
         });
@@ -60,11 +60,14 @@ public class CreateEventFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 mCounter.setText(s.length() + getResources().getString(R.string.max_title_length));
             }
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
 
         });
@@ -89,13 +92,12 @@ public class CreateEventFragment extends Fragment {
 
         mTimeFormat = new SimpleDateFormat("HH:mm");
         mStartTime.setText(mTimeFormat.format(mCalendarStart.getTime()));
-        int h = mCalendarEnd.get(Calendar.HOUR_OF_DAY)+1;
+        int h = mCalendarEnd.get(Calendar.HOUR_OF_DAY) + 1;
         mCalendarEnd.set(Calendar.HOUR_OF_DAY, h);
         mEndTime.setText(mTimeFormat.format(mCalendarEnd.getTime()));
 
         mDescription = (EditText) rootView.findViewById(R.id.description);
         mAddress = (EditText) rootView.findViewById(R.id.localization);
-
         /**TODO
          * pociagnac z sharedpreferences
          */
@@ -103,14 +105,38 @@ public class CreateEventFragment extends Fragment {
         categories.add(new Category(1, "Piłka", null));
         categories.add(new Category(2, "Pływanie", null));
         categories.add(new Category(3, "Bieganie", null));
-        mCategories = (Spinner)rootView.findViewById(R.id.categorySpinner);
+        mCategories = (Spinner) rootView.findViewById(R.id.categorySpinner);
 
         mCategories.setAdapter(new CategoryAdapter(getActivity(), R.layout.spinner, categories));
 
         return rootView;
     }
 
-    public void saveNewEvent(){
+    public boolean isFilled() {
+        return mTitle.getText().toString().trim().length() != 0 &&
+                !((Category) mCategories.getSelectedItem()).getName().contentEquals(getResources().getString(R.string.choose_category)) &&
+                mAddress.getText().toString().trim().length() != 0 &&
+                mDescription.getText().toString().trim().length() != 0;
+
+    }
+
+    public void highlightInputs(){
+        int color = getResources().getColor(R.color.colorAccent);
+        if(isEmpty(mTitle))
+            mTitle.setHintTextColor(color);
+        if(isEmpty(mAddress))
+            mAddress.setHintTextColor(color);
+        if(isEmpty(mDescription))
+            mDescription.setHintTextColor(color);
+
+        ((TextView)mCategories.getSelectedView()).setTextColor(color);
+    }
+
+    private boolean isEmpty(TextView input){
+        return input.getText().toString().trim().length() == 0;
+    }
+
+    public void saveNewEvent() {
         /**
          * TODO
          * prompty gdy niewypelnione pola!
@@ -121,10 +147,9 @@ public class CreateEventFragment extends Fragment {
 
         final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, 10, 10, false);
         newEvent.setLocation(new Address(0, "city", "street", "street", address));
-        newEvent.setOrganizer(new User("12","jan", "probny"));
+        newEvent.setOrganizer(new User("12", "jan", "probny"));
         newEvent.setCategory(new Category(1, "PIlka test", "paff"));
 
-        Log.d("zapisz", mCalendarStart.getTime().toString());
         new SaveNewEvent().execute(newEvent);
     }
 

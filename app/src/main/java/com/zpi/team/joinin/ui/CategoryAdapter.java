@@ -51,15 +51,6 @@ public class CategoryAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         notifyDataSetChanged();
         return getCustomView(position, convertView, parent);
-//        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View v = inflater.inflate(R.layout.spinner, null);
-//
-//        TextView category = (TextView) v.findViewById(R.id.categoryField);
-//
-//        category.setText(mCategories.get(position).getName());
-//
-//
-//        return category;
     }
 
     public View getCustomView(int position, View convertView, ViewGroup parent) {
