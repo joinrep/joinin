@@ -22,7 +22,7 @@
     !--Card -->
     <string name="join">Dołącz</string>
     !--New event-->
-    <string name="action_save">Zapisz</string>
+    <string name="action_save">Zapisz </string>
 
     <string name="enter_title">Wpisz tytuł</string>
     <string name="max_title_length">/15</string>
