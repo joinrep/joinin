@@ -11,6 +11,8 @@ public class Category {
     private String name;
     private String iconPath;
 
+    private boolean userFavorite = false;
+
     private List<User> subscribers;
     private List<Event> events;
 
@@ -58,5 +60,13 @@ public class Category {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public boolean isUserFavorite() {
+        return userFavorite;
+    }
+
+    public void setUserFavorite(boolean userFavorite) {
+        this.userFavorite = userFavorite;
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/categoriesImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dip"
+        android:src="@drawable/ic_bike"
+        android:tint="@color/colorPrimaryDark"
+        android:padding="8dp"/>
+
+    <TextView
+        android:id="@+id/categoriesText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:padding="15dip"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Piłka nożna"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/categoriesImage"/>
+
+    <ImageView
+        android:id="@+id/categoriesStar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:layout_marginRight="10dip"
+        android:src="@drawable/ic_star_outline"
+        android:tint="@color/colorPrimaryDark"
+        android:padding="12dp"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/categoriesText" />
+
+
+
+</RelativeLayout>
