@@ -37,7 +37,7 @@ import java.util.List;
 public class CreateEventFragment extends Fragment {
     private TextView mStartDate, mEndDate, mStartTime, mEndTime, mCounter;
     private EditText mTitle, mDescription, mAddress;
-    private Spinner mCategory;
+    private Spinner mCategories;
     private Calendar mCalendarStart, mCalendarEnd;
     private SimpleDateFormat mDateFormat, mTimeFormat;
 
@@ -90,8 +90,8 @@ public class CreateEventFragment extends Fragment {
         mTimeFormat = new SimpleDateFormat("HH:mm");
         mStartTime.setText(mTimeFormat.format(mCalendarStart.getTime()));
         int h = mCalendarEnd.get(Calendar.HOUR_OF_DAY)+1;
-        String time = "" + h  + ":" + new SimpleDateFormat("mm").format(mCalendarEnd.getTime());
-        mEndTime.setText(time);
+        mCalendarEnd.set(Calendar.HOUR_OF_DAY, h);
+        mEndTime.setText(mTimeFormat.format(mCalendarEnd.getTime()));
 
         mDescription = (EditText) rootView.findViewById(R.id.description);
         mAddress = (EditText) rootView.findViewById(R.id.localization);
@@ -103,8 +103,9 @@ public class CreateEventFragment extends Fragment {
         categories.add(new Category(1, "Piłka", null));
         categories.add(new Category(2, "Pływanie", null));
         categories.add(new Category(3, "Bieganie", null));
-        mCategory = (Spinner)rootView.findViewById(R.id.categorySpinner);
-        mCategory.setAdapter(new CategoryAdapter(getActivity(), R.layout.spinner, categories));
+        mCategories = (Spinner)rootView.findViewById(R.id.categorySpinner);
+
+        mCategories.setAdapter(new CategoryAdapter(getActivity(), R.layout.spinner, categories));
 
         return rootView;
     }
@@ -121,8 +122,9 @@ public class CreateEventFragment extends Fragment {
         final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, 10, 10, false);
         newEvent.setLocation(new Address(0, "city", "street", "street", address));
         newEvent.setOrganizer(new User("12","jan", "probny"));
-        newEvent.setCategory(new Category(0, "PIlka test", "paff"));
+        newEvent.setCategory(new Category(1, "PIlka test", "paff"));
 
+        Log.d("zapisz", mCalendarStart.getTime().toString());
         new SaveNewEvent().execute(newEvent);
     }
 

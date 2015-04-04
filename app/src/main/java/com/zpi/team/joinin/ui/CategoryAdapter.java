@@ -20,23 +20,46 @@ import java.util.List;
 public class CategoryAdapter extends ArrayAdapter {
     Context mContext;
     List<Category> mCategories;
-    boolean mChoosen = false;
-
+    boolean isFirst = true;
+    String firstElement;
     public CategoryAdapter(Context context, int layout, List<Category> categories) {
         super(context,layout);
         mContext = context;
         mCategories = categories;
+        setPromptText();
+
+    }
+
+    private void setPromptText(){
+        String prompt = mContext.getResources().getString(R.string.choose_category);
+        this.firstElement = mCategories.get(0).getName();
+        mCategories.get(0).setName(prompt);
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        // TODO AK wycentrowac nad zaznaczonym
+        if(isFirst) {
+            mCategories.get(0).setName(firstElement);
+            isFirst = false;
+        }
         return getCustomView(position, convertView, parent);
     }
 
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        notifyDataSetChanged();
         return getCustomView(position, convertView, parent);
+//        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View v = inflater.inflate(R.layout.spinner, null);
+//
+//        TextView category = (TextView) v.findViewById(R.id.categoryField);
+//
+//        category.setText(mCategories.get(position).getName());
+//
+//
+//        return category;
     }
 
     public View getCustomView(int position, View convertView, ViewGroup parent) {
@@ -44,14 +67,11 @@ public class CategoryAdapter extends ArrayAdapter {
         View v = inflater.inflate(R.layout.spinner, null);
 
         TextView category = (TextView) v.findViewById(R.id.categoryField);
-        if(position == 0 && !mChoosen) {
-            category.setText(mContext.getResources().getString(R.string.choose_category));
+        category.setText(mCategories.get(position).getName());
+
+        if(position == 0 && isFirst)
             category.setTextColor(mContext.getResources().getColor(R.color.black_54));
-        }
-        else{
-            category.setText(mCategories.get(position).getName());
-            mChoosen = true;
-        }
+
         return category;
     }
 
