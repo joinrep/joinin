@@ -30,4 +30,8 @@
     <string name="add_description">Dodaj opis</string>
     <string name="choose_category">Wybierz kategorię</string>
 
+    !--My events -->
+    <string name="upcoming">Nadchodzące</string>
+    <string name="past">Minione</string>
+
 </resources>

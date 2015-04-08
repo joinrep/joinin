@@ -96,13 +96,12 @@ public class EventsFragment extends Fragment {
 
         protected String doInBackground(String... args) {
             events = new EventRepository().getAll();
-            List<Category> c = new CategoryRepository().getAll();
             return "dumb";
 
         }
 
         protected void onPostExecute(String s) {
-            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity().getApplicationContext(), events);
+            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events);
             mEventsList.setAdapter(adapter);
         }
     }

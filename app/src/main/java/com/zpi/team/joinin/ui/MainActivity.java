@@ -116,12 +116,19 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         switch (position) {
             case 1:
+                setToolbarElevation(true);
                 fragment = new EventsFragment();
                 break;
             case 2:
+                setToolbarElevation(true);
                 fragment = new ParticipateEventsFragment();
                 break;
+            case 3:
+                setToolbarElevation(false);
+                fragment = new MyEventsFragment();
+                break;
             case 6:
+                setToolbarElevation(true);
                 fragment = new CategoriesFragment();
                 break;
             default:
@@ -141,6 +148,13 @@ public class MainActivity extends ActionBarActivity {
             syncToolbarTitleAndMenuItemCheckedState(position);
             mDrawerLayout.closeDrawer(mDrawerList);
         }
+    }
+
+    private void setToolbarElevation(boolean elevation){
+        if(elevation)
+            getSupportActionBar().setElevation(getResources().getDimension(R.dimen.toolbar_elevation));
+        else
+            getSupportActionBar().setElevation(0);
     }
 
     private void syncToolbarTitleAndMenuItemCheckedState(int position){

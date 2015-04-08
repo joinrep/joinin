@@ -22,6 +22,7 @@ public class CategoryAdapter extends ArrayAdapter {
     List<Category> mCategories;
     boolean isFirst = true;
     String firstElement;
+
     public CategoryAdapter(Context context, int layout, List<Category> categories) {
         super(context,layout);
         mContext = context;
@@ -45,7 +46,6 @@ public class CategoryAdapter extends ArrayAdapter {
         }
         return getCustomView(position, convertView, parent);
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

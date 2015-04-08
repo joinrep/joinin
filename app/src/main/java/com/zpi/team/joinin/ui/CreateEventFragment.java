@@ -62,14 +62,10 @@ public class CreateEventFragment extends Fragment {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
         mStartDate = (TextView) rootView.findViewById(R.id.start_date);
@@ -137,10 +133,6 @@ public class CreateEventFragment extends Fragment {
     }
 
     public void saveNewEvent() {
-        /**
-         * TODO
-         * prompty gdy niewypelnione pola!
-         */
         String title = mTitle.getText().toString();
         String description = mDescription.getText().toString();
         String address = mAddress.getText().toString();

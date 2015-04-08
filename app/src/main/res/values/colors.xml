@@ -9,6 +9,7 @@
     <item name="black_54" type="color">#8A000000</item>
     <item name="black_87" type="color">#DE000000</item>
     <item name="white_100" type="color">#ffffff</item>
+    <item name="tab_text" type="color">#ffffff</item>
 
     <!--Palette-->
     <array name="imageBackgroundColors">
