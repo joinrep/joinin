@@ -2,19 +2,30 @@ package com.zpi.team.joinin.ui;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
@@ -31,6 +42,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+             getWindow().setEnterTransition(new Explode());
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -63,6 +76,7 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList.setAdapter(adapter);
 
         View header = View.inflate(this, R.layout.navdrawer_header, null);
+        inflateWithPersonData(header);
         mDrawerList.addHeaderView(header, null, false);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -79,9 +93,27 @@ public class MainActivity extends ActionBarActivity {
         if(savedInstanceState != null)
             mCurrentPosition = savedInstanceState.getInt("menuPosition", 1);
 
-//        selectMenuItem(1); // na start uruchamia pierwszy element menu. kiepski sposob
         syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
         Log.d("onCreate", (String)mToolbar.getTitle());
+    }
+
+    private void inflateWithPersonData(View header) {
+        ImageView personPhoto = (ImageView) header.findViewById(R.id.photo);
+        TextView personName = (TextView)header.findViewById(R.id.name);
+        TextView personMail = (TextView)header.findViewById(R.id.mail);
+
+        Intent personData = getIntent();
+        String id = personData.getStringExtra("id");
+        String personPhotoUrl = personData.getStringExtra("photo");
+        String name = personData.getStringExtra("name");
+        String mail = personData.getStringExtra("mail");
+
+        personPhotoUrl = personPhotoUrl.substring(0, personPhotoUrl.length() - 2)
+                + 400;
+        new LoadProfileImage(personPhoto).execute(personPhotoUrl);
+
+        personName.setText(name);
+        personMail.setText(mail);
     }
 
     @Override
@@ -180,5 +212,34 @@ public class MainActivity extends ActionBarActivity {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public LoadProfileImage(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+
+            return BitmapDecoder.decodeSampledBitmapFromUrl(urldisplay, 160, 160);
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(getResources(), result);
+            rounded.setCornerRadius(270f);
+            rounded.setAntiAlias(true);
+            bmImage.setImageDrawable(rounded);
+        }
     }
 }
