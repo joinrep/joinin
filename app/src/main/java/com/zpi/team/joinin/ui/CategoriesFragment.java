@@ -9,12 +9,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,9 +45,10 @@ public class CategoriesFragment extends Fragment {
     }
 
     private List<Category> getCategories() {
-        List<Category> result = new ArrayList<Category>();
+        /*List<Category> result = new ArrayList<Category>();
         result.add(new Category(1,"Piłka nożna", "ic_bike"));
         result.add(new Category(2,"Koszykówka", "ic_place"));
-        return result;
+        return result;*/
+        return SessionStorage.getInstance().getCategories();
     }
 }

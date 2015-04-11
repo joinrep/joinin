@@ -4,10 +4,10 @@ require_once(dirname(__FILE__).'/db_connect.php');
 $db = new DB_CONNECT();
 mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
-$query = "SELECT * FROM Event E LEFT JOIN Category C ON E.category = C.category_name WHERE E.canceled = 'N'";
+$query = "SELECT * FROM Event E JOIN Category C ON E.category = C.category_id WHERE E.canceled = 'N'";
 if (isset($_GET['canceled'])) {
 	if ($_GET['canceled'] === 'Y') {
-		$query = "SELECT * FROM Event E LEFT JOIN Category C ON E.category = C.category_name";
+		$query = "SELECT * FROM Event E JOIN Category C ON E.category = C.category_id";
 	}
 }
 

@@ -2,6 +2,8 @@ package com.zpi.team.joinin.ui;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -14,8 +16,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
+import com.zpi.team.joinin.entities.Category;
+import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.repository.CategoryRepository;
+import com.zpi.team.joinin.repository.EventRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -25,11 +33,19 @@ public class MainActivity extends ActionBarActivity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private ArrayList<NavDrawerItem> mNavDrawerItems;
+    private NavDrawerAdapter mNavDrawerAdapter;
 
     private int mCurrentPosition;
+
+    private static Context context;
+    public static Context getAppContext() {
+        return MainActivity.context;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainActivity.context = getApplicationContext();
         setContentView(R.layout.activity_main);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -59,8 +75,8 @@ public class MainActivity extends ActionBarActivity {
         prepareNavDrawerItems();
 
         mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
-        NavDrawerAdapter adapter = new NavDrawerAdapter(this, mNavDrawerItems);
-        mDrawerList.setAdapter(adapter);
+        mNavDrawerAdapter = new NavDrawerAdapter(this, mNavDrawerItems);
+        mDrawerList.setAdapter(mNavDrawerAdapter);
 
         View header = View.inflate(this, R.layout.navdrawer_header, null);
         mDrawerList.addHeaderView(header, null, false);
@@ -82,6 +98,9 @@ public class MainActivity extends ActionBarActivity {
 //        selectMenuItem(1); // na start uruchamia pierwszy element menu. kiepski sposob
         syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
         Log.d("onCreate", (String)mToolbar.getTitle());
+
+        new Initialize().execute();
+
     }
 
     @Override
@@ -97,12 +116,25 @@ public class MainActivity extends ActionBarActivity {
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_my_events,R.string.navdrawer_myevents));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.NO_ICON,R.string.navdrawer_subheader_favorites,NavDrawerItem.TYPE_SUBHEADER));
-        // TODO change icon of Przeglądaj ketegorie
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_plus_circle,R.string.add_favorite_category));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_bike,R.string.category_event_bike));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_settings,R.string.navdrawer_settings));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_help,R.string.navdrawer_help));
+    }
+
+    public void updateNavDrawerItems() {
+        int iter = 0;
+        while (!mNavDrawerItems.get(iter++).getTitle().equals(getResources().getString(R.string.add_favorite_category)));
+        while (mNavDrawerItems.get(iter).getType() != NavDrawerItem.TYPE_SEPARATOR) {
+            mNavDrawerItems.remove(iter);
+        }
+        for (Category category : SessionStorage.getInstance().getCategories()) {
+            if (category.isUserFavorite()) {
+                mNavDrawerItems.add(iter++, new NavDrawerItem(R.drawable.ic_bike, category.getName()));
+            }
+        }
+        mNavDrawerAdapter.notifyDataSetChanged();
+        mDrawerList.setAdapter(mNavDrawerAdapter);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -159,7 +191,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void syncToolbarTitleAndMenuItemCheckedState(int position){
         mDrawerList.setItemChecked(position, true);
-        CharSequence title = getResources().getString(mNavDrawerItems.get(--position).getTitle()); //listener is 1-based
+        CharSequence title = mNavDrawerItems.get(--position).getTitle(); //listener is 1-based
         setTitle(title);
     }
 
@@ -180,5 +212,21 @@ public class MainActivity extends ActionBarActivity {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    // Initialization
+    private class Initialize extends AsyncTask<String, String, String> {
+        SessionStorage storage = SessionStorage.getInstance();
+        List<Category> categories;
+
+        protected String doInBackground(String... args) {
+            categories = new CategoryRepository().getAll();
+            return "dumb";
+        }
+
+        protected void onPostExecute(String s) {
+            storage.setCategories(categories);
+            updateNavDrawerItems();
+        }
     }
 }

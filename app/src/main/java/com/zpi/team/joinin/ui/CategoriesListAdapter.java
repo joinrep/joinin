@@ -64,10 +64,17 @@ public class CategoriesListAdapter extends BaseAdapter {
         holder.categoryIcon.setImageResource(iconId);
 
         final ImageView categoryStar = holder.categoryStar;
+        if (category.isUserFavorite()) {
+            categoryStar.setImageResource(R.drawable.ic_star);
+        } else {
+            categoryStar.setImageResource(R.drawable.ic_star_outline);
+        }
+
         holder.categoryStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO MK add to user favorite
+
                 if (category.isUserFavorite()) {
                     category.setUserFavorite(false);
                     categoryStar.setImageResource(R.drawable.ic_star_outline);
@@ -75,6 +82,7 @@ public class CategoriesListAdapter extends BaseAdapter {
                     category.setUserFavorite(true);
                     categoryStar.setImageResource(R.drawable.ic_star);
                 }
+                ((MainActivity) mContext).updateNavDrawerItems();
 
             }
         });

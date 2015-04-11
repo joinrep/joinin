@@ -1,5 +1,10 @@
 package com.zpi.team.joinin.ui;
 
+import android.content.Context;
+import android.content.res.Resources;
+
+import com.zpi.team.joinin.R;
+
 /**
  * Created by Arkadiusz on 2015-03-08.
  */
@@ -11,6 +16,7 @@ public class NavDrawerItem {
     public static final int NO_ICON= -3;
 
     private int mTitle;
+    private String mPlainTitle;
     private int mIcon;
     private int mType;
 
@@ -18,9 +24,20 @@ public class NavDrawerItem {
         mIcon = icon;
         mTitle = title;
         mType = type;
+        mPlainTitle = null;
+    }
+
+    public NavDrawerItem(int icon, String title, int type){
+        mIcon = icon;
+        mTitle = 0;
+        mType = type;
+        mPlainTitle = title;
     }
 
     public NavDrawerItem(int icon, int title){
+        this(icon, title, TYPE_ITEM);
+    }
+    public NavDrawerItem(int icon, String title){
         this(icon, title, TYPE_ITEM);
     }
 
@@ -30,11 +47,18 @@ public class NavDrawerItem {
         mIcon =  -1;
         mTitle = -1;
         mType = type;
+        mPlainTitle = "";
     }
 
     public int getType() {return mType;}
 
     public int getIcon() {return mIcon;}
 
-    public int getTitle() {return mTitle;}
+    public String getTitle() {
+        if (mPlainTitle == null) {
+            return MainActivity.getAppContext().getResources().getString(mTitle);
+        } else {
+            return mPlainTitle;
+        }
+    }
 }
