@@ -38,12 +38,13 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<NavDrawerItem> mNavDrawerItems;
 
     private int mCurrentPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-             getWindow().setEnterTransition(new Explode());
+            getWindow().setEnterTransition(new Explode());
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -90,30 +91,34 @@ public class MainActivity extends ActionBarActivity {
         }
 
         mCurrentPosition = 1;
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
             mCurrentPosition = savedInstanceState.getInt("menuPosition", 1);
 
         syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
-        Log.d("onCreate", (String)mToolbar.getTitle());
+        Log.d("onCreate", (String) mToolbar.getTitle());
     }
 
     private void inflateWithPersonData(View header) {
         ImageView personPhoto = (ImageView) header.findViewById(R.id.photo);
-        TextView personName = (TextView)header.findViewById(R.id.name);
-        TextView personMail = (TextView)header.findViewById(R.id.mail);
+        TextView personName = (TextView) header.findViewById(R.id.name);
+        TextView personMail = (TextView) header.findViewById(R.id.mail);
 
         Intent personData = getIntent();
-        String id = personData.getStringExtra("id");
-        String personPhotoUrl = personData.getStringExtra("photo");
-        String name = personData.getStringExtra("name");
-        String mail = personData.getStringExtra("mail");
+        //TODO przy pierwszym logowaniu zapisac lokalnie
+        if (personData.getExtras() != null) {
 
-        personPhotoUrl = personPhotoUrl.substring(0, personPhotoUrl.length() - 2)
-                + 400;
-        new LoadProfileImage(personPhoto).execute(personPhotoUrl);
+            String id = personData.getStringExtra("id");
+            String personPhotoUrl = personData.getStringExtra("photo");
+            String name = personData.getStringExtra("name");
+            String mail = personData.getStringExtra("mail");
 
-        personName.setText(name);
-        personMail.setText(mail);
+            personPhotoUrl = personPhotoUrl.substring(0, personPhotoUrl.length() - 2)
+                    + 400;
+            new LoadProfileImage(personPhoto).execute(personPhotoUrl);
+
+            personName.setText(name);
+            personMail.setText(mail);
+        }
     }
 
     @Override
@@ -123,18 +128,18 @@ public class MainActivity extends ActionBarActivity {
         Log.d("onsave", Integer.toString(mCurrentPosition));
     }
 
-    private void prepareNavDrawerItems(){
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_events,R.string.navdrawer_events));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_participate_events,R.string.navdrawer_participate));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_my_events,R.string.navdrawer_myevents));
+    private void prepareNavDrawerItems() {
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_events, R.string.navdrawer_events));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_participate_events, R.string.navdrawer_participate));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_my_events, R.string.navdrawer_myevents));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
-        mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.NO_ICON,R.string.navdrawer_subheader_favorites,NavDrawerItem.TYPE_SUBHEADER));
+        mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.NO_ICON, R.string.navdrawer_subheader_favorites, NavDrawerItem.TYPE_SUBHEADER));
         // TODO change icon of Przeglądaj ketegorie
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_plus_circle,R.string.add_favorite_category));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_bike,R.string.category_event_bike));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_plus_circle, R.string.add_favorite_category));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_bike, R.string.category_event_bike));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_settings,R.string.navdrawer_settings));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_help,R.string.navdrawer_help));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_settings, R.string.navdrawer_settings));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_help, R.string.navdrawer_help));
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -168,7 +173,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
-
         if (fragment != null) {
             mCurrentPosition = position;
             Log.d("Bundle", Integer.toString(position));
@@ -182,14 +186,14 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void setToolbarElevation(boolean elevation){
-        if(elevation)
+    private void setToolbarElevation(boolean elevation) {
+        if (elevation)
             getSupportActionBar().setElevation(getResources().getDimension(R.dimen.toolbar_elevation));
         else
             getSupportActionBar().setElevation(0);
     }
 
-    private void syncToolbarTitleAndMenuItemCheckedState(int position){
+    private void syncToolbarTitleAndMenuItemCheckedState(int position) {
         mDrawerList.setItemChecked(position, true);
         CharSequence title = getResources().getString(mNavDrawerItems.get(--position).getTitle()); //listener is 1-based
         setTitle(title);

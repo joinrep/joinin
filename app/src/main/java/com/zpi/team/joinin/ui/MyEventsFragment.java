@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.signin.InternetConnection;
 
 import java.util.List;
 
@@ -33,11 +35,18 @@ public class MyEventsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        new LoadUpcomingEvents().execute();
 
-        mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
-        mSlidingTabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.colorAccent));
+        //TODO wczytac przy pierwszym logowaniu i zapisac do lokalnej
+        if(InternetConnection.isAvailable(getActivity())) {
+            new LoadUpcomingEvents().execute();
+            mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
+            mSlidingTabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.colorAccent));
+        }
+        else
+            Toast.makeText(getActivity(), "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
+
+
     }
 
     private class LoadUpcomingEvents extends AsyncTask<Void, Void, List<Event>> {

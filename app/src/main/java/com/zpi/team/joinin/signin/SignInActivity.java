@@ -6,14 +6,12 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -49,6 +47,8 @@ public class SignInActivity extends Activity implements
     private boolean mIsInResolution;
 
     private Intent launchApp;
+
+    // TODO signout
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,19 +57,26 @@ public class SignInActivity extends Activity implements
         }
         setContentView(R.layout.activity_signin);
 
+        /**TODO
+         * po pierwszym logowaniu pokazywac tylko progress bar/
+         *   => zmiana lanuchera w manifescie
+         * */
         launchApp = new Intent(SignInActivity.this, MainActivity.class);
-
-        ImageView bg = (ImageView)findViewById(R.id.sign_in_background);
+        ImageView bg = (ImageView) findViewById(R.id.sign_in_background);
         bg.setImageBitmap(BitmapDecoder.decodeSampledBitmapFromResource(getResources(), R.drawable.signin_background, 300, 500));
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.sign_in_button && mGoogleApiClient.isConnected()) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                            startActivity(launchApp,  ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-                        else
-                            startActivity(launchApp);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
+//                        finish();
+                    }
+                    else {
+                        startActivity(launchApp);
+//                        finish();
+                    }
 
                 }
             }
@@ -80,10 +87,14 @@ public class SignInActivity extends Activity implements
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.skip) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        startActivity(launchApp,  ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-                    else
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
+//                        finish();
+                    }
+                    else {
                         startActivity(launchApp);
+//                        finish();
+                    }
 
                 }
             }
@@ -98,12 +109,14 @@ public class SignInActivity extends Activity implements
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN)
-                            // Optionally, add additional APIs and scopes if required.
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
         }
-        mGoogleApiClient.connect();
+        if (InternetConnection.isAvailable(this))
+            mGoogleApiClient.connect();
+        else
+            Toast.makeText(this, "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -120,9 +133,6 @@ public class SignInActivity extends Activity implements
         outState.putBoolean(KEY_IN_RESOLUTION, mIsInResolution);
     }
 
-    /**
-     * Handles Google Play Services resolution callbacks.
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -140,9 +150,6 @@ public class SignInActivity extends Activity implements
         }
     }
 
-    /**
-     * Called when {@code mGoogleApiClient} is connected.
-     */
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "GoogleApiClient connected");
@@ -153,7 +160,7 @@ public class SignInActivity extends Activity implements
             String personId = currentPerson.getId();
             String personMail = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
-            launchApp.putExtra(PERSON_ID,personId);
+            launchApp.putExtra(PERSON_ID, personId);
             launchApp.putExtra(PERSON_NAME, personName);
             launchApp.putExtra(PERSON_PHOTO_URL, personPhotoUrl);
             launchApp.putExtra(PERSON_MAIL, personMail);
@@ -161,25 +168,16 @@ public class SignInActivity extends Activity implements
 
     }
 
-    /**
-     * Called when {@code mGoogleApiClient} connection is suspended.
-     */
     @Override
     public void onConnectionSuspended(int cause) {
         Log.i(TAG, "GoogleApiClient connection suspended");
         retryConnecting();
     }
 
-    /**
-     * Called when {@code mGoogleApiClient} is trying to connect but failed.
-     * Handle {@code result.getResolution()} if there is a resolution
-     * available.
-     */
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.i(TAG, "GoogleApiClient connection failed: " + result.toString());
         if (!result.hasResolution()) {
-            // Show a localized error dialog.
             GooglePlayServicesUtil.getErrorDialog(
                     result.getErrorCode(), this, 0, new OnCancelListener() {
                         @Override
@@ -189,9 +187,7 @@ public class SignInActivity extends Activity implements
                     }).show();
             return;
         }
-        // If there is an existing resolution error being displayed or a resolution
-        // activity has started before, do nothing and wait for resolution
-        // progress to be completed.
+
         if (mIsInResolution) {
             return;
         }
@@ -203,6 +199,4 @@ public class SignInActivity extends Activity implements
             retryConnecting();
         }
     }
-
-
 }
