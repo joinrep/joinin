@@ -16,12 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
-import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
-import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.signin.InternetConnection;
+
 import java.util.List;
 
 /**
@@ -71,7 +72,10 @@ public class EventsFragment extends Fragment {
             }
         });
 
-        new LoadAllEvents().execute();
+        if(InternetConnection.isAvailable(getActivity()))
+            new LoadAllEvents().execute();
+        else
+            Toast.makeText(getActivity(), "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
 
         return view;
     }
