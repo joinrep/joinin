@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.common;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

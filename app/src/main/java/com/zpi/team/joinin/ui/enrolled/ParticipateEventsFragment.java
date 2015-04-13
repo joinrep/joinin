@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.enrolled;
 
 import android.app.Fragment;
 import android.os.Bundle;

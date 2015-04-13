@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.main;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -27,9 +27,13 @@ import android.widget.TextView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
-import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.CategoryRepository;
-import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.ui.categories.CategoriesFragment;
+import com.zpi.team.joinin.ui.common.BitmapDecoder;
+import com.zpi.team.joinin.ui.enrolled.ParticipateEventsFragment;
+import com.zpi.team.joinin.ui.myevents.MyEventsFragment;
+import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
+import com.zpi.team.joinin.ui.nav.NavDrawerItem;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -147,15 +151,15 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void prepareNavDrawerItems() {
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_events, R.string.navdrawer_events));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_participate_events, R.string.navdrawer_participate));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_my_events, R.string.navdrawer_myevents));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_events, R.string.navdrawer_events));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_participate_events, R.string.navdrawer_participate));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_my_events, R.string.navdrawer_myevents));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.NO_ICON,R.string.navdrawer_subheader_favorites,NavDrawerItem.TYPE_SUBHEADER));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_plus_circle,R.string.add_favorite_category));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_plus_circle,R.string.add_favorite_category));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_settings, R.string.navdrawer_settings));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_help, R.string.navdrawer_help));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_settings, R.string.navdrawer_settings));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_help, R.string.navdrawer_help));
     }
 
     public void updateNavDrawerItems() {
@@ -166,7 +170,7 @@ public class MainActivity extends ActionBarActivity {
         }
         for (Category category : SessionStorage.getInstance().getCategories()) {
             if (category.isUserFavorite()) {
-                mNavDrawerItems.add(iter++, new NavDrawerItem(R.drawable.ic_bike, category.getName()));
+                mNavDrawerItems.add(iter++, new NavDrawerItem(R.drawable.ic_category_bike, category.getName()));
             }
         }
         mNavDrawerAdapter.notifyDataSetChanged();

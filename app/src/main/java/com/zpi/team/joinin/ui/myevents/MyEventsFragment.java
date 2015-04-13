@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.myevents;
 
 import android.app.Fragment;
 import android.os.AsyncTask;
@@ -7,7 +7,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -19,7 +19,7 @@
             android:layout_height="170dp"
             android:background="@color/colorAccent"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_bike"
+            android:src="@drawable/ic_category_bike"
             android:tint="@color/white_100"
             android:padding="8dp"
             android:layout_alignParentEnd="false"

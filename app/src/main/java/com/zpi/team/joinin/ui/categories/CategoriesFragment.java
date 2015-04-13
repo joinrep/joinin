@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.categories;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -45,10 +45,6 @@ public class CategoriesFragment extends Fragment {
     }
 
     private List<Category> getCategories() {
-        /*List<Category> result = new ArrayList<Category>();
-        result.add(new Category(1,"Piłka nożna", "ic_bike"));
-        result.add(new Category(2,"Koszykówka", "ic_place"));
-        return result;*/
         return SessionStorage.getInstance().getCategories();
     }
 }

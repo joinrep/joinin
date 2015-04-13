@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.newevent;
 
 import android.content.Context;
 import android.view.LayoutInflater;

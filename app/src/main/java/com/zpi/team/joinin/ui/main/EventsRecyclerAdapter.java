@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.main;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -16,40 +16,39 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Arkadiusz on 2015-04-08.
+ * Created by Arkadiusz on 2015-03-15.
  */
-public class MyEventsRecyclerAdapter extends RecyclerView.Adapter<MyEventsRecyclerAdapter.ViewHolder> {
+public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
     private Context mContext;
 
-
-    public MyEventsRecyclerAdapter(Context context, List<Event> events) {
-        mEvents = events;
-        mContext = context;
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTitle;
-        public TextView mDeadline;
-        public TextView mParticipants;
+        public TextView mAddress;
+        public TextView mTime;
         public TextView mDate;
         public ImageView mImage;
 
         public ViewHolder(View v) {
             super(v);
             mTitle = (TextView)v.findViewById(R.id.eventName);
-            mDeadline = (TextView)v.findViewById(R.id.eventDeadline);
-            mParticipants = (TextView)v.findViewById(R.id.eventParticipants);
+            mAddress = (TextView)v.findViewById(R.id.eventAddress);
+            mTime = (TextView)v.findViewById(R.id.eventTime);
             mDate = (TextView)v.findViewById(R.id.eventDate);
             mImage = (ImageView)v.findViewById(R.id.eventImage);
         }
     }
 
+    public EventsRecyclerAdapter(Context context, List<Event> events) {
+        mEvents = events;
+        mContext = context;
+    }
+
     @Override
-    public MyEventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public EventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.myevents_list_item, parent, false);
+                .inflate(R.layout.events_list_item, parent, false);
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
@@ -62,6 +61,14 @@ public class MyEventsRecyclerAdapter extends RecyclerView.Adapter<MyEventsRecycl
         holder.mImage.setBackgroundColor(colors[new Random().nextInt(colors.length)]);
 
         holder.mTitle.setText(event.getName());
+//        holder.mAddress.setText(event.getLocation().getLocationName());
+
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        String start = format.format(event.getStartTime().getTime());
+        String end = format.format(event.getEndTime().getTime());
+        holder.mTime.setText(start + "-" + end);
+
+
 
     }
 

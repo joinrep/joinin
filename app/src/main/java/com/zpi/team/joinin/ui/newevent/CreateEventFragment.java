@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.newevent;
 
 
 import android.app.DatePickerDialog;
@@ -27,6 +27,7 @@ import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.ui.newevent.CategoryAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

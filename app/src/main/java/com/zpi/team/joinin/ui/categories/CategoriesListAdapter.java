@@ -1,8 +1,6 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.categories;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +10,7 @@ import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Category;
+import com.zpi.team.joinin.ui.main.MainActivity;
 
 import java.util.List;
 
@@ -65,9 +64,9 @@ public class CategoriesListAdapter extends BaseAdapter {
 
         final ImageView categoryStar = holder.categoryStar;
         if (category.isUserFavorite()) {
-            categoryStar.setImageResource(R.drawable.ic_star);
+            categoryStar.setImageResource(R.drawable.ic_category_star);
         } else {
-            categoryStar.setImageResource(R.drawable.ic_star_outline);
+            categoryStar.setImageResource(R.drawable.ic_category_star_outline);
         }
 
         holder.categoryStar.setOnClickListener(new View.OnClickListener() {
@@ -77,10 +76,10 @@ public class CategoriesListAdapter extends BaseAdapter {
 
                 if (category.isUserFavorite()) {
                     category.setUserFavorite(false);
-                    categoryStar.setImageResource(R.drawable.ic_star_outline);
+                    categoryStar.setImageResource(R.drawable.ic_category_star_outline);
                 } else {
                     category.setUserFavorite(true);
-                    categoryStar.setImageResource(R.drawable.ic_star);
+                    categoryStar.setImageResource(R.drawable.ic_category_star);
                 }
                 ((MainActivity) mContext).updateNavDrawerItems();
 

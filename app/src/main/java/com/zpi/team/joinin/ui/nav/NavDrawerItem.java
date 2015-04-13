@@ -1,9 +1,6 @@
-package com.zpi.team.joinin.ui;
+package com.zpi.team.joinin.ui.nav;
 
-import android.content.Context;
-import android.content.res.Resources;
-
-import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.ui.main.MainActivity;
 
 /**
  * Created by Arkadiusz on 2015-03-08.

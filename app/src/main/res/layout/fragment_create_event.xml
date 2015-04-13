@@ -44,7 +44,7 @@
 
             <ImageView
                 style="@style/FormIcon"
-                android:src="@drawable/ic_time"
+                android:src="@drawable/ic_form_time"
                 android:baselineAlignBottom="false"
                 android:layout_marginTop="12dp"
                 android:layout_gravity="top" />
@@ -96,7 +96,7 @@
 
             <ImageView
                 style="@style/FormIcon"
-                android:src="@drawable/ic_category"
+                android:src="@drawable/ic_form_category"
                 android:layout_marginTop="12dp"
                 android:layout_gravity="top" />
 
@@ -123,7 +123,7 @@
 
             <ImageView
                 style="@style/FormIcon"
-                android:src="@drawable/ic_place"
+                android:src="@drawable/ic_form_place"
                 android:layout_marginTop="12dp"
                 android:layout_gravity="top" />
 
@@ -147,7 +147,7 @@
 
             <ImageView
                 style="@style/FormIcon"
-                android:src="@drawable/ic_description"
+                android:src="@drawable/ic_form_description"
                 android:layout_gravity="top"
                 android:layout_marginTop="12dp" />
 

@@ -19,8 +19,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.zpi.team.joinin.R;
-import com.zpi.team.joinin.ui.BitmapDecoder;
-import com.zpi.team.joinin.ui.MainActivity;
+import com.zpi.team.joinin.ui.common.BitmapDecoder;
+import com.zpi.team.joinin.ui.main.MainActivity;
 
 public class SignInActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
