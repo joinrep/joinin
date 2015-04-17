@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Address;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
@@ -33,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 
 public class CreateEventFragment extends Fragment {
     private TextView mStartDate, mEndDate, mStartTime, mEndTime, mCounter;
@@ -64,7 +64,6 @@ public class CreateEventFragment extends Fragment {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
@@ -95,16 +94,9 @@ public class CreateEventFragment extends Fragment {
 
         mDescription = (EditText) rootView.findViewById(R.id.description);
         mAddress = (EditText) rootView.findViewById(R.id.localization);
-        /**TODO
-         * pociagnac z sharedpreferences
-         */
-        List<Category> categories = new ArrayList<Category>();
-        categories.add(new Category(1, "Piłka", null));
-        categories.add(new Category(2, "Pływanie", null));
-        categories.add(new Category(3, "Bieganie", null));
-        mCategories = (Spinner) rootView.findViewById(R.id.categorySpinner);
 
-        mCategories.setAdapter(new CategoryAdapter(getActivity(), R.layout.spinner, categories));
+        mCategories = (Spinner) rootView.findViewById(R.id.categorySpinner);
+        mCategories.setAdapter(new CategoryAdapter(getActivity(), R.layout.spinner, SessionStorage.getInstance().getCategories()));
 
         return rootView;
     }
@@ -114,7 +106,6 @@ public class CreateEventFragment extends Fragment {
                 !((Category) mCategories.getSelectedItem()).getName().contentEquals(getResources().getString(R.string.choose_category)) &&
                 mAddress.getText().toString().trim().length() != 0 &&
                 mDescription.getText().toString().trim().length() != 0;
-
     }
 
     public void highlightInputs(){
@@ -150,7 +141,6 @@ public class CreateEventFragment extends Fragment {
 
         protected Void doInBackground(Event... event) {
             new EventRepository().create(event[0]);
-            Log.d("Saving new event:", "success");
             return null;
         }
     }

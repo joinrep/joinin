@@ -113,11 +113,7 @@ public class MainActivity extends ActionBarActivity {
             mCurrentPosition = savedInstanceState.getInt("menuPosition", 1);
 
         syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
-
-        Log.d("onCreate", (String)mToolbar.getTitle());
-
         new Initialize().execute();
-
     }
 
     private void inflateWithPersonData(View header) {
@@ -175,6 +171,7 @@ public class MainActivity extends ActionBarActivity {
         }
         mNavDrawerAdapter.notifyDataSetChanged();
         mDrawerList.setAdapter(mNavDrawerAdapter);
+        syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
