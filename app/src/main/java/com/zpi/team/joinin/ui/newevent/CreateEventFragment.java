@@ -1,23 +1,27 @@
 package com.zpi.team.joinin.ui.newevent;
 
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -37,10 +41,11 @@ import java.util.List;
 
 public class CreateEventFragment extends Fragment {
     private TextView mStartDate, mEndDate, mStartTime, mEndTime, mCounter;
-    private EditText mTitle, mDescription, mAddress;
+    private EditText mTitle, mDescription, mAddress, mLimit, mPay;
     private Spinner mCategories;
     private Calendar mCalendarStart, mCalendarEnd;
     private SimpleDateFormat mDateFormat, mTimeFormat;
+    private Switch mLimitSwitch, mPaySwitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,9 +68,12 @@ public class CreateEventFragment extends Fragment {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
         });
 
         mStartDate = (TextView) rootView.findViewById(R.id.start_date);
@@ -92,14 +100,24 @@ public class CreateEventFragment extends Fragment {
         mCalendarEnd.set(Calendar.HOUR_OF_DAY, h);
         mEndTime.setText(mTimeFormat.format(mCalendarEnd.getTime()));
 
-        mDescription = (EditText) rootView.findViewById(R.id.description);
-        mAddress = (EditText) rootView.findViewById(R.id.localization);
-
         mCategories = (Spinner) rootView.findViewById(R.id.categorySpinner);
         mCategories.setAdapter(new CategoryAdapter(getActivity(), R.layout.spinner, SessionStorage.getInstance().getCategories()));
 
+        mDescription = (EditText) rootView.findViewById(R.id.description);
+        mAddress = (EditText) rootView.findViewById(R.id.localization);
+        mLimit = (EditText) rootView.findViewById(R.id.limit);
+        mPay = (EditText) rootView.findViewById(R.id.pay);
+        mPaySwitch = (Switch) rootView.findViewById(R.id.pay_switch);
+        mLimitSwitch = (Switch) rootView.findViewById(R.id.limit_switch);
+
+        mPay.setOnFocusChangeListener(mEditTextFocusChangedListener);
+        mLimit.setOnFocusChangeListener(mEditTextFocusChangedListener);
+        mPaySwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
+        mLimitSwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
+
         return rootView;
     }
+
 
     public boolean isFilled() {
         return mTitle.getText().toString().trim().length() != 0 &&
@@ -108,21 +126,118 @@ public class CreateEventFragment extends Fragment {
                 mDescription.getText().toString().trim().length() != 0;
     }
 
-    public void highlightInputs(){
+    public void highlightInputs() {
         int color = getResources().getColor(R.color.colorAccent);
-        if(isEmpty(mTitle))
+        if (isEmpty(mTitle))
             mTitle.setHintTextColor(color);
-        if(isEmpty(mAddress))
+        if (isEmpty(mAddress))
             mAddress.setHintTextColor(color);
-        if(isEmpty(mDescription))
+        if (isEmpty(mDescription))
             mDescription.setHintTextColor(color);
 
-        ((TextView)mCategories.getSelectedView()).setTextColor(color);
+        ((TextView) mCategories.getSelectedView()).setTextColor(color);
     }
 
-    private boolean isEmpty(TextView input){
+    private boolean isEmpty(TextView input) {
         return input.getText().toString().trim().length() == 0;
     }
+
+    View.OnFocusChangeListener mEditTextFocusChangedListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            EditText editText = (EditText) v;
+            int id = editText.getId();
+            Switch theSwitch;
+            String defaultText;
+
+            if (id == R.id.limit) {
+                theSwitch = mLimitSwitch;
+                defaultText = getResources().getString(R.string.limit);
+
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            } else {
+                theSwitch = mPaySwitch;
+                defaultText = getResources().getString(R.string.pay);
+
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+
+
+            if (!hasFocus) {
+                if (isEmpty(editText))
+                    theSwitch.setChecked(false);
+                else
+                    addPostscript(editText);
+            } else {
+                String text = editText.getText().toString();
+                if (!text.contentEquals(defaultText)) {
+                    String number = (String) text.subSequence(0, text.indexOf(" "));
+                    editText.setText(number);
+                } else
+                    editText.setText(null);
+
+            }
+
+        }
+
+        private boolean isEmpty(EditText et) {
+            return et.getText().toString().isEmpty();
+        }
+
+        private void addPostscript(EditText et) {
+            et.setInputType(InputType.TYPE_CLASS_TEXT);
+            String postscript;
+            String value;
+            if (et.getId() == R.id.limit) {
+                int number = Integer.parseInt(et.getText().toString());
+                value = String.valueOf(number);
+                if (number == 1)
+                    postscript = " " + getString(R.string.ppl1);
+                else if (number < 4)
+                    postscript = " " + getString(R.string.ppl2);
+                else
+                    postscript = " " + getString(R.string.ppl3);
+            } else {
+                value = et.getText().toString();
+                postscript = " " + getString(R.string.currency);
+            }
+            et.setText(value + postscript);
+        }
+    };
+
+    CompoundButton.OnCheckedChangeListener mSwitchCheckedListner = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (buttonView.getId() == R.id.pay_switch)
+                if (isChecked) focusOn(mPay);
+                else disableEditText(mPay);
+            else if (buttonView.getId() == R.id.limit_switch)
+                if (isChecked) focusOn(mLimit);
+                else disableEditText(mLimit);
+        }
+
+        private void focusOn(EditText editText) {
+            editText.setFocusable(true);
+            editText.setFocusableInTouchMode(true);
+            editText.requestFocus();
+            editText.setText(null);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+        }
+
+        private void disableEditText(EditText editText) {
+            editText.setFocusable(false);
+            editText.setFocusableInTouchMode(false);
+            editText.clearFocus();
+            if (editText.getId() == R.id.pay)
+                editText.setText(getResources().getString(R.string.pay));
+            else if (editText.getId() == R.id.limit)
+                editText.setText(getResources().getString(R.string.limit));
+
+//            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+        }
+    };
 
     public void saveNewEvent() {
         String title = mTitle.getText().toString();
