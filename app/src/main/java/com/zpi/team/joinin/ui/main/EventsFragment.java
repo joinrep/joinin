@@ -4,6 +4,7 @@ package com.zpi.team.joinin.ui.main;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Outline;
 import android.os.AsyncTask;
@@ -36,12 +37,12 @@ public class EventsFragment extends Fragment {
 
     private RecyclerView.LayoutManager mLayoutManager;
 
-//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            view = inflater.inflate(R.layout.fragment_events, container, false);
+        view = inflater.inflate(R.layout.fragment_events, container, false);
 //        } else {
 //            view = super.onCreateView(inflater, container, savedInstanceState);
 //        }
@@ -73,7 +74,7 @@ public class EventsFragment extends Fragment {
             }
         });
 
-        if(InternetConnection.isAvailable(getActivity()))
+        if (InternetConnection.isAvailable(getActivity()))
             new LoadAllEvents().execute();
         else
             Toast.makeText(getActivity(), "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
@@ -82,13 +83,13 @@ public class EventsFragment extends Fragment {
     }
 
     private void addNewEvent() {
-            startActivityForResult(new Intent(getActivity(), CreateEventActivity.class), CREATE_EVENT_REQUEST);
+        startActivityForResult(new Intent(getActivity(), CreateEventActivity.class), CREATE_EVENT_REQUEST);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CREATE_EVENT_REQUEST) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 Log.d("onresult", "result_ok");
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -96,18 +97,22 @@ public class EventsFragment extends Fragment {
         }
     }
 
-    private class LoadAllEvents extends AsyncTask<String, String, String> {
-        List<Event> events;
+    private class LoadAllEvents extends AsyncTask<Void, Void, List<Event>> {
+        ProgressDialog progressDialog;
 
-        protected String doInBackground(String... args) {
-            events = new EventRepository().getAll();
-            return "dumb";
-
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.loading_events), true);
         }
 
-        protected void onPostExecute(String s) {
+        protected List<Event> doInBackground(Void... args) {
+            return new EventRepository().getAll();
+        }
+
+        protected void onPostExecute(List<Event> events) {
             EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events);
             mEventsList.setAdapter(adapter);
+            progressDialog.dismiss();
         }
     }
 }

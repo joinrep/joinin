@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">JoinIn</string>
+    <string name="app_name">Join</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
     <string name="title_activity_create_event">Nowe wydarzenie</string>
 
-    <!-- Navigation Drawer items -->
+    !-- Navigation Drawer items -->
     <string name="navdrawer_header_login_source">Zalogowany przez Facebook</string>
     <string name="navdrawer_events">Wydarzenia</string>
     <string name="navdrawer_participate">Biorę udział</string>
@@ -25,8 +25,19 @@
     <string name="add_localization">Dodaj lokalizację</string>
     <string name="add_description">Dodaj opis</string>
     <string name="choose_category">Wybierz kategorię</string>
+    <string name="limit">Ograniczona liczba miejsc</string>
+    <string name="set_number_of_ppl">Podaj liczbę osób</string>
+    <string name="pay">Udział płatny</string>
+    <string name="set_price">Podaj koszt</string>
+    <string name="ppl1"> osoba</string>
+    <string name="ppl2"> osoby</string>
+    <string name="ppl3"> osób</string>
+    <string name="currency"> zł</string>
     !--My events -->    <string name="upcoming">Nadchodzące</string>
     <string name="past">Minione</string>
     <string name="title_activity_sign_in">SignInActivity</string>
+    !--Others -->
+    <string name="loading_events">Trwa ładowanie wydarzeń...</string>
+
 
 </resources>

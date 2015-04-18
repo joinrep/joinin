@@ -1,35 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@drawable/signin_bg">
 
 
     <ImageView
         android:id="@+id/sign_in_background"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="fitXY"/>
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="JoinIn"
-        android:textSize="50dp"
-        android:textColor="@color/white_100"
-        android:layout_alignParentTop="true"
+        android:src="@drawable/logo_flat2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp" />
+        android:layout_marginTop="80dp"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="50dp"
+        android:layout_below="@id/sign_in_background"
+        android:layout_gravity="center_horizontal"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp" />
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="100dp" />
 
     <Button
         android:id="@+id/skip"

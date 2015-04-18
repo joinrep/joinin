@@ -46,8 +46,8 @@
                 style="@style/FormIcon"
                 android:src="@drawable/ic_form_time"
                 android:baselineAlignBottom="false"
-                android:layout_marginTop="12dp"
-                android:layout_gravity="top" />
+                android:layout_gravity="top"
+                android:layout_marginTop="14dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
             style="@style/Divider"
             android:layout_marginLeft="64dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/keyline_1"
@@ -95,18 +95,20 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/ic_cat"
                 style="@style/FormIcon"
                 android:src="@drawable/ic_form_category"
-                android:layout_marginTop="12dp"
-                android:layout_gravity="top" />
+                android:layout_gravity="top"
+                android:layout_centerVertical="true" />
 
             <Spinner
+                android:layout_toRightOf="@id/ic_cat"
                 android:id="@+id/categorySpinner"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:prompt="@string/choose_category"
                 android:spinnerMode="dropdown"/>
-        </LinearLayout>
+        </RelativeLayout>
 
 
         <View
@@ -114,7 +116,7 @@
             android:layout_marginLeft="64dp" />
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/keyline_1"
@@ -122,23 +124,25 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/ic_place"
                 style="@style/FormIcon"
                 android:src="@drawable/ic_form_place"
-                android:layout_marginTop="12dp"
-                android:layout_gravity="top" />
+                android:layout_gravity="top"
+                android:layout_centerVertical="true" />
 
             <EditText
+                android:layout_toRightOf="@id/ic_place"
                 android:id="@+id/localization"
                 style="@style/FormEditText"
                 android:singleLine="true"
                 android:hint="@string/add_localization" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <View
             style="@style/Divider"
             android:layout_marginLeft="64dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/keyline_1"
@@ -146,22 +150,92 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/ic_desc"
                 style="@style/FormIcon"
                 android:src="@drawable/ic_form_description"
                 android:layout_gravity="top"
-                android:layout_marginTop="12dp" />
+                android:layout_centerVertical="true" />
 
             <EditText
+                android:layout_toRightOf="@id/ic_desc"
                 android:id="@+id/description"
                 style="@style/FormEditText"
-                android:hint="@string/add_description" />
-        </LinearLayout>
+                android:hint="@string/add_description"
+                android:inputType="textCapSentences|textShortMessage" />
+        </RelativeLayout>
 
         <View
             style="@style/Divider"
             android:layout_marginLeft="64dp" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/keyline_1"
+            android:layout_marginRight="@dimen/keyline_1"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/ic_limit"
+                style="@style/FormIcon"
+                android:src="@drawable/ic_form_limit"
+                android:layout_gravity="top"
+                android:layout_centerVertical="true" />
+
+            <Switch
+                android:id="@+id/limit_switch"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true" />
+
+            <EditText
+                android:layout_toRightOf="@id/ic_limit"
+                android:layout_toLeftOf="@id/limit_switch"
+                android:id="@+id/limit"
+                style="@style/FormEditText"
+                android:hint="@string/set_number_of_ppl"
+                android:text="@string/limit"
+                android:singleLine="true"
+                android:focusable="false" />
+        </RelativeLayout>
+
+        <View
+            style="@style/Divider"
+            android:layout_marginLeft="64dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/keyline_1"
+            android:layout_marginRight="@dimen/keyline_1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ic_pay"
+                style="@style/FormIcon"
+                android:src="@drawable/ic_form_money"
+                android:layout_gravity="top"
+                android:layout_centerVertical="true" />
+
+            <Switch
+                android:id="@+id/pay_switch"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"/>
+
+            <EditText
+                android:layout_toRightOf="@id/ic_pay"
+                android:layout_toLeftOf="@id/pay_switch"
+                android:id="@+id/pay"
+                style="@style/FormEditText"
+                android:textColor="@color/black_87"
+                android:hint="@string/set_price"
+                android:text="@string/pay"
+                android:singleLine="true"
+                android:focusable="false" />
+        </RelativeLayout>
     </LinearLayout>
 
 </ScrollView>

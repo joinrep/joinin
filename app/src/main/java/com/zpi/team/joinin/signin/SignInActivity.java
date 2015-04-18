@@ -62,23 +62,15 @@ public class SignInActivity extends Activity implements
          *   => zmiana lanuchera w manifescie
          * */
         launchApp = new Intent(SignInActivity.this, MainActivity.class);
-        ImageView bg = (ImageView) findViewById(R.id.sign_in_background);
-        bg.setImageBitmap(BitmapDecoder.decodeSampledBitmapFromResource(getResources(), R.drawable.signin_background, 300, 500));
+
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authentication();
-                if (v.getId() == R.id.sign_in_button && mGoogleApiClient.isConnected()) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-//                        finish();
+                if (v.getId() == R.id.sign_in_button) {
+                    if (InternetConnection.isAvailable(SignInActivity.this)) {
+                        mGoogleApiClient.connect();
                     }
-                    else {
-                        startActivity(launchApp);
-//                        finish();
-                    }
-
                 }
             }
         });
@@ -91,8 +83,7 @@ public class SignInActivity extends Activity implements
                     if (Build.VERSION.SDK_INT >= 21) {
                         startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
 //                        finish();
-                    }
-                    else {
+                    } else {
                         startActivity(launchApp);
 //                        finish();
                     }
@@ -101,6 +92,13 @@ public class SignInActivity extends Activity implements
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        authentication();
     }
 
     private void authentication() {
@@ -112,10 +110,6 @@ public class SignInActivity extends Activity implements
                     .addOnConnectionFailedListener(this)
                     .build();
         }
-        if (InternetConnection.isAvailable(this))
-            mGoogleApiClient.connect();
-        else
-            Toast.makeText(this, "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -165,6 +159,20 @@ public class SignInActivity extends Activity implements
             launchApp.putExtra(PERSON_MAIL, personMail);
         }
 
+        lanuchActivity();
+    }
+
+    private void lanuchActivity() {
+        Toast.makeText(SignInActivity.this, "lancz", Toast.LENGTH_SHORT).show();
+        if (mGoogleApiClient.isConnected()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
+//                        finish();
+            } else {
+                startActivity(launchApp);
+//                        finish();
+            }
+        }
     }
 
     @Override
@@ -199,3 +207,7 @@ public class SignInActivity extends Activity implements
         }
     }
 }
+
+
+
+
