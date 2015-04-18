@@ -67,16 +67,13 @@ public class SignInActivity extends Activity implements
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.sign_in_button && mGoogleApiClient.isConnected()) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-//                        finish();
+                if (v.getId() == R.id.sign_in_button) {
+                    if (InternetConnection.isAvailable(SignInActivity.this)) {
+                        mGoogleApiClient.connect();
+                        lanuchActivity();
                     }
-                    else {
-                        startActivity(launchApp);
-//                        finish();
-                    }
-
+                    else
+                        Toast.makeText(SignInActivity.this, "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -89,8 +86,7 @@ public class SignInActivity extends Activity implements
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
 //                        finish();
-                    }
-                    else {
+                    } else {
                         startActivity(launchApp);
 //                        finish();
                     }
@@ -101,6 +97,18 @@ public class SignInActivity extends Activity implements
 
     }
 
+    private void lanuchActivity(){
+        Toast.makeText(SignInActivity.this, "lancz", Toast.LENGTH_SHORT).show();
+        if (mGoogleApiClient.isConnected()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
+//                        finish();
+            } else {
+                startActivity(launchApp);
+//                        finish();
+            }
+        }
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -112,10 +120,6 @@ public class SignInActivity extends Activity implements
                     .addOnConnectionFailedListener(this)
                     .build();
         }
-        if (InternetConnection.isAvailable(this))
-            mGoogleApiClient.connect();
-        else
-            Toast.makeText(this, "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
