@@ -62,8 +62,7 @@ public class SignInActivity extends Activity implements
          *   => zmiana lanuchera w manifescie
          * */
         launchApp = new Intent(SignInActivity.this, MainActivity.class);
-        ImageView bg = (ImageView) findViewById(R.id.sign_in_background);
-        bg.setImageBitmap(BitmapDecoder.decodeSampledBitmapFromResource(getResources(), R.drawable.signin_background, 300, 500));
+
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
