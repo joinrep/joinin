@@ -37,6 +37,7 @@ public class EventRepository implements IRepository<Event> {
     private static String url_events_by_catgory = hostname + "get_events_by_catgory.php";
     private static String url_create_event = hostname + "create_event.php";
     private static String url_participate_event = hostname + "participate_event.php";
+    private static String url_events_by_category = hostname + "get_events_by_category.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -109,6 +110,51 @@ public class EventRepository implements IRepository<Event> {
                     Event event = new Event(id, name, start, end, "", "", limit, cost, false);
                     // TODO ctaegory id from response
                     event.setCategory(new Category(0, categoryName, categoryIcon));
+                    result.add(event);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public List<Event> getByCategory(Category category) {
+        return getByCategory(category, false);
+    }
+
+    public List<Event> getByCategory(Category category, boolean canceled) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("category_id", "" + category.getId()));
+        params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        JSONObject json = jParser.makeHttpRequest(url_events_by_category, "GET", params);
+
+        Log.d("All Events: ", json.toString());
+
+        List<Event> result = new ArrayList<Event>();
+
+        try {
+            int success = json.getInt(TAG_SUCCESS);
+            if (success == 1) {
+                JSONArray events = json.getJSONArray(TAG_EVENTS);
+                for (int i = 0; i < events.length(); i++) {
+                    JSONObject eventJSON = events.getJSONObject(i);
+
+                    int id = eventJSON.getInt(TAG_ID);
+                    String name = eventJSON.getString(TAG_NAME);
+                    Calendar start = Calendar.getInstance();
+                    start.setTime(dateFormat.parse(eventJSON.getString(TAG_START)));
+                    Calendar end = Calendar.getInstance();
+                    end.setTime(dateFormat.parse(eventJSON.getString(TAG_END)));
+                    int limit = eventJSON.getInt(TAG_LIMIT);
+                    double cost = eventJSON.getDouble(TAG_COST);
+
+                    Event event = new Event(id, name, start, end, "", "", limit, cost, false);
+                    event.setCategory(category);
                     result.add(event);
                 }
             }

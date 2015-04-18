@@ -26,6 +26,7 @@ if (mysql_num_rows($result) > 0) {
     while ($row = mysql_fetch_array($result)) {
         // temp user array
         $category = array();
+		$category["categoryId"] = $row["category_id"];
         $category["name"] = $row["category_name"];
         $category["icon_path"] = $row["icon_path"];
 

@@ -28,6 +28,7 @@ public class CategoryRepository implements IRepository<Category> {
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_CATEGORIES = "categories";
+    private static final String TAG_ID = "categoryId";
     private static final String TAG_NAME = "name";
     private static final String TAG_ICON = "icon_path";
 
@@ -67,10 +68,11 @@ public class CategoryRepository implements IRepository<Category> {
                     JSONObject category = categories.getJSONObject(i);
 
                     // Storing each json item in variable
+                    int id = category.getInt(TAG_ID);
                     String name = category.getString(TAG_NAME);
                     String iconPath = category.getString(TAG_ICON);
 
-                    result.add(new Category(1, name, iconPath));
+                    result.add(new Category(id, name, iconPath));
                 }
             }
         } catch (JSONException e) {
