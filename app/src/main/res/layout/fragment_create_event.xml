@@ -161,7 +161,7 @@
                 android:id="@+id/description"
                 style="@style/FormEditText"
                 android:hint="@string/add_description"
-                android:inputType="textCapWords|textShortMessage" />
+                android:inputType="textCapSentences|textShortMessage" />
         </RelativeLayout>
 
         <View

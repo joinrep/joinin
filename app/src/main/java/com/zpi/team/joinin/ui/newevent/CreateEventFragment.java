@@ -162,7 +162,6 @@ public class CreateEventFragment extends Fragment {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }
 
-
             if (!hasFocus) {
                 if (isEmpty(editText))
                     theSwitch.setChecked(false);
@@ -175,9 +174,7 @@ public class CreateEventFragment extends Fragment {
                     editText.setText(number);
                 } else
                     editText.setText(null);
-
             }
-
         }
 
         private boolean isEmpty(EditText et) {
@@ -233,9 +230,6 @@ public class CreateEventFragment extends Fragment {
                 editText.setText(getResources().getString(R.string.pay));
             else if (editText.getId() == R.id.limit)
                 editText.setText(getResources().getString(R.string.limit));
-
-//            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//            imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
         }
     };
 
@@ -243,13 +237,35 @@ public class CreateEventFragment extends Fragment {
         String title = mTitle.getText().toString();
         String description = mDescription.getText().toString();
         String address = mAddress.getText().toString();
+        int limit = (int)parseEditText(mLimitSwitch, mLimit, -1d);
+        double cost =  parseEditText(mPaySwitch, mPay, 0d);
 
-        final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, 10, 10, false);
+        final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, limit, cost, false);
+
+        String out = "Title: " + title + "\nStart time: " + mCalendarStart.toString() + "\nEnd time: " + mCalendarEnd.toString() +
+                "\nDescription: " + description + "\nAddress: " + address + "\nLimit: " + limit + "\nCost: " + cost;
+        Log.d("CreateEventFragment", "saveNewEvent(), " + out);
+        /**
+         * TODO
+         * - adres poki co tylko jako string, przydalby sie konstruktor
+         * - przypisanie uzytkownika
+         */
         newEvent.setLocation(new Address(0, "city", "street", "street", address));
         newEvent.setOrganizer(new User("12", "jan", "probny"));
-        newEvent.setCategory(new Category(1, "PIlka test", "paff"));
-
+        newEvent.setCategory((Category) mCategories.getSelectedItem());
         new SaveNewEvent().execute(newEvent);
+    }
+
+    private double parseEditText(Switch theSwitch, EditText et, double defaultValue) {
+        if (theSwitch.isChecked()) {
+            String text = et.getText().toString();
+            if (text.contains(" "))
+                defaultValue = Double.parseDouble((String) text.subSequence(0, text.indexOf(" ")));
+            else
+                defaultValue = Double.parseDouble(text);
+        }
+
+        return defaultValue;
     }
 
     private class SaveNewEvent extends AsyncTask<Event, Void, Void> {
