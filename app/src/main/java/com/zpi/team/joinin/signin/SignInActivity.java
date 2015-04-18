@@ -70,10 +70,7 @@ public class SignInActivity extends Activity implements
                 if (v.getId() == R.id.sign_in_button) {
                     if (InternetConnection.isAvailable(SignInActivity.this)) {
                         mGoogleApiClient.connect();
-                        lanuchActivity();
                     }
-                    else
-                        Toast.makeText(SignInActivity.this, "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -83,7 +80,7 @@ public class SignInActivity extends Activity implements
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.skip) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT >= 21) {
                         startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
 //                        finish();
                     } else {
@@ -97,21 +94,14 @@ public class SignInActivity extends Activity implements
 
     }
 
-    private void lanuchActivity(){
-        Toast.makeText(SignInActivity.this, "lancz", Toast.LENGTH_SHORT).show();
-        if (mGoogleApiClient.isConnected()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-//                        finish();
-            } else {
-                startActivity(launchApp);
-//                        finish();
-            }
-        }
-    }
     @Override
     protected void onStart() {
         super.onStart();
+
+        authentication();
+    }
+
+    private void authentication() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Plus.API)
@@ -169,6 +159,20 @@ public class SignInActivity extends Activity implements
             launchApp.putExtra(PERSON_MAIL, personMail);
         }
 
+        lanuchActivity();
+    }
+
+    private void lanuchActivity() {
+        Toast.makeText(SignInActivity.this, "lancz", Toast.LENGTH_SHORT).show();
+        if (mGoogleApiClient.isConnected()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
+//                        finish();
+            } else {
+                startActivity(launchApp);
+//                        finish();
+            }
+        }
     }
 
     @Override
@@ -203,3 +207,7 @@ public class SignInActivity extends Activity implements
         }
     }
 }
+
+
+
+

@@ -92,12 +92,13 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
         mNavDrawerAdapter = new NavDrawerAdapter(this, mNavDrawerItems);
-        mDrawerList.setAdapter(mNavDrawerAdapter);
 
         View header = View.inflate(this, R.layout.navdrawer_header, null);
         inflateWithPersonData(header);
         mDrawerList.addHeaderView(header, null, false);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawerList.setAdapter(mNavDrawerAdapter);
 
         FragmentManager fm = getFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
