@@ -68,6 +68,7 @@ public class SignInActivity extends Activity implements
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                authentication();
                 if (v.getId() == R.id.sign_in_button && mGoogleApiClient.isConnected()) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
@@ -87,7 +88,7 @@ public class SignInActivity extends Activity implements
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.skip) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT >= 21) {
                         startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
 //                        finish();
                     }
@@ -102,9 +103,7 @@ public class SignInActivity extends Activity implements
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void authentication() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Plus.API)

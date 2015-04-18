@@ -54,7 +54,7 @@ public class EventsFragment extends Fragment {
 
         View addEventButton = view.findViewById(R.id.add_event_button);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= 21) {
             addEventButton.setOutlineProvider(new ViewOutlineProvider() {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override
