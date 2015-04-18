@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/logo_flat2"
+            android:src="@drawable/logo_flat"
             android:layout_gravity="center" />
     </FrameLayout>
 
@@ -34,7 +34,10 @@
     <Button
         android:id="@+id/skip"
         android:layout_below="@id/sign_in_button"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Pomiń" />
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:text="Pomiń"
+        android:layout_marginTop="16dp" />
 </RelativeLayout>

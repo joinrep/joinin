@@ -40,7 +40,7 @@ public class MyEventsFragment extends Fragment {
             mOnToolbarElevationListener = (OnToolbarElevationListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement mOnToolbarElevationListener");
+                    + " must implement OnToolbarElevationListener");
         }
     }
 

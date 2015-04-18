@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
+import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.ui.main.EventsFragment;
 
 public class CreateEventActivity extends ActionBarActivity  {
 
@@ -58,7 +61,8 @@ public class CreateEventActivity extends ActionBarActivity  {
             CreateEventFragment form =  (CreateEventFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
 
             if(form.isFilled()){
-                form.saveNewEvent();
+                Event event = form.saveNewEvent();
+                SessionStorage.getInstance().setNewlyCreated(event);
                 setResult(RESULT_OK);
                 finish();
             }
