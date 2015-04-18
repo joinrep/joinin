@@ -10,6 +10,7 @@ public class Category {
     private int id;
     private String name;
     private String iconPath;
+    private int iconId = -1;
 
     private boolean userFavorite = false;
 
@@ -68,5 +69,13 @@ public class Category {
 
     public void setUserFavorite(boolean userFavorite) {
         this.userFavorite = userFavorite;
+    }
+
+    public int getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(int iconId) {
+        this.iconId = iconId;
     }
 }

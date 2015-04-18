@@ -1,6 +1,7 @@
 package com.zpi.team.joinin.repository;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.zpi.team.joinin.database.JSONParser;
 import com.zpi.team.joinin.entities.Address;
@@ -82,6 +83,8 @@ public class EventRepository implements IRepository<Event> {
         params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         JSONObject json = jParser.makeHttpRequest(url_all_events, "GET", params);
+
+        Log.d("All Events: ", json.toString());
 
         List<Event> result = new ArrayList<Event>();
 

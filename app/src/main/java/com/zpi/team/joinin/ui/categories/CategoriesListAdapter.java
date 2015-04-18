@@ -56,11 +56,8 @@ public class CategoriesListAdapter extends BaseAdapter {
         }
         //TODO MK set category icon
         final Category category = (Category) getItem(position);
-        Context context = holder.categoryIcon.getContext();
-        int iconId = context.getResources().getIdentifier(category.getIconPath(), "drawable", context.getPackageName());
-
-        holder.categoryName.setText(categories.get(position).getName());
-        holder.categoryIcon.setImageResource(iconId);
+        holder.categoryName.setText(category.getName());
+        holder.categoryIcon.setImageResource(category.getIconId());
 
         final ImageView categoryStar = holder.categoryStar;
         if (category.isUserFavorite()) {

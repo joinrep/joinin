@@ -3,6 +3,7 @@ package com.zpi.team.joinin.ui.main;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -171,7 +172,7 @@ public class MainActivity extends ActionBarActivity {
         }
         for (Category category : SessionStorage.getInstance().getCategories()) {
             if (category.isUserFavorite()) {
-                mNavDrawerItems.add(iter++, new NavDrawerItem(R.drawable.ic_category_bike, category.getName()));
+                mNavDrawerItems.add(iter++, new NavDrawerItem(category.getIconId(), category.getName()));
             }
         }
         mNavDrawerAdapter.notifyDataSetChanged();
@@ -262,6 +263,10 @@ public class MainActivity extends ActionBarActivity {
 
         protected String doInBackground(String... args) {
             categories = new CategoryRepository().getAll();
+            // resolve categories icon id
+            for(Category category : categories) {
+                category.setIconId(MainActivity.this.getResources().getIdentifier(category.getIconPath(), "drawable", MainActivity.this.getPackageName()));
+            }
             return "dumb";
         }
 
