@@ -3,6 +3,7 @@ package com.zpi.team.joinin.ui.main;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
+import com.zpi.team.joinin.ui.categories.CategoryEventsFragment;
 import com.zpi.team.joinin.ui.common.BitmapDecoder;
 import com.zpi.team.joinin.ui.enrolled.ParticipateEventsFragment;
 import com.zpi.team.joinin.ui.myevents.MyEventsFragment;
@@ -41,6 +43,8 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity implements MyEventsFragment.OnToolbarElevationListener{
 
+    public final static int ADD_CATEGORY_POSITION = 6;
+
     private Toolbar mToolbar;
     private CharSequence mTitle;
     private DrawerLayout mDrawerLayout;
@@ -50,6 +54,7 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
     private NavDrawerAdapter mNavDrawerAdapter;
 
     private int mCurrentPosition;
+    private List<Category> favCategories = new ArrayList<Category>();
 
     private static Context context;
     public static Context getAppContext() {
@@ -160,19 +165,26 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
     }
 
     public void updateNavDrawerItems() {
-        int iter = 0;
-        while (!mNavDrawerItems.get(iter++).getTitle().equals(getResources().getString(R.string.add_favorite_category)));
-        while (mNavDrawerItems.get(iter).getType() != NavDrawerItem.TYPE_SEPARATOR) {
-            mNavDrawerItems.remove(iter);
-        }
-        for (Category category : SessionStorage.getInstance().getCategories()) {
-            if (category.isUserFavorite()) {
-                mNavDrawerItems.add(iter++, new NavDrawerItem(R.drawable.ic_category_bike, category.getName()));
+        List<Category> categories = SessionStorage.getInstance().getCategories();
+        if (categories!=null) {
+            int iter = 0;
+            while (!mNavDrawerItems.get(iter++).getTitle().equals(getResources().getString(R.string.add_favorite_category)))
+                ;
+            for (int i = 0; i < favCategories.size(); i++) {
+                mNavDrawerItems.remove(iter);
             }
+            favCategories = new ArrayList<Category>();
+            for (Category category : categories) {
+                if (category.isUserFavorite()) {
+                    favCategories.add(category);
+                    mNavDrawerItems.add(iter++, new NavDrawerItem(category.getIconId(), category.getName()));
+                }
+            }
+
+            mNavDrawerAdapter.notifyDataSetChanged();
+            mDrawerList.setAdapter(mNavDrawerAdapter);
+            syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
         }
-        mNavDrawerAdapter.notifyDataSetChanged();
-        mDrawerList.setAdapter(mNavDrawerAdapter);
-        syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -186,26 +198,30 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
         Fragment fragment = null;
         switch (position) {
             case 1:
-//                setToolbarElevation(true);
                 fragment = new EventsFragment();
                 break;
             case 2:
-//                setToolbarElevation(true);
                 fragment = new ParticipateEventsFragment();
                 break;
             case 3:
-//                setToolbarElevation(false);
                 fragment = new MyEventsFragment();
                 break;
-            case 6:
-//                setToolbarElevation(true);
+            case ADD_CATEGORY_POSITION:
                 fragment = new CategoriesFragment();
                 break;
             default:
+                if (position > ADD_CATEGORY_POSITION && position <= ADD_CATEGORY_POSITION + favCategories.size()) {
+                    Log.d("click", favCategories.get(position - (ADD_CATEGORY_POSITION + 1)).getName());
+                    setToolbarElevation(true);
+                    fragment = new CategoryEventsFragment().setCategory(favCategories.get(position - (ADD_CATEGORY_POSITION + 1)));
+                }
                 break;
         }
 
+        switchFragment(fragment, position);
+    }
 
+    public void switchFragment(Fragment fragment, int position) {
         if (fragment != null) {
             mCurrentPosition = position;
             Log.d("Bundle", Integer.toString(position));
@@ -260,6 +276,10 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
 
         protected String doInBackground(String... args) {
             categories = new CategoryRepository().getAll();
+            // resolve categories icon id
+            for(Category category : categories) {
+                category.setIconId(MainActivity.this.getResources().getIdentifier(category.getIconPath(), "drawable", MainActivity.this.getPackageName()));
+            }
             return "dumb";
         }
 
