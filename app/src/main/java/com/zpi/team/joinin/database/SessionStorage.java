@@ -2,6 +2,7 @@ package com.zpi.team.joinin.database;
 
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.User;
+import com.zpi.team.joinin.entities.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,10 @@ public class SessionStorage {
 
     private static SessionStorage instance = null;
 
-    private SessionStorage(){};
+    private SessionStorage() {
+    }
+
+    ;
 
     public static synchronized SessionStorage getInstance() {
         if (instance == null) {
@@ -40,4 +44,12 @@ public class SessionStorage {
     public void setUser(User user) {
         this.user = user;
     }
+
+    private Event newlyCreated = null;
+
+    public Event getNewlyCreated() { return newlyCreated; }
+
+    public void setNewlyCreated(Event event) { newlyCreated = event; }
+
+
 }

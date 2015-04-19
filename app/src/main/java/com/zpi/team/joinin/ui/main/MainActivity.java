@@ -42,7 +42,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements MyEventsFragment.OnToolbarElevationListener{
 
     public final static int ADD_CATEGORY_POSITION = 6;
 
@@ -199,15 +199,12 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         switch (position) {
             case 1:
-                setToolbarElevation(true);
                 fragment = new EventsFragment();
                 break;
             case 2:
-                setToolbarElevation(true);
                 fragment = new ParticipateEventsFragment();
                 break;
             case 3:
-                setToolbarElevation(false);
                 fragment = new MyEventsFragment();
                 break;
             case ADD_CATEGORY_POSITION:
@@ -239,7 +236,8 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void setToolbarElevation(boolean elevation) {
+
+    public void setToolbarElevation(boolean elevation) {
         if (elevation)
             getSupportActionBar().setElevation(getResources().getDimension(R.dimen.toolbar_elevation));
         else

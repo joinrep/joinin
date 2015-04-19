@@ -1,5 +1,6 @@
 package com.zpi.team.joinin.ui.newevent;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -233,12 +234,12 @@ public class CreateEventFragment extends Fragment {
         }
     };
 
-    public void saveNewEvent() {
+    public Event saveNewEvent() {
         String title = mTitle.getText().toString();
         String description = mDescription.getText().toString();
         String address = mAddress.getText().toString();
-        int limit = (int)parseEditText(mLimitSwitch, mLimit, -1d);
-        double cost =  parseEditText(mPaySwitch, mPay, 0d);
+        int limit = (int) parseEditText(mLimitSwitch, mLimit, -1d);
+        double cost = parseEditText(mPaySwitch, mPay, 0d);
 
         final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, limit, cost, false);
 
@@ -254,6 +255,8 @@ public class CreateEventFragment extends Fragment {
         newEvent.setOrganizer(new User("12", "jan", "probny"));
         newEvent.setCategory((Category) mCategories.getSelectedItem());
         new SaveNewEvent().execute(newEvent);
+
+        return newEvent;
     }
 
     private double parseEditText(Switch theSwitch, EditText et, double defaultValue) {

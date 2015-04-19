@@ -163,7 +163,6 @@ public class SignInActivity extends Activity implements
     }
 
     private void lanuchActivity() {
-        Toast.makeText(SignInActivity.this, "lancz", Toast.LENGTH_SHORT).show();
         if (mGoogleApiClient.isConnected()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
