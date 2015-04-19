@@ -38,6 +38,7 @@
     <string name="title_activity_sign_in">SignInActivity</string>
     !--Others -->
     <string name="loading_events">Trwa ładowanie wydarzeń...</string>
+    <string name="loading_favorite_category">Aktualizowanie ulubionych kategorii...</string>
 
 
 </resources>

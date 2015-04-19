@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
+import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
 import com.zpi.team.joinin.ui.categories.CategoryEventsFragment;
@@ -277,7 +278,11 @@ public class MainActivity extends ActionBarActivity {
         List<Category> categories;
 
         protected String doInBackground(String... args) {
-            categories = new CategoryRepository().getAll();
+            // TODO set real user in storage
+            storage.setUser(new User("1", "Marek", "Kos"));
+
+
+            categories = new CategoryRepository().getByUser(storage.getUser());
             // resolve categories icon id
             for(Category category : categories) {
                 category.setIconId(MainActivity.this.getResources().getIdentifier(category.getIconPath(), "drawable", MainActivity.this.getPackageName()));

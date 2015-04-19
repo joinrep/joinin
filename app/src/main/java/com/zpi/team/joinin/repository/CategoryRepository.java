@@ -5,8 +5,10 @@ import android.util.Log;
 import com.zpi.team.joinin.database.JSONParser;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.entities.User;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +26,8 @@ public class CategoryRepository implements IRepository<Category> {
 
     private JSONParser jParser = new JSONParser();
     private static String url_all_categories = hostname + "get_all_categories.php";
+    private static String url_categories_by_user = hostname + "get_categories_by_user.php";
+    private static String url_set_favorite = hostname + "set_category_favorite.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -31,6 +35,7 @@ public class CategoryRepository implements IRepository<Category> {
     private static final String TAG_ID = "categoryId";
     private static final String TAG_NAME = "name";
     private static final String TAG_ICON = "icon_path";
+    private static final String TAG_ISFAV = "is_favorite";
 
     public Category getByName(String categoryName) {
         // TODO
@@ -80,4 +85,69 @@ public class CategoryRepository implements IRepository<Category> {
         }
         return result;
     }
+
+    public List<Category> getByUser(User user) {
+
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user_id", "" + user.getFacebookId()));
+        // getting JSON string from URL
+        JSONObject json = jParser.makeHttpRequest(url_categories_by_user, "GET", params);
+
+        // Check your log cat for JSON response
+        Log.d("All Categories: ", json.toString());
+
+        List<Category> result = new ArrayList<Category>();
+
+        try {
+            // Checking for SUCCESS TAG
+            int success = json.getInt(TAG_SUCCESS);
+
+            if (success == 1) {
+                // categories found
+                // Getting Array of Categories
+                JSONArray categories = json.getJSONArray(TAG_CATEGORIES);
+
+                // looping through All Categories
+                for (int i = 0; i < categories.length(); i++) {
+                    JSONObject category = categories.getJSONObject(i);
+
+                    // Storing each json item in variable
+                    int id = category.getInt(TAG_ID);
+                    String name = category.getString(TAG_NAME);
+                    String iconPath = category.getString(TAG_ICON);
+                    boolean isFav = category.getBoolean(TAG_ISFAV);
+
+                    result.add(new Category(id, name, iconPath, isFav));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    public void setFavorite(User user, Category category, boolean isFavorite) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user_id", user.getFacebookId()));
+        params.add(new BasicNameValuePair("category_id", "" + category.getId()));
+        params.add(new BasicNameValuePair("is_favorite", isFavorite?"Y":"N"));
+
+        JSONObject json = jParser.makeHttpRequest(url_set_favorite, "POST", params);
+        // TODO catch exceptions
+        // check for success tag
+        try {
+            int success = json.getInt(TAG_SUCCESS);
+            if (success == 1) {
+                // successfully created
+            } else {
+                // failed to create
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

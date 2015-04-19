@@ -167,7 +167,7 @@ public class EventRepository implements IRepository<Event> {
     }
 
     public void create(Event entity) {
-        // TODO
+
         /*Calendar startDate = Calendar.getInstance();
         Calendar endDate = Calendar.getInstance();
         startDate.setTime(new Date(new Date().getTime()));
@@ -194,6 +194,7 @@ public class EventRepository implements IRepository<Event> {
         params.add(new BasicNameValuePair("organizer", entity.getOrganizer().getFacebookId()));
 
         JSONObject json = jParser.makeHttpRequest(url_create_event, "POST", params);
+        // TODO catch exceptions
         // check for success tag
         try {
             int success = json.getInt(TAG_SUCCESS);

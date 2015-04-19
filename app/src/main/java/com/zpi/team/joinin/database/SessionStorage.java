@@ -1,6 +1,7 @@
 package com.zpi.team.joinin.database;
 
 import com.zpi.team.joinin.entities.Category;
+import com.zpi.team.joinin.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class SessionStorage {
     }
 
     private List<Category> categories = new ArrayList<Category>();
+    private User user = null;
 
     public List<Category> getCategories() {
         return categories;
@@ -31,4 +33,11 @@ public class SessionStorage {
         this.categories = categories;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

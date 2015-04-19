@@ -23,6 +23,11 @@ public class Category {
         this.iconPath = iconPath;
     }
 
+    public Category(int id, String name, String iconPath, boolean isFavorite) {
+        this(id, name, iconPath);
+        userFavorite = isFavorite;
+    }
+
     public int getId() {
         return id;
     }

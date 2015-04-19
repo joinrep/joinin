@@ -1,6 +1,8 @@
 package com.zpi.team.joinin.ui.categories;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
+import com.zpi.team.joinin.entities.User;
+import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.main.MainActivity;
 
 import java.util.List;
@@ -69,17 +74,7 @@ public class CategoriesListAdapter extends BaseAdapter {
         holder.categoryStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO MK add to user favorite
-
-                if (category.isUserFavorite()) {
-                    category.setUserFavorite(false);
-                    categoryStar.setImageResource(R.drawable.ic_category_star_outline);
-                } else {
-                    category.setUserFavorite(true);
-                    categoryStar.setImageResource(R.drawable.ic_category_star);
-                }
-                ((MainActivity) mContext).updateNavDrawerItems();
-
+                new ToggleFavorite(category, categoryStar).execute();
             }
         });
 
@@ -92,6 +87,40 @@ public class CategoriesListAdapter extends BaseAdapter {
     static class ViewHolder{
         ImageView categoryIcon, categoryStar;
         TextView categoryName;
+    }
+
+    private class ToggleFavorite extends AsyncTask<String, String, String> {
+        SessionStorage storage = SessionStorage.getInstance();
+        private Category category;
+        private ImageView categoryStar;
+        ProgressDialog progressDialog;
+
+        ToggleFavorite(Category category, ImageView categoryStar) {
+            super();
+            this.category = category;
+            this.categoryStar = categoryStar;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(mContext, null, mContext.getResources().getString(R.string.loading_favorite_category), true);
+        }
+
+        protected String doInBackground(String... args) {
+            new CategoryRepository().setFavorite(storage.getUser(), category, !category.isUserFavorite());
+            return "dumb";
+        }
+
+        protected void onPostExecute(String s) {
+            category.setUserFavorite(!category.isUserFavorite());
+            if (category.isUserFavorite()) {
+                categoryStar.setImageResource(R.drawable.ic_category_star);
+            } else {
+                categoryStar.setImageResource(R.drawable.ic_category_star_outline);
+            }
+            ((MainActivity) mContext).updateNavDrawerItems();
+            progressDialog.dismiss();
+        }
     }
 }
 
