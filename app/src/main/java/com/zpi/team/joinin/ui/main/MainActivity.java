@@ -25,6 +25,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.widget.ProfilePictureView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
@@ -62,10 +68,16 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
         return MainActivity.context;
     }
 
+    private AccessTokenTracker accessTokenTracker;
+    private ProfileTracker profileTracker;
+    ProfilePictureView profilePicture;
+    private View header;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MainActivity.context = getApplicationContext();
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             getWindow().setEnterTransition(new Explode());
@@ -99,7 +111,28 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
         mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
         mNavDrawerAdapter = new NavDrawerAdapter(this, mNavDrawerItems);
 
-        View header = View.inflate(this, R.layout.navdrawer_header, null);
+
+
+        header = View.inflate(this, R.layout.navdrawer_header, null);
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                inflateWithPersonData(header);
+            }
+        };
+
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+                // On AccessToken changes fetch the new profile which fires the event on
+                // the ProfileTracker if the profile is different
+                Profile.fetchProfileForCurrentAccessToken();
+            }
+        };
+
         inflateWithPersonData(header);
         mDrawerList.addHeaderView(header, null, false);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -129,9 +162,27 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
         TextView personMail = (TextView) header.findViewById(R.id.mail);
 
         Intent personData = getIntent();
+        Profile.fetchProfileForCurrentAccessToken();
+        Profile facebookProfile = Profile.getCurrentProfile();
         //TODO przy pierwszym logowaniu zapisac lokalnie
-        if (personData.getExtras() != null) {
 
+
+        if(facebookProfile != null)
+        {
+            Log.d("signin", "facebooklogin");
+            String id = facebookProfile.getId();
+            String fname = facebookProfile.getFirstName();
+            String lname = facebookProfile.getLastName();
+            String personPhotoUrl = "https://graph.facebook.com/"+id+"/picture";
+
+            new LoadProfileImage(personPhoto).execute(personPhotoUrl);
+            personName.setText(fname + " " + lname);
+            personMail.setText("");
+
+        }
+        else if (personData.getExtras() != null) {
+
+            Log.d("signin", "googlelogin");
             String id = personData.getStringExtra("id");
             String personPhotoUrl = personData.getStringExtra("photo");
             String name = personData.getStringExtra("name");
@@ -143,6 +194,10 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
 
             personName.setText(name);
             personMail.setText(mail);
+        }
+        else
+        {
+            Log.d("signin","cannot log in from facebook/google+");
         }
     }
 

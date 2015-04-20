@@ -23,7 +23,7 @@
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@id/sign_in_background"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
@@ -31,13 +31,22 @@
         android:layout_marginRight="32dp"
         android:layout_marginTop="100dp" />
 
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/facebook_sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_below="@+id/sign_in_button" />
+
     <Button
         android:id="@+id/skip"
-        android:layout_below="@id/sign_in_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:text="Pomiń"
-        android:layout_marginTop="16dp" />
+        android:layout_below="@+id/facebook_sign_in_button"
+         />
 </RelativeLayout>
