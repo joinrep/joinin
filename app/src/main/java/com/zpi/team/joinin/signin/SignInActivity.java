@@ -13,6 +13,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,6 +39,7 @@ public class SignInActivity extends Activity implements
     private static final String PERSON_ID = "id";
     private static final String PERSON_PHOTO_URL = "photo";
     private static final String PERSON_MAIL = "mail";
+    private static final String[] PERMISSIONS = {"user_friends"};
 
     /**
      * Request code for auto Google Play Services error resolution.
@@ -48,6 +56,12 @@ public class SignInActivity extends Activity implements
 
     private Intent launchApp;
 
+    //Facebook stuff
+    LoginButton fLoginButton;
+    CallbackManager callbackManager;
+
+
+
     // TODO signout
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +69,39 @@ public class SignInActivity extends Activity implements
         if (savedInstanceState != null) {
             mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
         }
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_signin);
+        launchApp = new Intent(SignInActivity.this, MainActivity.class);
+        fLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
+        fLoginButton.setReadPermissions(PERMISSIONS);
+        callbackManager = CallbackManager.Factory.create();
+        fLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                startActivity(launchApp);
+            }
+
+            @Override
+            public void onCancel() {
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+            }
+        });
+
+        Profile profile = Profile.getCurrentProfile();
+        if(profile != null)
+        {
+            startActivity(launchApp);
+        }
+
 
         /**TODO
          * po pierwszym logowaniu pokazywac tylko progress bar/
          *   => zmiana lanuchera w manifescie
          * */
-        launchApp = new Intent(SignInActivity.this, MainActivity.class);
+
 
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
@@ -129,6 +169,7 @@ public class SignInActivity extends Activity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_RESOLUTION:
                 retryConnecting();
@@ -163,7 +204,6 @@ public class SignInActivity extends Activity implements
     }
 
     private void lanuchActivity() {
-        Toast.makeText(SignInActivity.this, "lancz", Toast.LENGTH_SHORT).show();
         if (mGoogleApiClient.isConnected()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());

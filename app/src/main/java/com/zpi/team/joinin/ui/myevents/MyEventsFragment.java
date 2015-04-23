@@ -1,5 +1,6 @@
 package com.zpi.team.joinin.ui.myevents;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
+import com.zpi.team.joinin.ui.main.MainActivity;
 
 import java.util.List;
 
@@ -25,9 +27,32 @@ import java.util.List;
 public class MyEventsFragment extends Fragment {
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
+    private OnToolbarElevationListener mOnToolbarElevationListener;
+
+    public interface OnToolbarElevationListener{
+        public void setToolbarElevation(boolean elevation);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mOnToolbarElevationListener = (OnToolbarElevationListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnToolbarElevationListener");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mOnToolbarElevationListener.setToolbarElevation(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mOnToolbarElevationListener.setToolbarElevation(false);
         return inflater.inflate(R.layout.fragment_myevents, container, false);
     }
 
