@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JoinIn.iml" filepath="$PROJECT_DIR$/JoinIn.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/joinin.iml" filepath="$PROJECT_DIR$/joinin.iml" />
     </modules>
   </component>
 </project>
