@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -52,7 +53,7 @@ public class CreateEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_create_event, container, false);
-
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mCounter = (TextView) rootView.findViewById(R.id.counter);
         mTitle = (EditText) rootView.findViewById(R.id.new_event_title);
         mTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -62,6 +63,7 @@ public class CreateEventFragment extends Fragment {
                 else mCounter.setVisibility(View.INVISIBLE);
             }
         });
+
         mTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -115,6 +117,8 @@ public class CreateEventFragment extends Fragment {
         mLimit.setOnFocusChangeListener(mEditTextFocusChangedListener);
         mPaySwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
         mLimitSwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
+
+        //TODO nie pokazuje sie zł przy akceptacji \/
 
         return rootView;
     }
