@@ -116,6 +116,7 @@ public class EventsFragment extends Fragment {
     private class LoadAllEvents extends AsyncTask<Void, Void, List<Event>> {
         ProgressDialog progressDialog;
 
+        //TODO crash przy zmianie orientacji
         @Override
         protected void onPreExecute() {
             progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.loading_events), true);
