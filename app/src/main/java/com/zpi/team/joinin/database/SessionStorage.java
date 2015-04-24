@@ -45,11 +45,17 @@ public class SessionStorage {
         this.user = user;
     }
 
-    private Event newlyCreated = null;
+    private Event mNewlyCreated = null;
 
-    public Event getNewlyCreated() { return newlyCreated; }
+    public Event getNewlyCreated() { return mNewlyCreated; }
 
-    public void setNewlyCreated(Event event) { newlyCreated = event; }
+    public void setNewlyCreated(Event event) { mNewlyCreated = event; }
+
+    private Event mInDetail = null;
+
+    public Event getEventInDetail() { return mInDetail; }
+
+    public void setEventInDetail(Event event) { mInDetail = event; }
 
 
 }

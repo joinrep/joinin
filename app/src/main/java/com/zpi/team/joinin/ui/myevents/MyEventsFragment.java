@@ -17,6 +17,7 @@ import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
+import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
 import com.zpi.team.joinin.ui.main.MainActivity;
 
 import java.util.List;
@@ -29,9 +30,6 @@ public class MyEventsFragment extends Fragment {
     private ViewPager mViewPager;
     private OnToolbarElevationListener mOnToolbarElevationListener;
 
-    public interface OnToolbarElevationListener{
-        public void setToolbarElevation(boolean elevation);
-    }
 
     @Override
     public void onAttach(Activity activity) {

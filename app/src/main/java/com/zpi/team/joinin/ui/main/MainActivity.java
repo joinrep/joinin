@@ -39,6 +39,7 @@ import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
 import com.zpi.team.joinin.ui.categories.CategoryEventsFragment;
 import com.zpi.team.joinin.ui.common.BitmapDecoder;
+import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
 import com.zpi.team.joinin.ui.enrolled.ParticipateEventsFragment;
 import com.zpi.team.joinin.ui.myevents.MyEventsFragment;
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
@@ -48,7 +49,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements MyEventsFragment.OnToolbarElevationListener{
+public class MainActivity extends ActionBarActivity implements OnToolbarElevationListener {
 
     public final static int ADD_CATEGORY_POSITION = 6;
 

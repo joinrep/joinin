@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Created by Arkadiusz on 2015-03-06.
  */
-public class CategoryEventsFragment extends Fragment {
+public class CategoryEventsFragment extends Fragment implements EventsRecyclerAdapter.OnRecyclerViewClickListener {
 
     private Category category = null;
     private static int CREATE_EVENT_REQUEST = 1;
@@ -104,7 +104,10 @@ public class CategoryEventsFragment extends Fragment {
             }
         }
     }
-
+    @Override
+    public void onRecyclerViewItemClicked(View v, int position) {
+        Log.d("EventsRecycler", " " + position);
+    }
     private class LoadEventsByCategory extends AsyncTask<Void, Void, List<Event>> {
         ProgressDialog progressDialog;
 
@@ -118,7 +121,7 @@ public class CategoryEventsFragment extends Fragment {
         }
 
         protected void onPostExecute(List<Event> events) {
-            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events);
+            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events, CategoryEventsFragment.this );
             mEventsList.setAdapter(adapter);
             progressDialog.dismiss();
         }

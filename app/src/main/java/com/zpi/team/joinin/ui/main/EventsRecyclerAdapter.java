@@ -2,11 +2,13 @@ package com.zpi.team.joinin.ui.main;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
@@ -21,8 +23,19 @@ import java.util.Random;
 public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
     private Context mContext;
+    private static OnRecyclerViewClickListener mItemListener;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public EventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener) {
+        mEvents = events;
+        mContext = context;
+        mItemListener = listener;
+    }
+
+    public interface OnRecyclerViewClickListener {
+        public void onRecyclerViewItemClicked(View v, int position);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mTitle;
         public TextView mAddress;
         public TextView mTime;
@@ -31,17 +44,19 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
 
         public ViewHolder(View v) {
             super(v);
+            v.setOnClickListener(this);
             mTitle = (TextView)v.findViewById(R.id.eventName);
             mAddress = (TextView)v.findViewById(R.id.eventAddress);
             mTime = (TextView)v.findViewById(R.id.eventTime);
             mDate = (TextView)v.findViewById(R.id.eventDate);
             mImage = (ImageView)v.findViewById(R.id.eventImage);
         }
-    }
 
-    public EventsRecyclerAdapter(Context context, List<Event> events) {
-        mEvents = events;
-        mContext = context;
+        @Override
+        public void onClick(View v) {
+            mItemListener.onRecyclerViewItemClicked(v, this.getPosition());
+            Log.d("EventsRecycler", "click");
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.zpi.team.joinin.ui.main;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
+import com.zpi.team.joinin.ui.details.InDetailEventActivity;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
 import com.zpi.team.joinin.ui.newevent.CreateEventFragment;
 
@@ -33,9 +35,10 @@ import java.util.List;
 /**
  * Created by Arkadiusz on 2015-03-06.
  */
-public class EventsFragment extends Fragment {
+public class EventsFragment extends Fragment implements EventsRecyclerAdapter.OnRecyclerViewClickListener {
 
     private static int CREATE_EVENT_REQUEST = 1;
+    private static int INDETAIL_EVENT_REQUEST = 2;
     private List<Event> mEvents;
     private RecyclerView mEventsList;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -112,6 +115,13 @@ public class EventsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onRecyclerViewItemClicked(View v, int position) {
+        Log.d("EventsRecycler", " " + position);
+        SessionStorage.getInstance().setEventInDetail(mEvents.get(position));
+        startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
+    }
+
 
     private class LoadAllEvents extends AsyncTask<Void, Void, List<Event>> {
         ProgressDialog progressDialog;
@@ -128,7 +138,7 @@ public class EventsFragment extends Fragment {
         }
 
         protected void onPostExecute(List<Event> events) {
-            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events);
+            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events, EventsFragment.this );
             mEventsList.setAdapter(adapter);
             progressDialog.dismiss();
         }
