@@ -1,7 +1,6 @@
-package com.zpi.team.joinin.ui.myevents;
+package com.zpi.team.joinin.ui.common;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -17,19 +16,28 @@ import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
-import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
-import com.zpi.team.joinin.ui.main.MainActivity;
+import com.zpi.team.joinin.ui.myevents.MyEventsRecyclerAdapter;
+import com.zpi.team.joinin.ui.myevents.SlidingTabLayout;
 
 import java.util.List;
 
 /**
- * Created by Arkadiusz on 2015-03-08.
+ * Created by Arkadiusz on 2015-04-25.
  */
-public class MyEventsFragment extends Fragment {
+public class MyEventsFragment extends EventsRecyclerFragment {
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
     private OnToolbarElevationListener mOnToolbarElevationListener;
 
+    @Override
+    public int getType() {
+        return OWN;
+    }
+
+    @Override
+    public boolean isFloatingActionButtonVisible() {
+        return false;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -51,48 +59,31 @@ public class MyEventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mOnToolbarElevationListener.setToolbarElevation(false);
+        super.inflateWithEvents();
         return inflater.inflate(R.layout.fragment_myevents, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
-
-        //TODO wczytac przy pierwszym logowaniu i zapisac do lokalnej
-        if(InternetConnection.isAvailable(getActivity())) {
-            new LoadUpcomingEvents().execute();
-            mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
-            mSlidingTabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.colorAccent));
-        }
-        else
-            Toast.makeText(getActivity(), "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
-
-
+        mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
+        mSlidingTabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.colorAccent));
     }
 
-    private class LoadUpcomingEvents extends AsyncTask<Void, Void, List<Event>> {
-        @Override
-        protected List<Event> doInBackground(Void... args) {
-            return new EventRepository().getAll();
-        }
-
-        @Override
-        protected void onPostExecute(List<Event> events) {
-            String upcoming = getResources().getString(R.string.upcoming);
-            String past = getResources().getString(R.string.past);
-            mViewPager.setAdapter(new MyEventsPagerAdapter(new String[]{upcoming, past}, events));
-
-            mSlidingTabLayout.setViewPager(mViewPager);
-
-        }
+    @Override
+    public void onCustomPostExecute(List<Event> events) {
+        String upcoming = getResources().getString(R.string.upcoming);
+        String past = getResources().getString(R.string.past);
+        mViewPager.setAdapter(new MyEventsPagerAdapter(new String[]{upcoming, past}, events));
+        mSlidingTabLayout.setViewPager(mViewPager);
     }
 
     class MyEventsPagerAdapter extends PagerAdapter {
         private String[] mPageTitle;
         private List<Event> mEvents;
 
-        MyEventsPagerAdapter(String[] titles, List<Event> events){
+        MyEventsPagerAdapter(String[] titles, List<Event> events) {
             mPageTitle = titles;
             mEvents = events;
         }

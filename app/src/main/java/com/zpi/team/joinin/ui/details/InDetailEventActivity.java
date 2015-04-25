@@ -13,7 +13,6 @@ import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
-import com.zpi.team.joinin.ui.myevents.MyEventsFragment;
 import com.zpi.team.joinin.ui.newevent.CreateEventFragment;
 
 public class InDetailEventActivity extends ActionBarActivity{

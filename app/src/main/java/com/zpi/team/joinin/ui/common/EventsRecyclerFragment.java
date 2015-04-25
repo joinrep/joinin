@@ -1,9 +1,7 @@
-package com.zpi.team.joinin.ui.main;
-
+package com.zpi.team.joinin.ui.common;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,26 +21,40 @@ import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
+import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
+import com.zpi.team.joinin.ui.main.EventsRecyclerAdapter;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
-import com.zpi.team.joinin.ui.newevent.CreateEventFragment;
 
 import java.util.List;
 
 /**
- * Created by Arkadiusz on 2015-03-06.
+ * Created by Arkadiusz on 2015-04-25.
  */
-public class EventsFragment extends Fragment implements EventsRecyclerAdapter.OnRecyclerViewClickListener {
+public abstract class EventsRecyclerFragment extends Fragment implements EventsRecyclerAdapter.OnRecyclerViewClickListener {
+    private static int CREATE_EVENT_REQUEST = -1;
+    private static int INDETAIL_EVENT_REQUEST = -2;
+    public final static int ALL = 1;
+    public final static int BY_CATEGORY = 2;
+    public final static int OWN = 3;
 
-    private static int CREATE_EVENT_REQUEST = 1;
-    private static int INDETAIL_EVENT_REQUEST = 2;
-    private List<Event> mEvents;
     private RecyclerView mEventsList;
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private List<Event> mEvents;
+
+    public abstract int getType();
+
+    public boolean isFloatingActionButtonVisible() {
+        return true;
+    }
+
+    public Category getCategory() {
+        return null;
+    }
 
     //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -58,6 +70,7 @@ public class EventsFragment extends Fragment implements EventsRecyclerAdapter.On
         mEventsList.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mEventsList.setLayoutManager(mLayoutManager);
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -70,8 +83,15 @@ public class EventsFragment extends Fragment implements EventsRecyclerAdapter.On
             }
         });
 
+        if (isFloatingActionButtonVisible()) addButtonTo(view);
 
-        View addEventButton = view.findViewById(R.id.add_event_button);
+        inflateWithEvents();
+
+        return view;
+    }
+
+    private void addButtonTo(View v) {
+        View addEventButton = v.findViewById(R.id.add_event_button);
         if (Build.VERSION.SDK_INT >= 21) {
             addEventButton.setOutlineProvider(new ViewOutlineProvider() {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -87,28 +107,24 @@ public class EventsFragment extends Fragment implements EventsRecyclerAdapter.On
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewEvent();
+                startActivityForResult(new Intent(getActivity(), CreateEventActivity.class), CREATE_EVENT_REQUEST);
             }
         });
-
-        if (InternetConnection.isAvailable(getActivity()))
-            new LoadAllEvents().execute();
-        else
-            Toast.makeText(getActivity(), "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
-
-        return view;
     }
 
-    private void addNewEvent() {
-        startActivityForResult(new Intent(getActivity(), CreateEventActivity.class), CREATE_EVENT_REQUEST);
+    public void inflateWithEvents() {
+        if (InternetConnection.isAvailable(getActivity()))
+            new LoadEvents().execute();
+        else
+            Toast.makeText(getActivity(), "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CREATE_EVENT_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-               Event newEvent =  SessionStorage.getInstance().getNewlyCreated();
-               if(newEvent != null) mEvents.add(newEvent);
+                Event newEvent = SessionStorage.getInstance().getNewlyCreated();
+                if (newEvent != null) mEvents.add(newEvent);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
             }
@@ -122,25 +138,39 @@ public class EventsFragment extends Fragment implements EventsRecyclerAdapter.On
         startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
     }
 
-
-    private class LoadAllEvents extends AsyncTask<Void, Void, List<Event>> {
+    private class LoadEvents extends AsyncTask<Void, Void, Void> {
         ProgressDialog progressDialog;
 
-        //TODO crash przy zmianie orientacji
         @Override
         protected void onPreExecute() {
             progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.loading_events), true);
         }
 
-        protected List<Event> doInBackground(Void... args) {
-            mEvents = new EventRepository().getAll();
-            return mEvents;
+        protected Void doInBackground(Void... v) {
+            switch (getType()) {
+                case ALL:
+                    mEvents = new EventRepository().getAll();
+                    break;
+                case BY_CATEGORY:
+                    mEvents = new EventRepository().getByCategory(getCategory());
+                    break;
+                case OWN:
+                    mEvents = new EventRepository().getAll();
+                    break;
+            }
+            return null;
         }
 
-        protected void onPostExecute(List<Event> events) {
-            EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events, EventsFragment.this );
-            mEventsList.setAdapter(adapter);
+        protected void onPostExecute(Void v) {
+            onCustomPostExecute(mEvents);
             progressDialog.dismiss();
+
         }
     }
+
+    public void onCustomPostExecute(List<Event> events) {
+        EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events, EventsRecyclerFragment.this);
+        mEventsList.setAdapter(adapter);
+    }
+
 }

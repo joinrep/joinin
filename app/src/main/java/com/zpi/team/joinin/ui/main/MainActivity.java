@@ -3,7 +3,6 @@ package com.zpi.team.joinin.ui.main;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -24,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -37,11 +37,12 @@ import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
-import com.zpi.team.joinin.ui.categories.CategoryEventsFragment;
+import com.zpi.team.joinin.ui.common.AllEventsFragment;
 import com.zpi.team.joinin.ui.common.BitmapDecoder;
+import com.zpi.team.joinin.ui.common.CategoryEventsFragment;
+import com.zpi.team.joinin.ui.common.MyEventsFragment;
 import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
 import com.zpi.team.joinin.ui.enrolled.ParticipateEventsFragment;
-import com.zpi.team.joinin.ui.myevents.MyEventsFragment;
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
 import com.zpi.team.joinin.ui.nav.NavDrawerItem;
 
@@ -143,7 +144,8 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         FragmentManager fm = getFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
-            fragment = new EventsFragment();
+            Toast.makeText(this, "ajednak", Toast.LENGTH_SHORT).show();
+            fragment = new AllEventsFragment();
             fm.beginTransaction()
                     .add(R.id.fragmentContainer, fragment)
                     .commit();
@@ -255,7 +257,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         Fragment fragment = null;
         switch (position) {
             case 1:
-                fragment = new EventsFragment();
+                fragment = new AllEventsFragment();
                 break;
             case 2:
                 fragment = new ParticipateEventsFragment();
