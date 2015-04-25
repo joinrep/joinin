@@ -55,7 +55,6 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         @Override
         public void onClick(View v) {
             mItemListener.onRecyclerViewItemClicked(v, this.getPosition());
-            Log.d("EventsRecycler", "click");
         }
     }
 
@@ -71,20 +70,19 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Event event = mEvents.get(position);
+        int icon = event.getCategory().getIconId();
 
+// TODO       holder.mImage.setImageResource(icon);
         int[] colors = mContext.getResources().getIntArray(R.array.imageBackgroundColors);
         holder.mImage.setBackgroundColor(colors[new Random().nextInt(colors.length)]);
 
         holder.mTitle.setText(event.getName());
-//        holder.mAddress.setText(event.getLocation().getLocationName());
+// TODO       holder.mAddress.setText(event.getLocation().getLocationName());
 
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
         String start = format.format(event.getStartTime().getTime());
         String end = format.format(event.getEndTime().getTime());
         holder.mTime.setText(start + "-" + end);
-
-
-
     }
 
     @Override

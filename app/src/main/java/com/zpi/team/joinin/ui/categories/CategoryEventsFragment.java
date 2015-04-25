@@ -44,7 +44,7 @@ public class CategoryEventsFragment extends Fragment implements EventsRecyclerAd
         this.category = category;
         return this;
     };
-
+    // TODO ogarnac
     //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

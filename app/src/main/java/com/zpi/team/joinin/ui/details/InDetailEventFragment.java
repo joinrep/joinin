@@ -39,7 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class InDetailEventFragment extends Fragment {
-    private TextView mTitle, mCategory, mLimit, mPrice, mDescription, mLocalization;
+    private TextView mTitle, mCategory, mLimit, mPrice, mDescription, mLocalization, mStartTime, mEndTime;
     private View mLimitContent, mPriceContent;
 
     @Override
@@ -48,6 +48,8 @@ public class InDetailEventFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_details_event, container, false);
         mTitle = (TextView) rootView.findViewById(R.id.title);
         mCategory = (TextView) rootView.findViewById(R.id.dCategory);
+        mStartTime = (TextView) rootView.findViewById(R.id.start);
+        mEndTime = (TextView) rootView.findViewById(R.id.end);
         mLimit = (TextView) rootView.findViewById(R.id.limit);
         mPrice = (TextView) rootView.findViewById(R.id.pay);
         mDescription = (TextView) rootView.findViewById(R.id.description);
@@ -58,7 +60,14 @@ public class InDetailEventFragment extends Fragment {
         Event event = SessionStorage.getInstance().getEventInDetail();
         mTitle.setText(event.getName());
         mCategory.setText(event.getCategory().getName());
-//        mLocalization.setText(event.getLocation().getLocationName());
+
+        SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM, HH:mm");
+        String start = format.format(event.getStartTime().getTime());
+        String end = format.format(event.getEndTime().getTime());
+        mStartTime.setText(start);
+        mEndTime.setText(end);
+
+// TODO       mLocalization.setText(event.getLocation().getLocationName());
         mDescription.setText(event.getDescription());
 
         int limit = event.getLimit();
