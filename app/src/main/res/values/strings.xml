@@ -15,9 +15,11 @@
     <string name="navdrawer_settings">Ustawienia</string>
     <string name="navdrawer_help">Pomoc i opinie</string>
     <string name="navdrawer_subheader_favorites">ULUBIONE KATEGORIE</string>
-    !--Categories -->    <string name="add_favorite_category">Przeglądaj kategorie</string>
+    !--Categories -->
+    <string name="add_favorite_category">Przeglądaj kategorie</string>
     <string name="category_event_bike">Jazda rowerem</string>
-    !--Card -->    <string name="join">Dołącz</string>
+    !--Card -->
+    <string name="join">Dołącz</string>
     !--New event-->    <string name="action_save">Zapisz</string>
     <string name="compulsory">Pole obowiązkowe</string>
     <string name="enter_title">Wpisz tytuł</string>
@@ -33,6 +35,10 @@
     <string name="ppl2"> osoby</string>
     <string name="ppl3"> osób</string>
     <string name="currency"> zł</string>
+    !--InDetail event-->
+    <string name="free">Darmowe</string>
+    <string name="nolimit">Brak limitu</string>
+    <string name="no_participants">Brak uczestników</string>
     !--My events -->    <string name="upcoming">Nadchodzące</string>
     <string name="past">Minione</string>
     <string name="title_activity_sign_in">SignInActivity</string>

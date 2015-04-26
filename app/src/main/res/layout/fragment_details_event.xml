@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/titleBar"
+        layout="@layout/titlebar" />
+
+    <LinearLayout
+        android:id="@+id/ppl"
+        android:layout_below="@id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ic_ppl"
+            style="@style/FormIcon"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_form_people"
+            android:layout_marginLeft="@dimen/keyline_1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/FormTextView"
+            android:text="@string/no_participants"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/underline"
+        android:layout_below="@id/ppl"
+        style="@style/Divider"/>
+
+    <ScrollView
+        android:layout_below="@id/underline"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/keyline_1"
+                android:layout_marginRight="@dimen/keyline_1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ic_time"
+                    style="@style/FormIcon"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="14dp"
+                    android:baselineAlignBottom="false"
+                    android:src="@drawable/ic_form_time" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/ic_time"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/start"
+                        style="@style/FormTextView"
+                        android:text="niedziela, 29 mar 2015"
+                        android:layout_width="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/end"
+                        style="@style/FormTextView"
+                        android:text="20:15-21:25"
+                        android:padding="0dp"
+                        android:layout_width="wrap_content" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/keyline_1"
+                android:layout_marginRight="@dimen/keyline_1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ic_place"
+                    style="@style/FormIcon"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="top"
+                    android:src="@drawable/ic_form_place" />
+
+                <TextView
+                    android:id="@+id/localization"
+                    style="@style/FormTextView"
+                    android:layout_toRightOf="@id/ic_place" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/limit_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/keyline_1"
+                android:layout_marginRight="@dimen/keyline_1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ic_limit"
+                    style="@style/FormIcon"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="top"
+                    android:src="@drawable/ic_form_limit" />
+
+                <TextView
+                    android:id="@+id/limit"
+                    style="@style/FormTextView"
+                    android:layout_toRightOf="@id/ic_limit"
+                    android:text="6 osób" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/price_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/keyline_1"
+                android:layout_marginRight="@dimen/keyline_1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ic_pay"
+                    style="@style/FormIcon"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="top"
+                    android:src="@drawable/ic_form_money" />
+
+                <TextView
+                    android:id="@+id/pay"
+                    style="@style/FormTextView"
+                    android:layout_toRightOf="@id/ic_pay"
+                    android:text="25 zł" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/keyline_1"
+                android:layout_marginRight="@dimen/keyline_1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ic_desc"
+                    style="@style/FormIcon"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="top"
+                    android:src="@drawable/ic_form_description" />
+
+                <TextView
+                    android:id="@+id/description"
+                    style="@style/FormTextView"
+                    android:layout_toRightOf="@id/ic_desc" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:elevation="4dp"
+        android:background="@color/white_100"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/join"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:layout_gravity="center_vertical" />
+
+    </RelativeLayout>
+</RelativeLayout>
