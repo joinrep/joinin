@@ -1,15 +1,12 @@
-package com.zpi.team.joinin.ui.main;
+package com.zpi.team.joinin.ui.events;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
@@ -19,51 +16,40 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Arkadiusz on 2015-03-15.
+ * Created by Arkadiusz on 2015-04-08.
  */
-public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> {
+public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<ParticipateEventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
     private Context mContext;
-    private static OnRecyclerViewClickListener mItemListener;
 
-    public EventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener) {
+
+    public ParticipateEventsRecyclerAdapter(Context context, List<Event> events) {
         mEvents = events;
         mContext = context;
-        mItemListener = listener;
     }
 
-    public interface OnRecyclerViewClickListener {
-        public void onRecyclerViewItemClicked(View v, int position);
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTitle;
-        public TextView mAddress;
-        public TextView mTime;
+        public TextView mDeadline;
+        public TextView mParticipants;
         public TextView mDate;
         public ImageView mImage;
 
         public ViewHolder(View v) {
             super(v);
-            v.setOnClickListener(this);
             mTitle = (TextView)v.findViewById(R.id.eventName);
-            mAddress = (TextView)v.findViewById(R.id.eventAddress);
-            mTime = (TextView)v.findViewById(R.id.eventTime);
+            mDeadline = (TextView)v.findViewById(R.id.eventDeadline);
+            mParticipants = (TextView)v.findViewById(R.id.eventParticipants);
             mDate = (TextView)v.findViewById(R.id.eventDate);
             mImage = (ImageView)v.findViewById(R.id.eventImage);
-        }
-
-        @Override
-        public void onClick(View v) {
-            mItemListener.onRecyclerViewItemClicked(v, this.getPosition());
         }
     }
 
     @Override
-    public EventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public ParticipateEventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.events_list_item, parent, false);
+                .inflate(R.layout.participate_events_list_item, parent, false);
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
@@ -76,14 +62,19 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         holder.mImage.setBackgroundColor(event.getCategory().getColor());
 
         holder.mTitle.setText(event.getName());
-// TODO       holder.mAddress.setText(event.getLocation().getLocationName());
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         String start = timeFormat.format(event.getStartTime().getTime());
-        String end = timeFormat.format(event.getEndTime().getTime());
-        holder.mTime.setText(start + "-" + end);
+        holder.mDeadline.setText(start);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM");
         holder.mDate.setText(dateFormat.format(event.getStartTime().getTime()));
+
+        if (event.getLimit() < 0) {
+            holder.mParticipants.setText(event.getParticipantsCount() + " / " + '\u221e');
+        } else {
+            holder.mParticipants.setText(event.getParticipantsCount() + " / " + event.getLimit());
+        }
 
     }
 

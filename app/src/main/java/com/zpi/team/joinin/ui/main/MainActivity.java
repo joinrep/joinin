@@ -36,19 +36,23 @@ import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
-import com.zpi.team.joinin.ui.categories.CategoryEventsFragment;
+import com.zpi.team.joinin.ui.events.AllEventsFragment;
 import com.zpi.team.joinin.ui.common.BitmapDecoder;
-import com.zpi.team.joinin.ui.enrolled.SampleEventsFragment;
-import com.zpi.team.joinin.ui.myevents.MyEventsFragment;
+
+import com.zpi.team.joinin.ui.events.MyOwnEventsFragment;
+
+import com.zpi.team.joinin.ui.events.ByCategoryEventsFragment;
+import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
+import com.zpi.team.joinin.ui.events.ParticipateEventsFragment;
+
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
 import com.zpi.team.joinin.ui.nav.NavDrawerItem;
-import com.zpi.team.joinin.ui.participateevents.ParticipateEventsFragment;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements MyEventsFragment.OnToolbarElevationListener{
+public class MainActivity extends ActionBarActivity implements OnToolbarElevationListener {
 
     public final static int ADD_CATEGORY_POSITION = 6;
 
@@ -142,7 +146,7 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
         FragmentManager fm = getFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
-            fragment = new EventsFragment();
+            fragment = new AllEventsFragment();
             fm.beginTransaction()
                     .add(R.id.fragmentContainer, fragment)
                     .commit();
@@ -254,13 +258,13 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
         Fragment fragment = null;
         switch (position) {
             case 1:
-                fragment = new EventsFragment();
+                fragment = new AllEventsFragment();
                 break;
             case 2:
                 fragment = new ParticipateEventsFragment();
                 break;
             case 3:
-                fragment = new MyEventsFragment();
+                fragment = new MyOwnEventsFragment();
                 break;
             case ADD_CATEGORY_POSITION:
                 if (mCurrentPosition == position) {
@@ -273,7 +277,7 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
                 if (position > ADD_CATEGORY_POSITION && position <= ADD_CATEGORY_POSITION + favCategories.size()) {
                     Log.d("click", favCategories.get(position - (ADD_CATEGORY_POSITION + 1)).getName());
                     setToolbarElevation(true);
-                    fragment = new CategoryEventsFragment().setCategory(favCategories.get(position - (ADD_CATEGORY_POSITION + 1)));
+                    fragment = new ByCategoryEventsFragment().setCategory(favCategories.get(position - (ADD_CATEGORY_POSITION + 1)));
                 }
                 break;
         }

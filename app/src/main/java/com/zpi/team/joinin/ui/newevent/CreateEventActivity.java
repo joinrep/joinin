@@ -12,7 +12,6 @@ import android.view.View;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
-import com.zpi.team.joinin.ui.main.EventsFragment;
 
 public class CreateEventActivity extends ActionBarActivity  {
 

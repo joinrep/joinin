@@ -1,15 +1,12 @@
-package com.zpi.team.joinin.ui.main;
+package com.zpi.team.joinin.ui.events;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
@@ -74,7 +71,6 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
 
         holder.mImage.setImageResource(event.getCategory().getIconId());
         holder.mImage.setBackgroundColor(event.getCategory().getColor());
-
         holder.mTitle.setText(event.getName());
 // TODO       holder.mAddress.setText(event.getLocation().getLocationName());
 
