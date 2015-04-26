@@ -19,6 +19,7 @@ public class Event {
     private int limit;
     private double cost;
     private boolean canceled;
+    private int participantsCount;
 
     private Address location;
     private Category category;
@@ -26,7 +27,7 @@ public class Event {
     private List<User> participants;
     private List<Comment> comments;
 
-    public Event(int id, String name, Calendar startTime, Calendar endTime, String description, String notes, int limit, double cost, boolean canceled) {
+    public Event(int id, String name, Calendar startTime, Calendar endTime, String description, String notes, int limit, double cost, boolean canceled, int participantsCount) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -36,6 +37,7 @@ public class Event {
         this.limit = limit;
         this.cost = cost;
         this.canceled = canceled;
+        this.participantsCount = participantsCount;
     }
 
     public int getId() {
@@ -148,5 +150,13 @@ public class Event {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public int getParticipantsCount() {
+        return participantsCount;
+    }
+
+    public void setParticipantsCount(int participantsCount) {
+        this.participantsCount = participantsCount;
     }
 }

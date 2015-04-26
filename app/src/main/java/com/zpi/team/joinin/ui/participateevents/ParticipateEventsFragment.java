@@ -2,22 +2,28 @@ package com.zpi.team.joinin.ui.participateevents;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
+import com.zpi.team.joinin.ui.main.EventsRecyclerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,9 +61,16 @@ public class ParticipateEventsFragment extends Fragment {
     }
 
     private class LoadUpcomingEvents extends AsyncTask<Void, Void, List<Event>> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.loading_events), true);
+        }
+
         @Override
         protected List<Event> doInBackground(Void... args) {
-            return new EventRepository().getAll();
+            return new EventRepository().getByParticipant(SessionStorage.getInstance().getUser());
         }
 
         @Override
@@ -68,16 +81,26 @@ public class ParticipateEventsFragment extends Fragment {
 
             mSlidingTabLayout.setViewPager(mViewPager);
 
+            progressDialog.dismiss();
         }
     }
 
     class MyEventsPagerAdapter extends PagerAdapter {
         private String[] mPageTitle;
-        private List<Event> mEvents;
+        private List<Event> mUpcomingEvents = new ArrayList<Event>();
+        private List<Event> mHistoryEvents = new ArrayList<Event>();
 
         MyEventsPagerAdapter(String[] titles, List<Event> events){
             mPageTitle = titles;
-            mEvents = events;
+
+            long now = System.currentTimeMillis();
+            for (Event event : events) {
+                if (event.getEndTime().getTimeInMillis() >= now) {
+                    mUpcomingEvents.add(event);
+                } else {
+                    mHistoryEvents.add(0, event);
+                }
+            }
         }
 
         @Override
@@ -86,14 +109,30 @@ public class ParticipateEventsFragment extends Fragment {
                     container, false);
             container.addView(view);
 
+            TextView emptyView = (TextView) view.findViewById(R.id.empty_view);
             RecyclerView eventsList = (RecyclerView) view.findViewById(R.id.tabEventsList);
             eventsList.setHasFixedSize(true);
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             eventsList.setLayoutManager(layoutManager);
 
-            ParticipateEventsRecyclerAdapter adapter = new ParticipateEventsRecyclerAdapter(getActivity(), mEvents);
+            List<Event> events;
+            long now = System.currentTimeMillis();
+            switch (position) {
+                case 0:
+                    events = mUpcomingEvents;
+                    break;
+                case 1:
+                    events = mHistoryEvents;
+                    break;
+                default:
+                    events = new ArrayList<Event>();
+            }
 
+            ParticipateEventsRecyclerAdapter adapter = new ParticipateEventsRecyclerAdapter(getActivity(), events);
             eventsList.setAdapter(adapter);
+
+            emptyView.setVisibility(eventsList.getAdapter().getItemCount() > 0 ? View.GONE : View.VISIBLE);
+            eventsList.setVisibility(eventsList.getAdapter().getItemCount() > 0 ? View.VISIBLE : View.GONE);
 
             return view;
         }

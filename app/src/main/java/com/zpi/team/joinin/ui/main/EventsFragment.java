@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
@@ -25,6 +26,7 @@ import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
+import com.zpi.team.joinin.ui.categories.CategoryEventsFragment;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
 import com.zpi.team.joinin.ui.newevent.CreateEventFragment;
 
@@ -38,6 +40,7 @@ public class EventsFragment extends Fragment {
     private static int CREATE_EVENT_REQUEST = 1;
     private List<Event> mEvents;
     private RecyclerView mEventsList;
+    private TextView mEmptyView;
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -51,6 +54,7 @@ public class EventsFragment extends Fragment {
 //            view = super.onCreateView(inflater, container, savedInstanceState);
 //        }
 
+        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         mEventsList = (RecyclerView) view.findViewById(R.id.eventsList);
         mEventsList.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -112,11 +116,15 @@ public class EventsFragment extends Fragment {
         }
     }
 
+    private void checkIfEmpty() {
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(mEventsList.getAdapter().getItemCount() > 0 ? View.GONE : View.VISIBLE);
+        }
+    }
 
     private class LoadAllEvents extends AsyncTask<Void, Void, List<Event>> {
         ProgressDialog progressDialog;
 
-        //TODO crash przy zmianie orientacji
         @Override
         protected void onPreExecute() {
             progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.loading_events), true);
@@ -130,6 +138,9 @@ public class EventsFragment extends Fragment {
         protected void onPostExecute(List<Event> events) {
             EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events);
             mEventsList.setAdapter(adapter);
+
+            EventsFragment.this.checkIfEmpty();
+
             progressDialog.dismiss();
         }
     }

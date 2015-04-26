@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
@@ -37,6 +38,7 @@ public class CategoryEventsFragment extends Fragment {
     private Category category = null;
     private static int CREATE_EVENT_REQUEST = 1;
     private RecyclerView mEventsList;
+    private TextView mEmptyView;
 
     private RecyclerView.LayoutManager mLayoutManager;
 
@@ -55,6 +57,7 @@ public class CategoryEventsFragment extends Fragment {
 //            view = super.onCreateView(inflater, container, savedInstanceState);
 //        }
 
+        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         mEventsList = (RecyclerView) view.findViewById(R.id.eventsList);
         mEventsList.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -105,6 +108,12 @@ public class CategoryEventsFragment extends Fragment {
         }
     }
 
+    private void checkIfEmpty() {
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(mEventsList.getAdapter().getItemCount() > 0 ? View.GONE : View.VISIBLE);
+        }
+    }
+
     private class LoadEventsByCategory extends AsyncTask<Void, Void, List<Event>> {
         ProgressDialog progressDialog;
 
@@ -120,6 +129,9 @@ public class CategoryEventsFragment extends Fragment {
         protected void onPostExecute(List<Event> events) {
             EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events);
             mEventsList.setAdapter(adapter);
+
+            CategoryEventsFragment.this.checkIfEmpty();
+
             progressDialog.dismiss();
         }
     }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Random;
 
@@ -48,7 +49,7 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
     public ParticipateEventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.myevents_list_item, parent, false);
+                .inflate(R.layout.participate_events_list_item, parent, false);
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
@@ -57,10 +58,23 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
     public void onBindViewHolder(ViewHolder holder, int position) {
         Event event = mEvents.get(position);
 
-        int[] colors = mContext.getResources().getIntArray(R.array.imageBackgroundColors);
-        holder.mImage.setBackgroundColor(colors[new Random().nextInt(colors.length)]);
+        holder.mImage.setImageResource(event.getCategory().getIconId());
+        holder.mImage.setBackgroundColor(event.getCategory().getColor());
 
         holder.mTitle.setText(event.getName());
+
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String start = timeFormat.format(event.getStartTime().getTime());
+        holder.mDeadline.setText(start);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM");
+        holder.mDate.setText(dateFormat.format(event.getStartTime().getTime()));
+
+        if (event.getLimit() < 0) {
+            holder.mParticipants.setText(event.getParticipantsCount() + " / " + '\u221e');
+        } else {
+            holder.mParticipants.setText(event.getParticipantsCount() + " / " + event.getLimit());
+        }
 
     }
 

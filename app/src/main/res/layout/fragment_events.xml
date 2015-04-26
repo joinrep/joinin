@@ -34,4 +34,13 @@
         android:src="@drawable/ic_add"
         android:stateListAnimator="@anim/button_elevation"
         android:tint="@android:color/white" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/no_events_available" />
+
 </RelativeLayout>

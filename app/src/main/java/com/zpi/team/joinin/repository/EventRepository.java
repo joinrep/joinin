@@ -36,10 +36,11 @@ public class EventRepository implements IRepository<Event> {
     private JSONParser jParser = new JSONParser();
     private static String url_all_events = hostname + "get_all_events.php";
     private static String url_event_by_id = hostname + "get_event_by_id.php";
-    private static String url_events_by_catgory = hostname + "get_events_by_catgory.php";
     private static String url_create_event = hostname + "create_event.php";
     private static String url_participate_event = hostname + "participate_event.php";
     private static String url_events_by_category = hostname + "get_events_by_category.php";
+    private static String url_events_by_participant = hostname + "get_events_by_participant.php";
+
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -52,12 +53,13 @@ public class EventRepository implements IRepository<Event> {
     private static final String TAG_LIMIT = "size_limit";
     private static final String TAG_COST = "cost";
     private static final String TAG_CANCELED = "canceled";
+    private static final String TAG_PARTICIPANTS = "participants";
     private static final String TAG_CATEGORY_ID = "category_id";
 
     public Event getById(int eventID) {
         // TODO
         try{Thread.sleep(1000);} catch (InterruptedException e){};
-        Event event = new Event(1,"eventName1", Calendar.getInstance(), Calendar.getInstance(), "eventDescription1", "eventNotes", 10, 0, false);
+        Event event = new Event(1,"eventName1", Calendar.getInstance(), Calendar.getInstance(), "eventDescription1", "eventNotes", 10, 0, false, 0);
         event.setOrganizer(new User(1,"organizerFName1", "organizerLName1"));
         event.setParticipants(Arrays.asList(new User[]{new User(2,"participantFName1", "participantLName1"), new User(3,"participantFName2", "participantLName2")}));
         event.setCategory(new Category(0,"kategoria", "iconPath", Color.parseColor("#000000")));
@@ -75,6 +77,26 @@ public class EventRepository implements IRepository<Event> {
         return event;
     }
 
+    private Event parseSimpleEvent(JSONObject eventJSON) throws JSONException, ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        int id = eventJSON.getInt(TAG_ID);
+        String name = eventJSON.getString(TAG_NAME);
+        Calendar start = Calendar.getInstance();
+        start.setTime(dateFormat.parse(eventJSON.getString(TAG_START)));
+        Calendar end = Calendar.getInstance();
+        end.setTime(dateFormat.parse(eventJSON.getString(TAG_END)));
+        int limit = eventJSON.getInt(TAG_LIMIT);
+        double cost = eventJSON.getDouble(TAG_COST);
+        int categoryId = eventJSON.getInt(TAG_CATEGORY_ID);
+        int participantsCount = eventJSON.getInt(TAG_PARTICIPANTS);
+
+        Event event = new Event(id, name, start, end, "", "", limit, cost, false, participantsCount);
+        event.setCategory(SessionStorage.getInstance().getCategory(categoryId));
+
+        return event;
+    }
+
     public List<Event> getAll() {
         return getAll(false);
     }
@@ -83,7 +105,7 @@ public class EventRepository implements IRepository<Event> {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         JSONObject json = jParser.makeHttpRequest(url_all_events, "GET", params);
 
         Log.d("All Events: ", json.toString());
@@ -97,18 +119,7 @@ public class EventRepository implements IRepository<Event> {
                 for (int i = 0; i < events.length(); i++) {
                     JSONObject eventJSON = events.getJSONObject(i);
 
-                    int id = eventJSON.getInt(TAG_ID);
-                    String name = eventJSON.getString(TAG_NAME);
-                    Calendar start = Calendar.getInstance();
-                    start.setTime(dateFormat.parse(eventJSON.getString(TAG_START)));
-                    Calendar end = Calendar.getInstance();
-                    end.setTime(dateFormat.parse(eventJSON.getString(TAG_END)));
-                    int limit = eventJSON.getInt(TAG_LIMIT);
-                    double cost = eventJSON.getDouble(TAG_COST);
-                    int categoryId = eventJSON.getInt(TAG_CATEGORY_ID);
-
-                    Event event = new Event(id, name, start, end, "", "", limit, cost, false);
-                    event.setCategory(SessionStorage.getInstance().getCategory(categoryId));
+                    Event event = parseSimpleEvent(eventJSON);
 
                     result.add(event);
                 }
@@ -130,10 +141,10 @@ public class EventRepository implements IRepository<Event> {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("category_id", "" + category.getId()));
         params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         JSONObject json = jParser.makeHttpRequest(url_events_by_category, "GET", params);
 
-        Log.d("All Events: ", json.toString());
+        Log.d("Category Events: ", json.toString());
 
         List<Event> result = new ArrayList<Event>();
 
@@ -144,17 +155,44 @@ public class EventRepository implements IRepository<Event> {
                 for (int i = 0; i < events.length(); i++) {
                     JSONObject eventJSON = events.getJSONObject(i);
 
-                    int id = eventJSON.getInt(TAG_ID);
-                    String name = eventJSON.getString(TAG_NAME);
-                    Calendar start = Calendar.getInstance();
-                    start.setTime(dateFormat.parse(eventJSON.getString(TAG_START)));
-                    Calendar end = Calendar.getInstance();
-                    end.setTime(dateFormat.parse(eventJSON.getString(TAG_END)));
-                    int limit = eventJSON.getInt(TAG_LIMIT);
-                    double cost = eventJSON.getDouble(TAG_COST);
+                    Event event = parseSimpleEvent(eventJSON);
 
-                    Event event = new Event(id, name, start, end, "", "", limit, cost, false);
-                    event.setCategory(category);
+                    result.add(event);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public List<Event> getByParticipant(User participant) {
+        return getByParticipant(participant, false);
+    }
+
+    public List<Event> getByParticipant(User participant, boolean canceled) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user_id", "" + participant.getUserId()));
+        params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
+
+        JSONObject json = jParser.makeHttpRequest(url_events_by_participant, "GET", params);
+
+        Log.d("Participant Events: ", json.toString());
+
+        List<Event> result = new ArrayList<Event>();
+
+        try {
+            int success = json.getInt(TAG_SUCCESS);
+            if (success == 1) {
+                JSONArray events = json.getJSONArray(TAG_EVENTS);
+                for (int i = 0; i < events.length(); i++) {
+                    JSONObject eventJSON = events.getJSONObject(i);
+
+                    Event event = parseSimpleEvent(eventJSON);
+
                     result.add(event);
                 }
             }
@@ -167,16 +205,6 @@ public class EventRepository implements IRepository<Event> {
     }
 
     public void create(Event entity) {
-
-        /*Calendar startDate = Calendar.getInstance();
-        Calendar endDate = Calendar.getInstance();
-        startDate.setTime(new Date(new Date().getTime()));
-        endDate.setTime(new Date(new Date().getTime()+1000*60*60*2));
-        entity = new Event(0,"eventName", startDate, endDate, "eventDescription", "eventNotes", 10, 0, false);
-        entity.setCategory(new Category(1, "", ""));
-        entity.setLocation(new Address(1, "", "", "", ""));
-        entity.setOrganizer(new User("1", "", ""));*/
-
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("event_name", entity.getName()));
         params.add(new BasicNameValuePair("start_time", "" + entity.getStartTime().getTimeInMillis()));

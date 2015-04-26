@@ -245,7 +245,7 @@ public class CreateEventFragment extends Fragment {
         int limit = (int) parseEditText(mLimitSwitch, mLimit, -1d);
         double cost = parseEditText(mPaySwitch, mPay, 0d);
 
-        final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, limit, cost, false);
+        final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, limit, cost, false, 0);
 
         String out = "Title: " + title + "\nStart time: " + mCalendarStart.toString() + "\nEnd time: " + mCalendarEnd.toString() +
                 "\nDescription: " + description + "\nAddress: " + address + "\nLimit: " + limit + "\nCost: " + cost;

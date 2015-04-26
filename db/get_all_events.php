@@ -4,10 +4,10 @@ require_once(dirname(__FILE__).'/db_connect.php');
 $db = new DB_CONNECT();
 mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
-$query = "SELECT * FROM Event E JOIN Category C ON E.category = C.category_id WHERE E.canceled = 'N'";
+$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Event E JOIN Category C ON E.category = C.category_id WHERE E.canceled = 'N'";
 if (isset($_GET['canceled'])) {
 	if ($_GET['canceled'] === 'Y') {
-		$query = "SELECT * FROM Event E JOIN Category C ON E.category = C.category_id";
+		$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Event E";
 	}
 }
 
@@ -23,7 +23,12 @@ if (mysql_num_rows($result) > 0) {
         $event["size_limit"] = $row["size_limit"];
         $event["cost"] = $row["cost"];
 		$event["category_id"] = $row["category_id"];
-					
+		if ($row["participants"]) {
+			$event["participants"] = $row["participants"];
+		} else {
+			$event["participants"] = 0;
+		}
+
         array_push($response["events"], $event);
     }
     $response["success"] = 1;

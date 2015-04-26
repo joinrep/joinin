@@ -1,16 +1,16 @@
 ﻿<?php
 $response = array();
-if (isset($_GET["category_id"])) {
-    $category_id = $_GET['category_id'];
+if (isset($_GET["user_id"])) {
+    $user_id = $_GET['user_id'];
 	
 	require_once(dirname(__FILE__).'/db_connect.php');
 	$db = new DB_CONNECT();
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
-
-	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Event E WHERE canceled = 'N' AND category = $category_id";
+	
+	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Participate P JOIN Event E ON P.joined_event = E.event_id WHERE canceled = 'N' AND participant_id = $user_id AND E.start_time < NOW() ORDER BY E.start_time DESC";
 	if (isset($_GET['canceled'])) {
 		if ($_GET['canceled'] === 'Y') {
-			$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Event E WHERE category = $category_id";
+			$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Participate P JOIN Event E ON P.joined_event = E.event_id WHERE participant_id = $user_id AND E.start_time < NOW() ORDER BY E.start_time DESC";
 		}
 	}
 
@@ -25,12 +25,12 @@ if (isset($_GET["category_id"])) {
 			$event["end_time"] = $row["end_time"];
 			$event["size_limit"] = $row["size_limit"];
 			$event["cost"] = $row["cost"];
-			$event["category_id"] = $category_id; 
+			$event["category_id"] = $row["category"];
 			if ($row["participants"]) {
 				$event["participants"] = $row["participants"];
 			} else {
 				$event["participants"] = 0;
-			}		
+			}	
 			
 			array_push($response["events"], $event);
 		}

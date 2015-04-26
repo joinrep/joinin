@@ -42,4 +42,7 @@
 
     <string name="facebook_app_id">1559652434287421</string>
 
+    <string name="no_events_available">Nie znaleziono wydarzeń</string>
+
+
 </resources>
