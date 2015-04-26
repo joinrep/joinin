@@ -90,11 +90,16 @@ INSERT INTO MyUser (facebook_id, first_name, last_name) VALUES
 (1, 'Marek', 'Kos');
 
 INSERT INTO Category (category_id, category_name, icon_path) VALUES
-(1, 'Piłka nożna', 'icon.png'),
-(2, 'Koszykówka', 'icon.png');
+(10, 'Piłka nożna', 'ic_category_football'),
+(20, 'Siatkówka', 'ic_category_volleyball'),
+(30, 'Koszykówka', 'ic_category_basketball'),
+(40, 'Wycieczki rowerowe', 'ic_category_bike'),
+(50, 'Wycieczki piesze', 'ic_category_hiking'),
+(60, 'Kręgle', 'ic_category_bowling'),
+(70, 'Tenis', 'ic_category_tennis');
 
 INSERT INTO Event (event_id, event_name, start_time, end_time, description, size_limit, cost, canceled, category, organizer, address) VALUES
-(1, 'Gała po szkole', '2015-03-15 15:00:00', '2015-03-15 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 20, 0, 'N', 1, 1, 1),
-(2, 'Faza grupowa klubu seniora', '2015-03-15 16:00:00', '2015-03-15 17:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 5, 'N', 1, 1, 1),
-(3, 'DUNK MASTER', '2015-03-22 12:00:00', '2015-03-22 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 2.50, 'Y', 2, 1, 1),
-(4, 'Wiosenne niedzielne popołudnie z przyjaciółmi grając w koszykówkę', '2015-03-21 15:00:00', '2015-03-21 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 100, 5.50, 'N', 2, 1, 1);
+(1, 'Gała po szkole', '2015-03-15 15:00:00', '2015-03-15 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 20, 0, 'N', 10, 1, 1),
+(2, 'Faza grupowa klubu seniora', '2015-03-15 16:00:00', '2015-03-15 17:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 5, 'N', 10, 1, 1),
+(3, 'DUNK MASTER', '2015-03-22 12:00:00', '2015-03-22 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 10, 2.50, 'Y', 20, 1, 1),
+(4, 'Wiosenne niedzielne popołudnie z przyjaciółmi grając w koszykówkę', '2015-03-21 15:00:00', '2015-03-21 18:00:00', 'Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis. Jakiś fajny i długi opis.', 100, 5.50, 'N', 20, 1, 1);

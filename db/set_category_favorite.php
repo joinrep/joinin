@@ -14,7 +14,7 @@ if(isset($_POST['user_id']) && isset($_POST['category_id']) && isset($_POST['is_
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 	
 
-	if ($is_favorite) {
+	if ($is_favorite == 'Y') {
 		$query = "INSERT INTO Favorites(subscriber, category) VALUES ('$user_id', $category_id)";
 	} else {
 		$query = "DELETE FROM Favorites WHERE subscriber = '$user_id' AND category = $category_id";
