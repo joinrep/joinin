@@ -23,7 +23,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -37,19 +36,17 @@ import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
-import com.zpi.team.joinin.ui.common.AllEventsFragment;
+import com.zpi.team.joinin.ui.events.AllEventsFragment;
 import com.zpi.team.joinin.ui.common.BitmapDecoder;
 
-import com.zpi.team.joinin.ui.common.MyEventsFragment;
+import com.zpi.team.joinin.ui.events.MyOwnEventsFragment;
 
-import com.zpi.team.joinin.ui.common.CategoryEventsFragment;
-import com.zpi.team.joinin.ui.common.MyEventsFragment;
+import com.zpi.team.joinin.ui.events.ByCategoryEventsFragment;
 import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
-import com.zpi.team.joinin.ui.participateevents.ParticipateEventsFragment;
+import com.zpi.team.joinin.ui.events.ParticipateEventsFragment;
 
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
 import com.zpi.team.joinin.ui.nav.NavDrawerItem;
-import com.zpi.team.joinin.ui.participateevents.ParticipateEventsFragment;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -149,7 +146,6 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         FragmentManager fm = getFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
-            Toast.makeText(this, "ajednak", Toast.LENGTH_SHORT).show();
             fragment = new AllEventsFragment();
             fm.beginTransaction()
                     .add(R.id.fragmentContainer, fragment)
@@ -268,7 +264,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
                 fragment = new ParticipateEventsFragment();
                 break;
             case 3:
-                fragment = new MyEventsFragment();
+                fragment = new MyOwnEventsFragment();
                 break;
             case ADD_CATEGORY_POSITION:
                 if (mCurrentPosition == position) {
@@ -281,7 +277,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
                 if (position > ADD_CATEGORY_POSITION && position <= ADD_CATEGORY_POSITION + favCategories.size()) {
                     Log.d("click", favCategories.get(position - (ADD_CATEGORY_POSITION + 1)).getName());
                     setToolbarElevation(true);
-                    fragment = new CategoryEventsFragment().setCategory(favCategories.get(position - (ADD_CATEGORY_POSITION + 1)));
+                    fragment = new ByCategoryEventsFragment().setCategory(favCategories.get(position - (ADD_CATEGORY_POSITION + 1)));
                 }
                 break;
         }

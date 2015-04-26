@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui.myevents;
+package com.zpi.team.joinin.ui.events;
 
 import android.support.v4.view.ViewPager;
 import android.content.Context;

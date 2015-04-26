@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -36,10 +37,11 @@ import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.newevent.CategoryAdapter;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class InDetailEventFragment extends Fragment {
-    private TextView mTitle, mCategory, mLimit, mPrice, mDescription, mLocalization, mStartTime, mEndTime;
+    private TextView mTitle, mCategory, mPpl, mLimit, mPrice, mDescription, mLocalization, mStartTime, mEndTime;
     private View mLimitContent, mPriceContent;
 
     @Override
@@ -47,7 +49,8 @@ public class InDetailEventFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details_event, container, false);
         mTitle = (TextView) rootView.findViewById(R.id.title);
-        mCategory = (TextView) rootView.findViewById(R.id.dCategory);
+        mCategory = (TextView) rootView.findViewById(R.id.category);
+        mPpl = (TextView) rootView.findViewById(R.id.participants_toggle);
         mStartTime = (TextView) rootView.findViewById(R.id.start);
         mEndTime = (TextView) rootView.findViewById(R.id.end);
         mLimit = (TextView) rootView.findViewById(R.id.limit);
@@ -60,6 +63,8 @@ public class InDetailEventFragment extends Fragment {
         Event event = SessionStorage.getInstance().getEventInDetail();
         mTitle.setText(event.getName());
         mCategory.setText(event.getCategory().getName());
+
+        mPpl.setOnClickListener(mPplDialogListener);
 
         SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM, HH:mm");
         String start = format.format(event.getStartTime().getTime());
@@ -78,17 +83,27 @@ public class InDetailEventFragment extends Fragment {
         if(price != 0) mPrice.setText(price + " " + getString(R.string.currency));
         else mPriceContent.setVisibility(View.GONE);
 
-//        mCalendarStart = Calendar.getInstance();
-//        mCalendarEnd = Calendar.getInstance();
-//        mDateFormat = new SimpleDateFormat("EEEE, d MMM yyyy");
-//        String date = mDateFormat.format(mCalendarStart.getTime());
-//        mStartDate.setText(date);
-//        mEndDate.setText(date);
-
-
-
         return rootView;
     }
+
+    View.OnClickListener mPplDialogListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String value = ((TextView)v).getText().toString();
+//            if(value != getString(R.string.no_participants)){
+                Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_participants);
+                dialog.setTitle("Uczestnicy");
+                ListView list = (ListView)dialog.findViewById(R.id.dialog_participants);
+                ArrayList<String> participants = new ArrayList<>();
+                participants.add("Jan Kowalski");
+                participants.add("Janina Kowalska");
+
+                list.setAdapter(new DialogListAdapter(getActivity(), participants));
+                dialog.show();
+//            }
+        }
+    };
 
     private void setPpl(int number){
         String ppl = "" + number ;

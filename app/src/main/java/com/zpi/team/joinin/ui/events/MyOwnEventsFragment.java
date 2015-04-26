@@ -1,7 +1,6 @@
-package com.zpi.team.joinin.ui.common;
+package com.zpi.team.joinin.ui.events;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,28 +9,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
-import com.zpi.team.joinin.repository.EventRepository;
-import com.zpi.team.joinin.signin.InternetConnection;
-import com.zpi.team.joinin.ui.myevents.MyEventsRecyclerAdapter;
-import com.zpi.team.joinin.ui.myevents.SlidingTabLayout;
+import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
 
 import java.util.List;
 
 /**
  * Created by Arkadiusz on 2015-04-25.
  */
-public class MyEventsFragment extends EventsRecyclerFragment {
+public class MyOwnEventsFragment extends EventsRecyclerFragment {
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
     private OnToolbarElevationListener mOnToolbarElevationListener;
 
     @Override
     public int getType() {
-        return OWN;
+        return MY_OWN;
     }
 
     @Override
@@ -99,7 +94,7 @@ public class MyEventsFragment extends EventsRecyclerFragment {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             eventsList.setLayoutManager(layoutManager);
 
-            MyEventsRecyclerAdapter adapter = new MyEventsRecyclerAdapter(getActivity(), mEvents);
+            MyOwnEventsRecyclerAdapter adapter = new MyOwnEventsRecyclerAdapter(getActivity(), mEvents);
 
             eventsList.setAdapter(adapter);
 

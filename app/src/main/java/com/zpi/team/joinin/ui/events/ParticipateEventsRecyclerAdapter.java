@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui.participateevents;
+package com.zpi.team.joinin.ui.events;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

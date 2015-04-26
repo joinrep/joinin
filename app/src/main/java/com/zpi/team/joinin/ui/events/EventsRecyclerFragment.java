@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui.common;
+package com.zpi.team.joinin.ui.events;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -26,7 +26,6 @@ import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
-import com.zpi.team.joinin.ui.main.EventsRecyclerAdapter;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
 
 import java.util.List;
@@ -39,9 +38,10 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
     private static int INDETAIL_EVENT_REQUEST = -2;
     public final static int ALL = 1;
     public final static int BY_CATEGORY = 2;
-    public final static int OWN = 3;
+    public final static int MY_OWN = 3;
+    public final static int PARTICIPATE = 4;
 
-    private RecyclerView mEventsList;
+    private RecyclerView mEventsRecycler;
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<Event> mEvents;
@@ -66,10 +66,10 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
 //            view = super.onCreateView(inflater, container, savedInstanceState);
 //        }
 
-        mEventsList = (RecyclerView) view.findViewById(R.id.eventsList);
-        mEventsList.setHasFixedSize(true);
+        mEventsRecycler = (RecyclerView) view.findViewById(R.id.eventsList);
+        mEventsRecycler.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mEventsList.setLayoutManager(mLayoutManager);
+        mEventsRecycler.setLayoutManager(mLayoutManager);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
@@ -78,7 +78,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
             public void onRefresh() {
                 //TODO jesli zmieni sie cos w bazie ofc
                 Log.d("EventsFragment", "refresh()");
-                mEventsList.getAdapter().notifyDataSetChanged();
+                mEventsRecycler.getAdapter().notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -133,7 +133,6 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
 
     @Override
     public void onRecyclerViewItemClicked(View v, int position) {
-        Log.d("EventsRecycler", " " + position);
         SessionStorage.getInstance().setEventInDetail(mEvents.get(position));
         startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
     }
@@ -151,11 +150,14 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
                 case ALL:
                     mEvents = new EventRepository().getAll();
                     break;
+                case PARTICIPATE:
+                    mEvents = new EventRepository().getAll();
+                    break;
+                case MY_OWN:
+                    mEvents = new EventRepository().getAll();
+                    break;
                 case BY_CATEGORY:
                     mEvents = new EventRepository().getByCategory(getCategory());
-                    break;
-                case OWN:
-                    mEvents = new EventRepository().getAll();
                     break;
             }
             return null;
@@ -170,7 +172,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
 
     public void onCustomPostExecute(List<Event> events) {
         EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events, EventsRecyclerFragment.this);
-        mEventsList.setAdapter(adapter);
+        mEventsRecycler.setAdapter(adapter);
     }
 
 }

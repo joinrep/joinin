@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui.myevents;
+package com.zpi.team.joinin.ui.events;
 
 import android.graphics.Color;
 import android.R;

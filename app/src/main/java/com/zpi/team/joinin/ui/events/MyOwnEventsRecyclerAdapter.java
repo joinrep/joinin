@@ -1,4 +1,4 @@
-package com.zpi.team.joinin.ui.myevents;
+package com.zpi.team.joinin.ui.events;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -17,12 +17,12 @@ import java.util.Random;
 /**
  * Created by Arkadiusz on 2015-04-08.
  */
-public class MyEventsRecyclerAdapter extends RecyclerView.Adapter<MyEventsRecyclerAdapter.ViewHolder> {
+public class MyOwnEventsRecyclerAdapter extends RecyclerView.Adapter<MyOwnEventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
     private Context mContext;
 
 
-    public MyEventsRecyclerAdapter(Context context, List<Event> events) {
+    public MyOwnEventsRecyclerAdapter(Context context, List<Event> events) {
         mEvents = events;
         mContext = context;
     }
@@ -45,7 +45,7 @@ public class MyEventsRecyclerAdapter extends RecyclerView.Adapter<MyEventsRecycl
     }
 
     @Override
-    public MyEventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public MyOwnEventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.myevents_list_item, parent, false);

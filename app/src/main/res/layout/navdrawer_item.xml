@@ -15,7 +15,8 @@
         android:layout_height="24dp"
         android:layout_width="24dp"
         android:layout_marginRight="32dp"
-        android:src="@drawable/ic_launcher"/>
+        android:src="@drawable/ic_category_basketball"
+        android:tint="@color/icon_tint"/>
 
     <TextView
         android:id="@+id/nav_drawer_title"

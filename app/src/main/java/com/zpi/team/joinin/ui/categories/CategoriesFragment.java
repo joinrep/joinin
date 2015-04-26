@@ -1,7 +1,6 @@
 package com.zpi.team.joinin.ui.categories;
 
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,14 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.repository.CategoryRepository;
-import com.zpi.team.joinin.ui.common.CategoryEventsFragment;
+import com.zpi.team.joinin.ui.events.ByCategoryEventsFragment;
 import com.zpi.team.joinin.ui.main.MainActivity;
 
 import java.util.List;
@@ -43,7 +41,7 @@ public class CategoriesFragment extends Fragment {
             public void onItemClick(AdapterView<?> av, View view, int position, long arg3) {
                 Log.d("ListView", categories.get(position).getName());
                 Category category = categories.get(position);
-                Fragment fragment = new CategoryEventsFragment().setCategory(category);
+                Fragment fragment = new ByCategoryEventsFragment().setCategory(category);
 
                 int menuPosition = 1;
                 if (category.isUserFavorite()) {

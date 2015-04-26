@@ -1,16 +1,15 @@
-package com.zpi.team.joinin.ui.common;
+package com.zpi.team.joinin.ui.events;
 
-import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Category;
 
 /**
  * Created by Arkadiusz on 2015-04-25.
  */
-public class CategoryEventsFragment extends EventsRecyclerFragment {
+public class ByCategoryEventsFragment extends EventsRecyclerFragment {
 
     private Category mCategory;
 
-    public CategoryEventsFragment setCategory(Category c){
+    public ByCategoryEventsFragment setCategory(Category c){
         mCategory = c;
         return this;
     }

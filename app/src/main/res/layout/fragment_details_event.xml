@@ -23,10 +23,12 @@
             android:layout_marginLeft="@dimen/keyline_1" />
 
         <TextView
+            android:id="@+id/participants_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/FormTextView"
-            android:text="@string/no_participants"/>
+            android:text="@string/no_participants"
+            android:gravity="left" />
     </LinearLayout>
 
     <View
@@ -181,7 +183,8 @@
             android:background="?android:attr/selectableItemBackground"
             android:layout_margin="8dp"
             android:gravity="center"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 </RelativeLayout>
