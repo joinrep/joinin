@@ -1,9 +1,11 @@
 package com.zpi.team.joinin.repository;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.zpi.team.joinin.database.JSONParser;
+import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Address;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Comment;
@@ -50,22 +52,21 @@ public class EventRepository implements IRepository<Event> {
     private static final String TAG_LIMIT = "size_limit";
     private static final String TAG_COST = "cost";
     private static final String TAG_CANCELED = "canceled";
-    private static final String TAG_CATEGORY_NAME = "category_name";
-    private static final String TAG_CATEGORY_ICON = "category_icon";
+    private static final String TAG_CATEGORY_ID = "category_id";
 
     public Event getById(int eventID) {
         // TODO
         try{Thread.sleep(1000);} catch (InterruptedException e){};
         Event event = new Event(1,"eventName1", Calendar.getInstance(), Calendar.getInstance(), "eventDescription1", "eventNotes", 10, 0, false);
-        event.setOrganizer(new User("1","organizerFName1", "organizerLName1"));
-        event.setParticipants(Arrays.asList(new User[]{new User("2","participantFName1", "participantLName1"), new User("3","participantFName2", "participantLName2")}));
-        event.setCategory(new Category(0,"kategoria", "iconPath"));
+        event.setOrganizer(new User(1,"organizerFName1", "organizerLName1"));
+        event.setParticipants(Arrays.asList(new User[]{new User(2,"participantFName1", "participantLName1"), new User(3,"participantFName2", "participantLName2")}));
+        event.setCategory(new Category(0,"kategoria", "iconPath", Color.parseColor("#000000")));
         event.setLocation(new Address(1, "Wrocław", "Żelazna 40", "", "Hala sportowa"));
 
         Comment comment = new Comment(1,Calendar.getInstance(), "Komentarz1");
         Comment subcomment = new Comment(1,Calendar.getInstance(), "Komentarz1");
-        comment.setAuthor(new User("2","participantFName1", "participantLName1"));
-        subcomment.setAuthor(new User("2","participantFName1", "participantLName1"));
+        comment.setAuthor(new User(2,"participantFName1", "participantLName1"));
+        subcomment.setAuthor(new User(2,"participantFName1", "participantLName1"));
         subcomment.setParentComment(comment);
         comment.setChildrenComments(Arrays.asList(new Comment[]{subcomment}));
         comment.setCommentedEvent(event);
@@ -104,12 +105,11 @@ public class EventRepository implements IRepository<Event> {
                     end.setTime(dateFormat.parse(eventJSON.getString(TAG_END)));
                     int limit = eventJSON.getInt(TAG_LIMIT);
                     double cost = eventJSON.getDouble(TAG_COST);
-                    String categoryName = eventJSON.getString(TAG_CATEGORY_NAME);
-                    String categoryIcon = eventJSON.getString(TAG_CATEGORY_ICON);
+                    int categoryId = eventJSON.getInt(TAG_CATEGORY_ID);
 
                     Event event = new Event(id, name, start, end, "", "", limit, cost, false);
-                    // TODO ctaegory id from response
-                    event.setCategory(new Category(0, categoryName, categoryIcon));
+                    event.setCategory(SessionStorage.getInstance().getCategory(categoryId));
+
                     result.add(event);
                 }
             }
@@ -191,7 +191,7 @@ public class EventRepository implements IRepository<Event> {
         params.add(new BasicNameValuePair("street1", entity.getLocation().getStreet1()));
         params.add(new BasicNameValuePair("street2", entity.getLocation().getStreet2()));
         params.add(new BasicNameValuePair("location_name", entity.getLocation().getLocationName()));
-        params.add(new BasicNameValuePair("organizer", entity.getOrganizer().getFacebookId()));
+        params.add(new BasicNameValuePair("organizer", "" + entity.getOrganizer().getUserId()));
 
         JSONObject json = jParser.makeHttpRequest(url_create_event, "POST", params);
         // TODO catch exceptions
@@ -215,7 +215,7 @@ public class EventRepository implements IRepository<Event> {
     public void participate(Event event, User user, boolean participate) {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("event_id", "" + event.getId()));
-            params.add(new BasicNameValuePair("user_id", user.getFacebookId()));
+            params.add(new BasicNameValuePair("user_id", "" + user.getUserId()));
             params.add(new BasicNameValuePair("participate", "" + participate));
             JSONObject json = jParser.makeHttpRequest(url_participate_event, "POST", params);
             // check for success tag

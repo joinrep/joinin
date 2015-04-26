@@ -74,13 +74,11 @@ public class CategoriesListAdapter extends BaseAdapter {
         holder.categoryStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ToggleFavorite(category, categoryStar).execute();
+                //new ToggleFavorite(category, categoryStar).execute();
+                toggleFavCategory(category, categoryStar);
+
             }
         });
-
-
-
-
         return convertView;
     }
 
@@ -89,6 +87,17 @@ public class CategoriesListAdapter extends BaseAdapter {
         TextView categoryName;
     }
 
+    private void toggleFavCategory(Category category, ImageView categoryStar) {
+        category.setUserFavorite(!category.isUserFavorite());
+        if (category.isUserFavorite()) {
+            categoryStar.setImageResource(R.drawable.ic_category_star);
+        } else {
+            categoryStar.setImageResource(R.drawable.ic_category_star_outline);
+        }
+        ((MainActivity) mContext).updateNavDrawerItems();
+    }
+
+    /*
     private class ToggleFavorite extends AsyncTask<String, String, String> {
         SessionStorage storage = SessionStorage.getInstance();
         private Category category;
@@ -122,6 +131,7 @@ public class CategoriesListAdapter extends BaseAdapter {
             progressDialog.dismiss();
         }
     }
+    */
 }
 
 

@@ -37,6 +37,15 @@ public class SessionStorage {
         this.categories = categories;
     }
 
+    public Category getCategory(int categoryId) {
+        for(Category category : categories) {
+            if (category.getId() == categoryId) {
+                return category;
+            }
+        }
+        return null;
+    }
+
     public User getUser() {
         return user;
     }

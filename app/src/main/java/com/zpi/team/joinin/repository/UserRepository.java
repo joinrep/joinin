@@ -1,5 +1,7 @@
 package com.zpi.team.joinin.repository;
 
+import android.graphics.Color;
+
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.User;
 
@@ -12,9 +14,9 @@ import java.util.List;
 public class UserRepository implements IRepository<User> {
 
     public User getById(String userID) {
-        User user = new User("1", "FName", "LName");
-        user.setFavoriteCategories(Arrays.asList(new Category[]{new Category(1, "Piłka Nożna", "iconPath")}));
-        user.setFriends(Arrays.asList(new User[]{new User("2", "FName2", "LName2")}));
+        User user = new User(1, "FName", "LName");
+        user.setFavoriteCategories(Arrays.asList(new Category[]{new Category(1, "Piłka Nożna", "iconPath", Color.parseColor("#000000"))}));
+        user.setFriends(Arrays.asList(new User[]{new User(2, "FName2", "LName2")}));
         return user;
     }
 

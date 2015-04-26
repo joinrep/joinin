@@ -18,7 +18,7 @@ if (isset($_GET["user_id"])) {
 
 	// get all categories from categories table
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
-	$result = mysql_query("SELECT * FROM Category C LEFT JOIN Favorites F ON C.category_id = F.category WHERE F.subscriber = $user_id OR F.subscriber IS NULL") or die(mysql_error());
+	$result = mysql_query("SELECT * FROM Category C LEFT JOIN Favorites F ON C.category_id = F.category WHERE F.subscriber = $user_id OR F.subscriber IS NULL ORDER BY category_name") or die(mysql_error());
 
 	// check for empty result
 	if (mysql_num_rows($result) > 0) {
@@ -32,6 +32,7 @@ if (isset($_GET["user_id"])) {
 			$category["categoryId"] = $row["category_id"];
 			$category["name"] = $row["category_name"];
 			$category["icon_path"] = $row["icon_path"];
+			$category["category_color"] = $row["category_color"]; 
 			if ($row["subscriber"]) {
 				$category["is_favorite"] = true;
 			} else {

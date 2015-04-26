@@ -3,7 +3,6 @@ package com.zpi.team.joinin.ui.main;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,10 +38,11 @@ import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
 import com.zpi.team.joinin.ui.categories.CategoryEventsFragment;
 import com.zpi.team.joinin.ui.common.BitmapDecoder;
-import com.zpi.team.joinin.ui.enrolled.ParticipateEventsFragment;
+import com.zpi.team.joinin.ui.enrolled.SampleEventsFragment;
 import com.zpi.team.joinin.ui.myevents.MyEventsFragment;
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
 import com.zpi.team.joinin.ui.nav.NavDrawerItem;
+import com.zpi.team.joinin.ui.participateevents.ParticipateEventsFragment;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -166,7 +166,6 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
         Profile facebookProfile = Profile.getCurrentProfile();
         //TODO przy pierwszym logowaniu zapisac lokalnie
 
-
         if(facebookProfile != null)
         {
             Log.d("signin", "facebooklogin");
@@ -199,6 +198,7 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
         {
             Log.d("signin","cannot log in from facebook/google+");
         }
+
     }
 
     @Override
@@ -263,6 +263,10 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
                 fragment = new MyEventsFragment();
                 break;
             case ADD_CATEGORY_POSITION:
+                if (mCurrentPosition == position) {
+                    mDrawerLayout.closeDrawer(mDrawerList);
+                    return;
+                }
                 fragment = new CategoriesFragment();
                 break;
             default:
@@ -332,7 +336,7 @@ public class MainActivity extends ActionBarActivity implements MyEventsFragment.
 
         protected String doInBackground(String... args) {
             // TODO set real user in storage
-            storage.setUser(new User("1", "Marek", "Kos"));
+            storage.setUser(new User(1, "Marek", "Kos"));
 
 
             categories = new CategoryRepository().getByUser(storage.getUser());

@@ -22,8 +22,7 @@ if (mysql_num_rows($result) > 0) {
         $event["end_time"] = $row["end_time"];
         $event["size_limit"] = $row["size_limit"];
         $event["cost"] = $row["cost"];
-        $event["category_name"] = $row["category_name"];
-		$event["category_icon"] = $row["icon_path"];
+		$event["category_id"] = $row["category_id"];
 					
         array_push($response["events"], $event);
     }

@@ -7,7 +7,9 @@ import java.util.List;
  */
 public class User {
 
+    private int userId;
     private String facebookId;
+    private String googleId;
     private String firstName;
     private String lastName;
 
@@ -18,10 +20,26 @@ public class User {
     private List<User> friends;
     private List<User> followers;
 
-    public User(String facebookId, String firstName, String lastName) {
-        this.facebookId = facebookId;
+    public User(int userId, String firstName, String lastName) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 
     public String getFacebookId() {

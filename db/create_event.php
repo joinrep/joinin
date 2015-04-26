@@ -5,7 +5,9 @@ $response = array();
 if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['end_time']) && isset($_POST['description']) &&
 	isset($_POST['notes']) && isset($_POST['limit']) && isset($_POST['cost']) && isset($_POST['category']) && isset($_POST['location']) && 
 	isset($_POST['city']) && isset($_POST['street1']) && isset($_POST['street2']) && isset($_POST['location_name'])&& isset($_POST['organizer'])) {
-	
+
+	date_default_timezone_set("Europe/Warsaw");
+		
 	$event_name = $_POST['event_name'];
 	$start_time = date("Y-m-d H:i:s",$_POST['start_time']/1000);
 	$end_time = date("Y-m-d H:i:s",$_POST['end_time']/1000);

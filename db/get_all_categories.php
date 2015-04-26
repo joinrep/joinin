@@ -29,6 +29,7 @@ if (mysql_num_rows($result) > 0) {
 		$category["categoryId"] = $row["category_id"];
         $category["name"] = $row["category_name"];
         $category["icon_path"] = $row["icon_path"];
+		$category["category_color"] = $row["category_color"];
 
         // push single category into final response array
         array_push($response["categories"], $category);

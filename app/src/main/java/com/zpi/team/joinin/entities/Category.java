@@ -1,5 +1,7 @@
 package com.zpi.team.joinin.entities;
 
+import android.graphics.Color;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ public class Category {
     private int id;
     private String name;
     private String iconPath;
+    private int color;
     private int iconId = -1;
 
     private boolean userFavorite = false;
@@ -17,14 +20,15 @@ public class Category {
     private List<User> subscribers;
     private List<Event> events;
 
-    public Category(int id, String name, String iconPath) {
+    public Category(int id, String name, String iconPath, int color) {
         this.id = id;
         this.name = name;
         this.iconPath = iconPath;
+        this.color = color;
     }
 
-    public Category(int id, String name, String iconPath, boolean isFavorite) {
-        this(id, name, iconPath);
+    public Category(int id, String name, String iconPath, int color, boolean isFavorite) {
+        this(id, name, iconPath, color);
         userFavorite = isFavorite;
     }
 
@@ -82,5 +86,13 @@ public class Category {
 
     public void setIconId(int iconId) {
         this.iconId = iconId;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }
