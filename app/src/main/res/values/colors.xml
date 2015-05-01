@@ -11,14 +11,18 @@
     <item name="white_100" type="color">#ffffff</item>
     <item name="tab_text" type="color">#ffffff</item>
     <item name="icon_tint" type="color">#757575</item>
+    <item name="bar_gray" type="color">#E6E6E6</item>
 
     <!--Palette-->
     <array name="imageBackgroundColors">
         <item name="purple_50" type="color">#F3E5F5</item>
+        <item name="purple_100" type="color">#E1BEE7</item>
         <item name="red_50" type="color">#FFEBEE</item>
         <item name="blue_50" type="color">#E3F2FD</item>
+        <item name="indigo_100" type="color">#C5CAE9</item>
         <item name="lime_50" type="color">#F9FBE7</item>
         <item name="green_50" type="color">#E8F5E9</item>
+        <item name="orange_100" type="color">#FFE0B2</item>
         <item name="yellow_50" type="color">#FFFDE7</item>
     </array>
 </resources>

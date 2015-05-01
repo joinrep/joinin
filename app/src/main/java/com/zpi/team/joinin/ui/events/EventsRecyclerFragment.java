@@ -38,6 +38,7 @@ import java.util.List;
 public abstract class EventsRecyclerFragment extends Fragment implements EventsRecyclerAdapter.OnRecyclerViewClickListener {
     private static int CREATE_EVENT_REQUEST = -1;
     private static int INDETAIL_EVENT_REQUEST = -2;
+    private static String INDETAIL_EVENT_ID = "indetail_event_id";
     public final static int ALL = 1;
     public final static int BY_CATEGORY = 2;
     public final static int MY_OWN = 3;
@@ -145,8 +146,13 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
 
     @Override
     public void onRecyclerViewItemClicked(View v, int position) {
+        int id = mEvents.get(position).getId();
+        Log.d("EventsRecyclerFragment", "eventClicked(), id: " + id);
+
         SessionStorage.getInstance().setEventInDetail(mEvents.get(position));
-        startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
+        Intent detail = new Intent(getActivity(), InDetailEventActivity.class);
+        detail.putExtra(INDETAIL_EVENT_ID, id);
+        startActivityForResult(detail, INDETAIL_EVENT_REQUEST);
     }
 
     private class LoadEvents extends AsyncTask<Void, Void, Void> {
