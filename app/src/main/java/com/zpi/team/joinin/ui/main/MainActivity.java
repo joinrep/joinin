@@ -176,8 +176,8 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             String id = facebookProfile.getId();
             String fname = facebookProfile.getFirstName();
             String lname = facebookProfile.getLastName();
-            String personPhotoUrl = "https://graph.facebook.com/"+id+"/picture";
-
+            Log.d("signin" , id);
+            String personPhotoUrl = "https://graph.facebook.com/"+ id+ "/picture?type=large";
             new LoadProfileImage(personPhoto).execute(personPhotoUrl);
             personName.setText(fname + " " + lname);
             personMail.setText("");
