@@ -16,9 +16,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -113,6 +116,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         prepareNavDrawerItems();
 
         mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
+        setNavDrawerListWidth();
         mNavDrawerAdapter = new NavDrawerAdapter(this, mNavDrawerItems);
 
 
@@ -210,6 +214,17 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         super.onSaveInstanceState(outState);
         outState.putInt("menuPosition", mCurrentPosition);
         Log.d("onsave", Integer.toString(mCurrentPosition));
+    }
+
+    private void setNavDrawerListWidth(){
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics ();
+        display.getMetrics(outMetrics);
+        float density  = getResources().getDisplayMetrics().density;
+        float marginPixels = 56 * density;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerList.getLayoutParams();
+        params.width = outMetrics.widthPixels - (int)marginPixels;
+        mDrawerList.setLayoutParams(params);
     }
 
     private void prepareNavDrawerItems() {
