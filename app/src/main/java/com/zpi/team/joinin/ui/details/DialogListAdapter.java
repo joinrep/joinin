@@ -21,6 +21,7 @@ import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,22 +39,18 @@ public class DialogListAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
+            User user = mParticipants.get(position);
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.dialog_participants_item, null);
 
             ImageView photo = (ImageView) convertView.findViewById(R.id.photo);
             TextView title = (TextView) convertView.findViewById(R.id.title);
 
-//            RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
-//            rounded.setCornerRadius(270f);
-//            rounded.setAntiAlias(true);
-//            photo.setImageDrawable(rounded);
-//            photo.setImageResource(R.drawable.ic_launcher);
+//            new LoadProfilePhoto(photo, mContext).execute(null, user.getLoginId());
             photo.setImageResource(R.drawable.ic_launcher);
 
-            String nameAndSurname = mParticipants.get(position).getFirstName() + " " + mParticipants.get(position).getLastName();
+            String nameAndSurname = user.getFirstName() + " " + user.getLastName();
             title.setText(nameAndSurname);
-//            title.setText(mParticipants.get(position));
         }
 
         return convertView;

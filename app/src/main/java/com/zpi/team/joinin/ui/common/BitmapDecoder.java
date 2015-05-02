@@ -3,7 +3,9 @@ package com.zpi.team.joinin.ui.common;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 
 import java.io.InputStream;
 
@@ -56,6 +58,7 @@ public class BitmapDecoder {
 
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
+
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;

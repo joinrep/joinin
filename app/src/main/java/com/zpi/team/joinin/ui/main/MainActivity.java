@@ -32,6 +32,7 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.internal.ImageRequest;
 import com.facebook.login.widget.ProfilePictureView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
@@ -39,6 +40,7 @@ import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
+import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
 import com.zpi.team.joinin.ui.events.AllEventsFragment;
 import com.zpi.team.joinin.ui.common.BitmapDecoder;
 
@@ -51,7 +53,29 @@ import com.zpi.team.joinin.ui.events.ParticipateEventsFragment;
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
 import com.zpi.team.joinin.ui.nav.NavDrawerItem;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +95,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     private List<Category> favCategories = new ArrayList<Category>();
 
     private static Context context;
+
     public static Context getAppContext() {
         return MainActivity.context;
     }
@@ -118,7 +143,6 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
         setNavDrawerListWidth();
         mNavDrawerAdapter = new NavDrawerAdapter(this, mNavDrawerItems);
-
 
 
         header = View.inflate(this, R.layout.navdrawer_header, null);
@@ -174,20 +198,18 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         Profile facebookProfile = Profile.getCurrentProfile();
         //TODO przy pierwszym logowaniu zapisac lokalnie
 
-        if(facebookProfile != null)
-        {
+        if (facebookProfile != null) {
             Log.d("signin", "facebooklogin");
             String id = facebookProfile.getId();
             String fname = facebookProfile.getFirstName();
             String lname = facebookProfile.getLastName();
-            String personPhotoUrl = "https://graph.facebook.com/"+id+"/picture";
+            String personPhotoUrl = "https://graph.facebook.com/" + id + "/picture?type=large";
 
-            new LoadProfileImage(personPhoto).execute(personPhotoUrl);
+            new LoadProfilePhoto(personPhoto, this).execute(personPhotoUrl);
             personName.setText(fname + " " + lname);
-            personMail.setText("");
+            personMail.setText("Zalogowany przez Facebook");
 
-        }
-        else if (personData.getExtras() != null) {
+        } else if (personData.getExtras() != null) {
 
             Log.d("signin", "googlelogin");
             String id = personData.getStringExtra("id");
@@ -195,16 +217,12 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             String name = personData.getStringExtra("name");
             String mail = personData.getStringExtra("mail");
 
-            personPhotoUrl = personPhotoUrl.substring(0, personPhotoUrl.length() - 2)
-                    + 400;
-            new LoadProfileImage(personPhoto).execute(personPhotoUrl);
+            new LoadProfilePhoto(personPhoto, this).execute(null, id);
 
             personName.setText(name);
             personMail.setText(mail);
-        }
-        else
-        {
-            Log.d("signin","cannot log in from facebook/google+");
+        } else {
+            Log.d("signin", "cannot log in from facebook/google+");
         }
 
     }
@@ -213,17 +231,16 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("menuPosition", mCurrentPosition);
-        Log.d("onsave", Integer.toString(mCurrentPosition));
     }
 
-    private void setNavDrawerListWidth(){
+    private void setNavDrawerListWidth() {
         Display display = getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics ();
+        DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
-        float density  = getResources().getDisplayMetrics().density;
+        float density = getResources().getDisplayMetrics().density;
         float marginPixels = 56 * density;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerList.getLayoutParams();
-        params.width = outMetrics.widthPixels - (int)marginPixels;
+        params.width = outMetrics.widthPixels - (int) marginPixels;
         mDrawerList.setLayoutParams(params);
     }
 
@@ -232,8 +249,8 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_participate_events, R.string.navdrawer_participate));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_my_events, R.string.navdrawer_myevents));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
-        mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.NO_ICON,R.string.navdrawer_subheader_favorites,NavDrawerItem.TYPE_SUBHEADER));
-        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_plus_circle,R.string.add_favorite_category));
+        mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.NO_ICON, R.string.navdrawer_subheader_favorites, NavDrawerItem.TYPE_SUBHEADER));
+        mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_plus_circle, R.string.add_favorite_category));
         mNavDrawerItems.add(new NavDrawerItem(NavDrawerItem.TYPE_SEPARATOR));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_settings, R.string.navdrawer_settings));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_help, R.string.navdrawer_help));
@@ -241,7 +258,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
     public void updateNavDrawerItems() {
         List<Category> categories = SessionStorage.getInstance().getCategories();
-        if (categories!=null) {
+        if (categories != null) {
             int iter = 0;
             while (!mNavDrawerItems.get(iter++).getTitle().equals(getResources().getString(R.string.add_favorite_category)))
                 ;
@@ -349,56 +366,28 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
 
     // Initialization
-    private class Initialize extends AsyncTask<String, String, String> {
+    private class Initialize extends AsyncTask<String, Void, Void> {
         SessionStorage storage = SessionStorage.getInstance();
         List<Category> categories;
 
-        protected String doInBackground(String... args) {
+        protected Void doInBackground(String... args) {
             // TODO set real user in storage
             storage.setUser(new User(1, "Marek", "Kos"));
 
 
             categories = new CategoryRepository().getByUser(storage.getUser());
             // resolve categories icon id
-            for(Category category : categories) {
+            for (Category category : categories) {
                 category.setIconId(MainActivity.this.getResources().getIdentifier(category.getIconPath(), "drawable", MainActivity.this.getPackageName()));
             }
-            return "dumb";
+            return null;
         }
 
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(Void v) {
             storage.setCategories(categories);
             updateNavDrawerItems();
         }
     }
 
-    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
 
-        public LoadProfileImage(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-
-            return BitmapDecoder.decodeSampledBitmapFromUrl(urldisplay, 160, 160);
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(getResources(), result);
-            rounded.setCornerRadius(270f);
-            rounded.setAntiAlias(true);
-            bmImage.setImageDrawable(rounded);
-
-        }
-    }
 }

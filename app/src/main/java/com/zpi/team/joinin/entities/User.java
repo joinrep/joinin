@@ -50,6 +50,8 @@ public class User {
         this.facebookId = facebookId;
     }
 
+    public String getLoginId() {return googleId != null ? googleId : facebookId; }
+
     public String getFirstName() {
         return firstName;
     }
