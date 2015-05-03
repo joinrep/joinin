@@ -36,8 +36,8 @@ import java.util.List;
  */
 
 public abstract class EventsRecyclerFragment extends Fragment implements EventsRecyclerAdapter.OnRecyclerViewClickListener {
-    private static int CREATE_EVENT_REQUEST = -1;
-    private static int INDETAIL_EVENT_REQUEST = -2;
+    private static int CREATE_EVENT_REQUEST = 1;
+    private static int INDETAIL_EVENT_REQUEST = 2;
     public final static int ALL = 1;
     public final static int BY_CATEGORY = 2;
     public final static int MY_OWN = 3;
@@ -134,6 +134,9 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
             }
             if (resultCode == Activity.RESULT_CANCELED) {
             }
+        } else if (requestCode == INDETAIL_EVENT_REQUEST) {
+            RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -191,15 +194,17 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
         checkIfEmpty();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mEventsRecycler != null) {
-            RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        if (this != null) {
+//            super.onResume();
+//            if (mEventsRecycler != null) {
+//                RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
+//                if (adapter != null) {
+//                    adapter.notifyDataSetChanged();
+//                }
+//            }
+//        }
+//    }
 
 }

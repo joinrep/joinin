@@ -7,10 +7,10 @@ if (isset($_GET["user_id"])) {
 	$db = new DB_CONNECT();
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 	
-	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Participate P JOIN Event E ON P.joined_event = E.event_id WHERE canceled = 'N' AND participant_id = $user_id ORDER BY E.start_time ASC";
+	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Participate P JOIN Event E ON P.joined_event = E.event_id LEFT JOIN Address A  ON E.address = A.address_id WHERE canceled = 'N' AND participant_id = $user_id ORDER BY E.start_time ASC";
 	if (isset($_GET['canceled'])) {
 		if ($_GET['canceled'] === 'Y') {
-			$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Participate P JOIN Event E ON P.joined_event = E.event_id WHERE participant_id = $user_id ORDER BY E.start_time ASC";
+			$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Participate P JOIN Event E ON P.joined_event = E.event_id LEFT JOIN Address A  ON E.address = A.address_id WHERE participant_id = $user_id ORDER BY E.start_time ASC";
 		}
 	}
 
@@ -32,6 +32,11 @@ if (isset($_GET["user_id"])) {
 				$event["participants"] = 0;
 			}
 			$event["is_participant"] = 'true';
+			if ($row["location_name"]) {
+				$event["location_name"] = $row["location_name"];
+			} else {
+				$event["location_name"] = '';
+			}
 			
 			array_push($response["events"], $event);
 		}

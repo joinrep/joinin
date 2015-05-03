@@ -1,16 +1,20 @@
 package com.zpi.team.joinin.ui.events;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.repository.EventRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -22,7 +26,7 @@ import java.util.Random;
 public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<ParticipateEventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
     private Context mContext;
-    private static OnRecyclerViewClickListener mItemListener;
+    private OnRecyclerViewClickListener mItemListener;
 
 
     public ParticipateEventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener) {
@@ -35,12 +39,13 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
         public void onRecyclerViewItemClicked(View v, int position);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mTitle;
         public TextView mDeadline;
         public TextView mParticipants;
         public TextView mDate;
         public ImageView mImage;
+        public ImageView mMore;
 
         public ViewHolder(View v) {
             super(v);
@@ -50,6 +55,7 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
             mParticipants = (TextView)v.findViewById(R.id.eventParticipants);
             mDate = (TextView)v.findViewById(R.id.eventDate);
             mImage = (ImageView)v.findViewById(R.id.eventImage);
+            mMore = (ImageView) v.findViewById(R.id.more);
         }
 
         @Override
@@ -68,12 +74,11 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final Event event = mEvents.get(position);
 
         holder.mImage.setImageResource(event.getCategory().getIconId());
         holder.mImage.setBackgroundColor(event.getCategory().getColor());
-
         holder.mTitle.setText(event.getName());
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -89,13 +94,44 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
             holder.mParticipants.setText(event.getParticipantsCount() + " / " + event.getLimit());
         }
 
-
-
-
+        toggleParticipateBtn(event, holder);
+        holder.mMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO MK dropdown menu
+                event.setParticipate(!event.getParticipate());
+                toggleParticipateBtn(event, holder);
+                new ToggleParticipate(event).execute();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return mEvents.size();
+    }
+
+    private void toggleParticipateBtn(Event event, ViewHolder holder) {
+        if(event.getParticipate()) {
+            ((View)holder.mImage.getParent()).setAlpha(1f);
+        } else {
+            ((View)holder.mImage.getParent()).setAlpha(0.5f);
+        }
+    }
+
+    private class ToggleParticipate extends AsyncTask<String, String, String> {
+        SessionStorage storage = SessionStorage.getInstance();
+        private Event event;
+
+        ToggleParticipate(Event event) {
+            super();
+            this.event = event;
+        }
+
+        protected String doInBackground(String... args) {
+            new EventRepository().participate(event, storage.getUser(), event.getParticipate());
+            return "dumb";
+        }
+
     }
 }

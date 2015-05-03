@@ -87,15 +87,19 @@ public class InDetailEventFragment extends Fragment {
         if(price != 0) mPrice.setText(price + " " + getString(R.string.currency));
         else mPriceContent.setVisibility(View.GONE);
 
-        toggleParticipateBtn(event);
-        mParticipate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                event.setParticipate(!event.getParticipate());
-                toggleParticipateBtn(event);
-                new ToggleParticipate(event).execute();
-            }
-        });
+        if (event.getStartTime().getTimeInMillis() < System.currentTimeMillis()) {
+            ((View)mParticipate.getParent()).setVisibility(View.INVISIBLE);
+        } else {
+            toggleParticipateBtn(event);
+            mParticipate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    event.setParticipate(!event.getParticipate());
+                    toggleParticipateBtn(event);
+                    new ToggleParticipate(event).execute();
+                }
+            });
+        }
 
         return rootView;
     }

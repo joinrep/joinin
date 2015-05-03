@@ -110,10 +110,6 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
 
     }
 
-    public void refresh() {
-
-    }
-
     private void toggleParticipateBtn(Event event, ViewHolder holder) {
         if (event.getParticipate()) {
             holder.mParticipate.setText(mContext.getResources().getString(R.string.not_participate_event));
