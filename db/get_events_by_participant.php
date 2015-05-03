@@ -30,7 +30,8 @@ if (isset($_GET["user_id"])) {
 				$event["participants"] = $row["participants"];
 			} else {
 				$event["participants"] = 0;
-			}	
+			}
+			$event["is_participant"] = 'true';
 			
 			array_push($response["events"], $event);
 		}

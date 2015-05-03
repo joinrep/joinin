@@ -158,18 +158,20 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
         }
 
         protected Void doInBackground(Void... v) {
+            SessionStorage storage = SessionStorage.getInstance();
             switch (getType()) {
                 case ALL:
-                    mEvents = new EventRepository().getAll();
+                    mEvents = new EventRepository().getAll(storage.getUser());
                     break;
                 case PARTICIPATE:
-                    mEvents = new EventRepository().getByParticipant(SessionStorage.getInstance().getUser());
+                    mEvents = new EventRepository().getByParticipant(storage.getUser());
                     break;
                 case MY_OWN:
-                    mEvents = new EventRepository().getAll();
+                    //TODO: MK sql do pobierania organizowanych przez usera eventów
+                    mEvents = new EventRepository().getAll(storage.getUser());
                     break;
                 case BY_CATEGORY:
-                    mEvents = new EventRepository().getByCategory(getCategory());
+                    mEvents = new EventRepository().getByCategory(getCategory(), storage.getUser());
                     break;
             }
             return null;
@@ -187,6 +189,17 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
         mEventsRecycler.setAdapter(adapter);
 
         checkIfEmpty();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mEventsRecycler != null) {
+            RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 
 }

@@ -45,10 +45,14 @@
     !--Others -->
     <string name="loading_events">Trwa ładowanie wydarzeń...</string>
     <string name="loading_favorite_category">Aktualizowanie ulubionych kategorii...</string>
+    <string name="loading_participate_event">Aktualizowanie uczestnictwa w wydarzeniu...</string>
+
 
     <string name="facebook_app_id">1559652434287421</string>
 
     <string name="no_events_available">Nie znaleziono wydarzeń</string>
+    <string name="participate_event">Dołącz</string>
+    <string name="not_participate_event">Rezygnuj</string>
 
 
 </resources>

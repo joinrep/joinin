@@ -55,11 +55,12 @@ public class EventRepository implements IRepository<Event> {
     private static final String TAG_CANCELED = "canceled";
     private static final String TAG_PARTICIPANTS = "participants";
     private static final String TAG_CATEGORY_ID = "category_id";
+    private static final String TAG_IS_PARTICIPANT = "is_participant";
 
     public Event getById(int eventID) {
         // TODO
         try{Thread.sleep(1000);} catch (InterruptedException e){};
-        Event event = new Event(1,"eventName1", Calendar.getInstance(), Calendar.getInstance(), "eventDescription1", "eventNotes", 10, 0, false, 0);
+        Event event = new Event(1,"eventName1", Calendar.getInstance(), Calendar.getInstance(), "eventDescription1", "eventNotes", 10, 0, false, 0, false);
         event.setOrganizer(new User(1,"organizerFName1", "organizerLName1"));
         event.setParticipants(Arrays.asList(new User[]{new User(2,"participantFName1", "participantLName1"), new User(3,"participantFName2", "participantLName2")}));
         event.setCategory(new Category(0,"kategoria", "iconPath", Color.parseColor("#000000")));
@@ -90,20 +91,23 @@ public class EventRepository implements IRepository<Event> {
         double cost = eventJSON.getDouble(TAG_COST);
         int categoryId = eventJSON.getInt(TAG_CATEGORY_ID);
         int participantsCount = eventJSON.getInt(TAG_PARTICIPANTS);
+        boolean isParticipant = eventJSON.getBoolean(TAG_IS_PARTICIPANT);
 
-        Event event = new Event(id, name, start, end, "", "", limit, cost, false, participantsCount);
+        //TODO: MK pobrać z bazy informacje, czy user jest uczestnikiem eventu
+        Event event = new Event(id, name, start, end, "", "", limit, cost, false, participantsCount, isParticipant);
         event.setCategory(SessionStorage.getInstance().getCategory(categoryId));
 
         return event;
     }
 
-    public List<Event> getAll() {
-        return getAll(false);
+    public List<Event> getAll(User user) {
+        return getAll(user, false);
     }
 
-    public List<Event> getAll(boolean canceled) {
+    public List<Event> getAll(User user, boolean canceled) {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user_id", "" + user.getUserId()));
         params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
 
         JSONObject json = jParser.makeHttpRequest(url_all_events, "GET", params);
@@ -132,14 +136,15 @@ public class EventRepository implements IRepository<Event> {
         return result;
     }
 
-    public List<Event> getByCategory(Category category) {
-        return getByCategory(category, false);
+    public List<Event> getByCategory(Category category, User user) {
+        return getByCategory(category, user, false);
     }
 
-    public List<Event> getByCategory(Category category, boolean canceled) {
+    public List<Event> getByCategory(Category category, User user, boolean canceled) {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("category_id", "" + category.getId()));
+        params.add(new BasicNameValuePair("user_id", "" + user.getUserId()));
         params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
 
         JSONObject json = jParser.makeHttpRequest(url_events_by_category, "GET", params);

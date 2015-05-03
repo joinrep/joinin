@@ -2,6 +2,7 @@ package com.zpi.team.joinin.ui.events;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +22,20 @@ import java.util.Random;
 public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<ParticipateEventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
     private Context mContext;
+    private static OnRecyclerViewClickListener mItemListener;
 
 
-    public ParticipateEventsRecyclerAdapter(Context context, List<Event> events) {
+    public ParticipateEventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener) {
         mEvents = events;
         mContext = context;
+        mItemListener = listener;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public interface OnRecyclerViewClickListener {
+        public void onRecyclerViewItemClicked(View v, int position);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mTitle;
         public TextView mDeadline;
         public TextView mParticipants;
@@ -37,11 +44,17 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
 
         public ViewHolder(View v) {
             super(v);
+            v.setOnClickListener(this);
             mTitle = (TextView)v.findViewById(R.id.eventName);
             mDeadline = (TextView)v.findViewById(R.id.eventDeadline);
             mParticipants = (TextView)v.findViewById(R.id.eventParticipants);
             mDate = (TextView)v.findViewById(R.id.eventDate);
             mImage = (ImageView)v.findViewById(R.id.eventImage);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mItemListener.onRecyclerViewItemClicked(v, this.getPosition());
         }
     }
 
@@ -56,7 +69,7 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Event event = mEvents.get(position);
+        final Event event = mEvents.get(position);
 
         holder.mImage.setImageResource(event.getCategory().getIconId());
         holder.mImage.setBackgroundColor(event.getCategory().getColor());
@@ -75,6 +88,9 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
         } else {
             holder.mParticipants.setText(event.getParticipantsCount() + " / " + event.getLimit());
         }
+
+
+
 
     }
 

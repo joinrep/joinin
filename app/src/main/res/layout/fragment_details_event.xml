@@ -177,6 +177,7 @@
         android:layout_alignParentBottom="true">
 
         <Button
+            android:id="@+id/btnParticipate"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="@string/join"

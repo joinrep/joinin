@@ -65,11 +65,7 @@ public class CategoriesListAdapter extends BaseAdapter {
         holder.categoryIcon.setImageResource(category.getIconId());
 
         final ImageView categoryStar = holder.categoryStar;
-        if (category.isUserFavorite()) {
-            categoryStar.setImageResource(R.drawable.ic_category_star);
-        } else {
-            categoryStar.setImageResource(R.drawable.ic_category_star_outline);
-        }
+        toggleCategoryStar(category, categoryStar);
 
         holder.categoryStar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,13 +83,17 @@ public class CategoriesListAdapter extends BaseAdapter {
         TextView categoryName;
     }
 
-    private void toggleFavCategory(Category category, ImageView categoryStar) {
-        category.setUserFavorite(!category.isUserFavorite());
+    private void toggleCategoryStar(Category category, ImageView categoryStar) {
         if (category.isUserFavorite()) {
             categoryStar.setImageResource(R.drawable.ic_category_star);
         } else {
             categoryStar.setImageResource(R.drawable.ic_category_star_outline);
         }
+    }
+
+    private void toggleFavCategory(Category category, ImageView categoryStar) {
+        category.setUserFavorite(!category.isUserFavorite());
+        toggleCategoryStar(category, categoryStar);
         ((MainActivity) mContext).updateNavDrawerItems();
     }
 

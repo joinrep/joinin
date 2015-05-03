@@ -18,9 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -43,6 +45,7 @@ import java.util.Calendar;
 public class InDetailEventFragment extends Fragment {
     private TextView mTitle, mCategory, mPpl, mLimit, mPrice, mDescription, mLocalization, mStartTime, mEndTime;
     private View mLimitContent, mPriceContent;
+    private Button mParticipate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,8 +62,9 @@ public class InDetailEventFragment extends Fragment {
         mLocalization = (TextView) rootView.findViewById(R.id.localization);
         mLimitContent = rootView.findViewById(R.id.limit_content);
         mPriceContent = rootView.findViewById(R.id.price_content);
+        mParticipate = (Button) rootView.findViewById(R.id.btnParticipate);
 
-        Event event = SessionStorage.getInstance().getEventInDetail();
+        final Event event = SessionStorage.getInstance().getEventInDetail();
         mTitle.setText(event.getName());
         mCategory.setText(event.getCategory().getName());
 
@@ -82,6 +86,16 @@ public class InDetailEventFragment extends Fragment {
         double price = event.getCost();
         if(price != 0) mPrice.setText(price + " " + getString(R.string.currency));
         else mPriceContent.setVisibility(View.GONE);
+
+        toggleParticipateBtn(event);
+        mParticipate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                event.setParticipate(!event.getParticipate());
+                toggleParticipateBtn(event);
+                new ToggleParticipate(event).execute();
+            }
+        });
 
         return rootView;
     }
@@ -116,4 +130,29 @@ public class InDetailEventFragment extends Fragment {
 
         mLimit.setText(ppl);
     }
+
+    private void toggleParticipateBtn(Event event) {
+        if (event.getParticipate()) {
+            mParticipate.setText(getResources().getString(R.string.not_participate_event));
+        } else {
+            mParticipate.setText(getResources().getString(R.string.participate_event));
+        }
+    }
+
+    private class ToggleParticipate extends AsyncTask<String, String, String> {
+        SessionStorage storage = SessionStorage.getInstance();
+        private Event event;
+
+        ToggleParticipate(Event event) {
+            super();
+            this.event = event;
+        }
+
+        protected String doInBackground(String... args) {
+            new EventRepository().participate(event, storage.getUser(), event.getParticipate());
+            return "dumb";
+        }
+
+    }
+
 }

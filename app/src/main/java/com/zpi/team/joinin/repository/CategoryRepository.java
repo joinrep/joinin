@@ -44,8 +44,8 @@ public class CategoryRepository implements IRepository<Category> {
         // TODO
         Category result =  new Category(1, "Sample category", "sample.png", Color.parseColor("#000000"));
         result.setEvents(Arrays.asList(new Event[]{
-            new Event(1,"eventName1", Calendar.getInstance(),  Calendar.getInstance(), "eventDescription1", "notatka1", 10, 0, false, 0),
-            new Event(2,"eventName2",  Calendar.getInstance(),  Calendar.getInstance(), "eventDescription2", "notatka2", 20, 10, false, 0)
+            new Event(1,"eventName1", Calendar.getInstance(),  Calendar.getInstance(), "eventDescription1", "notatka1", 10, 0, false, 0, false),
+            new Event(2,"eventName2",  Calendar.getInstance(),  Calendar.getInstance(), "eventDescription2", "notatka2", 20, 10, false, 0, false)
         }));
         return result;
     }
