@@ -8,6 +8,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.main.MainActivity;
 
 import org.apache.http.HttpEntity;
@@ -27,18 +28,28 @@ import java.io.InputStreamReader;
  * Created by Arkadiusz on 2015-05-02.
  */
 public class LoadProfilePhoto extends AsyncTask<String, Void, Bitmap> {
-    ImageView mImage;
-    Context mContext;
+    private ImageView mImage;
+    private Context mContext;
     public LoadProfilePhoto(ImageView image, Context context) {
         mImage = image;
         mContext = context;
     }
 
-    protected Bitmap doInBackground(String... urls) {
+    /***
+     * @param params
+     * param0 - jakie logowanie
+     * param1 - id
+     */
+    protected Bitmap doInBackground(String... params) {
         float density = mContext.getResources().getDisplayMetrics().density;
         int pixels = 66 * (int) density;
 
-        String url = getPhotoUrl(urls[1]);
+        String url = null;
+        if(params[0].equals(SignInActivity.GOOGLE))
+            url = getGooglePhotoUrl(params[1]);
+        else
+            url = getFacebookPhotoUrl(params[1]);
+
         return BitmapDecoder.decodeSampledBitmapFromUrl(url, pixels, pixels);
     }
 
@@ -49,9 +60,12 @@ public class LoadProfilePhoto extends AsyncTask<String, Void, Bitmap> {
         mImage.setImageDrawable(rounded);
     }
 
+    public String getFacebookPhotoUrl(String id){
+        return "https://graph.facebook.com/" + id + "/picture?type=large";
+    }
 
-    public String getPhotoUrl(String id) {
-        String address = "http://picasaweb.google.com/data/entry/api/user/" + id + "?alt=json";
+    public String getGooglePhotoUrl(String id) {
+        String address = "http://picasaweb.google.com/data/entry/api/user/" + id + "?alt=json";;
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(address);

@@ -70,9 +70,6 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         Event event = mEvents.get(position);
 
         holder.mImage.setImageResource(event.getCategory().getIconId());
-//        holder.mImage.setBackgroundColor(event.getCategory().getColor());
-        int[] colors = mContext.getResources().getIntArray(R.array.imageBackgroundColors);
-        holder.mImage.setBackgroundColor(colors[new Random().nextInt(colors.length)]);
         holder.mTitle.setText(event.getName());
 // TODO       holder.mAddress.setText(event.getLocation().getLocationName());
 

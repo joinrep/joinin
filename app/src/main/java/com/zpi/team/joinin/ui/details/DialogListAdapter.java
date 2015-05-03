@@ -21,6 +21,7 @@ import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
 
 import java.util.ArrayList;
@@ -46,8 +47,17 @@ public class DialogListAdapter extends ArrayAdapter {
             ImageView photo = (ImageView) convertView.findViewById(R.id.photo);
             TextView title = (TextView) convertView.findViewById(R.id.title);
 
-//            new LoadProfilePhoto(photo, mContext).execute(null, user.getLoginId());
-            photo.setImageResource(R.drawable.ic_launcher);
+            String source, id;
+            if(user.getGoogleId() != null){
+                source = SignInActivity.GOOGLE;
+                id = user.getGoogleId();
+            }else{
+                source = SignInActivity.FACEBOOK;
+                id = user.getFacebookId();
+            }
+
+            new LoadProfilePhoto(photo, mContext).execute(source, id);
+//            photo.setImageResource(R.drawable.ic_launcher);
 
             String nameAndSurname = user.getFirstName() + " " + user.getLastName();
             title.setText(nameAndSurname);

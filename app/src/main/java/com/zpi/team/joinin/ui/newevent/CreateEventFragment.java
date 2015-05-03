@@ -123,7 +123,7 @@ public class CreateEventFragment extends Fragment {
         return rootView;
     }
 
-
+    // TODO data pocz < data kon
     public boolean isFilled() {
         return mTitle.getText().toString().trim().length() != 0 &&
                 !((Category) mCategories.getSelectedItem()).getName().contentEquals(getResources().getString(R.string.choose_category)) &&
@@ -256,7 +256,7 @@ public class CreateEventFragment extends Fragment {
          * - przypisanie uzytkownika
          */
         newEvent.setLocation(new Address(0, "city", "street", "street", address));
-        newEvent.setOrganizer(new User(12, "jan", "probny"));
+        newEvent.setOrganizer(SessionStorage.getInstance().getUser());
         newEvent.setCategory((Category) mCategories.getSelectedItem());
         new SaveNewEvent().execute(newEvent);
 

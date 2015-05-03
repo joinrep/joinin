@@ -5,12 +5,8 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,7 +17,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,17 +27,16 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
-import com.facebook.internal.ImageRequest;
 import com.facebook.login.widget.ProfilePictureView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
+import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
 import com.zpi.team.joinin.ui.events.AllEventsFragment;
-import com.zpi.team.joinin.ui.common.BitmapDecoder;
 
 import com.zpi.team.joinin.ui.events.MyOwnEventsFragment;
 
@@ -53,34 +47,14 @@ import com.zpi.team.joinin.ui.events.ParticipateEventsFragment;
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
 import com.zpi.team.joinin.ui.nav.NavDrawerItem;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity implements OnToolbarElevationListener {
 
+    private final static int ALL = 1;
+    private final static int PARTICIPATE = 2;
+    private final static int MYOWN = 3;
     public final static int ADD_CATEGORY_POSITION = 6;
 
     private Toolbar mToolbar;
@@ -90,25 +64,21 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     private ActionBarDrawerToggle mDrawerToggle;
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerAdapter mNavDrawerAdapter;
-
+    private View mHeader;
     private int mCurrentPosition;
     private List<Category> favCategories = new ArrayList<Category>();
 
-    private static Context context;
+    private static Context mContext;
 
     public static Context getAppContext() {
-        return MainActivity.context;
+        return MainActivity.mContext;
     }
 
-    private AccessTokenTracker accessTokenTracker;
-    private ProfileTracker profileTracker;
-    ProfilePictureView profilePicture;
-    private View header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainActivity.context = getApplicationContext();
+        MainActivity.mContext = getApplicationContext();
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -137,36 +107,15 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        mNavDrawerItems = new ArrayList<NavDrawerItem>();
         prepareNavDrawerItems();
-
         mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
         setNavDrawerListWidth();
         mNavDrawerAdapter = new NavDrawerAdapter(this, mNavDrawerItems);
 
+        mHeader = View.inflate(this, R.layout.navdrawer_header, null);
+        inflateHeaderWithPersonData();
 
-        header = View.inflate(this, R.layout.navdrawer_header, null);
-
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                inflateWithPersonData(header);
-            }
-        };
-
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
-                // On AccessToken changes fetch the new profile which fires the event on
-                // the ProfileTracker if the profile is different
-                Profile.fetchProfileForCurrentAccessToken();
-            }
-        };
-
-        inflateWithPersonData(header);
-        mDrawerList.addHeaderView(header, null, false);
+        mDrawerList.addHeaderView(mHeader, null, false);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mDrawerList.setAdapter(mNavDrawerAdapter);
@@ -188,43 +137,27 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         new Initialize().execute();
     }
 
-    private void inflateWithPersonData(View header) {
-        ImageView personPhoto = (ImageView) header.findViewById(R.id.photo);
-        TextView personName = (TextView) header.findViewById(R.id.name);
-        TextView personMail = (TextView) header.findViewById(R.id.mail);
+    private void inflateHeaderWithPersonData() {
+        ImageView personPhoto = (ImageView) mHeader.findViewById(R.id.photo);
+        TextView personName = (TextView) mHeader.findViewById(R.id.name);
+        TextView personMail = (TextView) mHeader.findViewById(R.id.mail);
 
         Intent personData = getIntent();
-        Profile.fetchProfileForCurrentAccessToken();
-        Profile facebookProfile = Profile.getCurrentProfile();
         //TODO przy pierwszym logowaniu zapisac lokalnie
 
-        if (facebookProfile != null) {
-            Log.d("signin", "facebooklogin");
-            String id = facebookProfile.getId();
-            String fname = facebookProfile.getFirstName();
-            String lname = facebookProfile.getLastName();
-            String personPhotoUrl = "https://graph.facebook.com/" + id + "/picture?type=large";
+        if (personData.getExtras() != null) {
+            Log.d("SignInActivity", "inflateHeaderWithPersonData(), logging in.");
+            String photoSource = personData.getStringExtra(SignInActivity.PHOTO_SOURCE);
+            String id = personData.getStringExtra(SignInActivity.PERSON_ID);
+            String name = personData.getStringExtra(SignInActivity.PERSON_NAME);
+            String mail = personData.getStringExtra(SignInActivity.PERSON_MAIL);
 
-            new LoadProfilePhoto(personPhoto, this).execute(personPhotoUrl);
-            personName.setText(fname + " " + lname);
-            personMail.setText("Zalogowany przez Facebook");
-
-        } else if (personData.getExtras() != null) {
-
-            Log.d("signin", "googlelogin");
-            String id = personData.getStringExtra("id");
-            String personPhotoUrl = personData.getStringExtra("photo");
-            String name = personData.getStringExtra("name");
-            String mail = personData.getStringExtra("mail");
-
-            new LoadProfilePhoto(personPhoto, this).execute(null, id);
-
+            new LoadProfilePhoto(personPhoto, this).execute(photoSource, id);
             personName.setText(name);
+            if (mail == null) mail = "Zalogowany przez Facebook";
             personMail.setText(mail);
-        } else {
-            Log.d("signin", "cannot log in from facebook/google+");
-        }
-
+        } else
+            Log.d("SignInActivity", "inflateHeaderWithPersonData(), cannot log in.");
     }
 
     @Override
@@ -245,6 +178,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     }
 
     private void prepareNavDrawerItems() {
+        mNavDrawerItems = new ArrayList<NavDrawerItem>();
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_events, R.string.navdrawer_events));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_participate_events, R.string.navdrawer_participate));
         mNavDrawerItems.add(new NavDrawerItem(R.drawable.ic_menu_my_events, R.string.navdrawer_myevents));
@@ -289,13 +223,13 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     private void selectMenuItem(int position) {
         Fragment fragment = null;
         switch (position) {
-            case 1:
+            case ALL:
                 fragment = new AllEventsFragment();
                 break;
-            case 2:
+            case PARTICIPATE:
                 fragment = new ParticipateEventsFragment();
                 break;
-            case 3:
+            case MYOWN:
                 fragment = new MyOwnEventsFragment();
                 break;
             case ADD_CATEGORY_POSITION:
@@ -330,7 +264,6 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             mDrawerLayout.closeDrawer(mDrawerList);
         }
     }
-
 
     public void setToolbarElevation(boolean elevation) {
         if (elevation)
