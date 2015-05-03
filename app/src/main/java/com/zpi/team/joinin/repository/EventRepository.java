@@ -44,12 +44,13 @@ public class EventRepository implements IRepository<Event> {
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
+    private static final String TAG_EVENT = "event";
     private static final String TAG_EVENTS = "events";
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
     private static final String TAG_START = "start_time";
     private static final String TAG_END = "end_time";
-    private static final String TAG_DESCRIPTION = "icon_path";
+    private static final String TAG_DESCRIPTION = "description";
     private static final String TAG_LIMIT = "size_limit";
     private static final String TAG_COST = "cost";
     private static final String TAG_CANCELED = "canceled";
@@ -57,25 +58,62 @@ public class EventRepository implements IRepository<Event> {
     private static final String TAG_CATEGORY_ID = "category_id";
     private static final String TAG_IS_PARTICIPANT = "is_participant";
 
-    public Event getById(int eventID) {
-        // TODO
-        try{Thread.sleep(1000);} catch (InterruptedException e){};
-        Event event = new Event(1,"eventName1", Calendar.getInstance(), Calendar.getInstance(), "eventDescription1", "eventNotes", 10, 0, false, 0, false);
-        event.setOrganizer(new User(1,"organizerFName1", "organizerLName1"));
-        event.setParticipants(Arrays.asList(new User[]{new User(2,"participantFName1", "participantLName1"), new User(3,"participantFName2", "participantLName2")}));
-        event.setCategory(new Category(0,"kategoria", "iconPath", Color.parseColor("#000000")));
-        event.setLocation(new Address(1, "Wrocław", "Żelazna 40", "", "Hala sportowa"));
+    public Event getById(User user, int eventID) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user_id", "" + user.getUserId()));
+        params.add(new BasicNameValuePair("event_id", "" + eventID));
 
-        Comment comment = new Comment(1,Calendar.getInstance(), "Komentarz1");
-        Comment subcomment = new Comment(1,Calendar.getInstance(), "Komentarz1");
-        comment.setAuthor(new User(2,"participantFName1", "participantLName1"));
-        subcomment.setAuthor(new User(2,"participantFName1", "participantLName1"));
-        subcomment.setParentComment(comment);
-        comment.setChildrenComments(Arrays.asList(new Comment[]{subcomment}));
-        comment.setCommentedEvent(event);
-        subcomment.setCommentedEvent(event);
+        JSONObject json = jParser.makeHttpRequest(url_event_by_id, "GET", params);
 
-        return event;
+        Log.d("Event by id: ", json.toString());
+
+        Event result = null;
+        try {
+            int success = json.getInt(TAG_SUCCESS);
+            if (success == 1) {
+                JSONObject eventJSON = json.getJSONObject(TAG_EVENT);
+                result = parseSimpleEvent(eventJSON);
+
+                /*
+                JSONObject addressJSON = eventJSON.getJSONObject(AddressRepository.TAG_ADDRESS);
+                String city = addressJSON.getString(AddressRepository.TAG_CITY);
+                String street1 = addressJSON.getString(AddressRepository.TAG_STREET1);
+                String street2 = addressJSON.getString(AddressRepository.TAG_STREET2);
+                String location_name = addressJSON.getString(AddressRepository.TAG_LOCATION_NAME);
+                result.setLocation(new Address(0,city,street1,street2,location_name));
+
+                JSONObject organizerJSON = eventJSON.getJSONObject(UserRepository.TAG_ORGANIZER);
+                int user_id = organizerJSON.getInt(UserRepository.TAG_USER_ID);
+                String facebook_id = organizerJSON.getString(UserRepository.TAG_FACEBOOK_ID);
+                String google_id = organizerJSON.getString(UserRepository.TAG_GOOGLE_ID);
+                String first_name = organizerJSON.getString(UserRepository.TAG_FIRST_NAME);
+                String last_name = organizerJSON.getString(UserRepository.TAG_LAST_NAME);
+                result.setOrganizer(new User(user_id, facebook_id, google_id, first_name, last_name));
+                */
+
+                JSONArray participantsJSON = eventJSON.getJSONArray(UserRepository.TAG_PARTICIPANTS);
+                List<User> participants = new ArrayList<User>();
+                for (int i = 0; i < participantsJSON.length(); i++) {
+                    JSONObject participantJSON = participantsJSON.getJSONObject(i);
+                    int user_id = participantJSON.getInt(UserRepository.TAG_USER_ID);
+                    String facebook_id = participantJSON.getString(UserRepository.TAG_FACEBOOK_ID);
+                    String google_id = participantJSON.getString(UserRepository.TAG_GOOGLE_ID);
+                    String first_name = participantJSON.getString(UserRepository.TAG_FIRST_NAME);
+                    String last_name = participantJSON.getString(UserRepository.TAG_LAST_NAME);
+                    participants.add(new User(user_id, facebook_id, google_id, first_name, last_name));
+                }
+                result.setParticipants(participants);
+
+                String descripton = eventJSON.getString(TAG_DESCRIPTION);
+                result.setDescription(descripton);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     private Event parseSimpleEvent(JSONObject eventJSON) throws JSONException, ParseException {
@@ -92,9 +130,10 @@ public class EventRepository implements IRepository<Event> {
         int categoryId = eventJSON.getInt(TAG_CATEGORY_ID);
         int participantsCount = eventJSON.getInt(TAG_PARTICIPANTS);
         boolean isParticipant = eventJSON.getBoolean(TAG_IS_PARTICIPANT);
+        String locationName = eventJSON.getString(AddressRepository.TAG_LOCATION_NAME);
 
-        //TODO: MK pobrać z bazy informacje, czy user jest uczestnikiem eventu
         Event event = new Event(id, name, start, end, "", "", limit, cost, false, participantsCount, isParticipant);
+        event.setLocation(new Address(0,"","","",locationName));
         event.setCategory(SessionStorage.getInstance().getCategory(categoryId));
 
         return event;
@@ -212,18 +251,18 @@ public class EventRepository implements IRepository<Event> {
     public void create(Event entity) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("event_name", entity.getName()));
-        params.add(new BasicNameValuePair("start_time", "" + entity.getStartTime().getTimeInMillis()));
-        params.add(new BasicNameValuePair("end_time", "" + entity.getEndTime().getTimeInMillis()));
-        params.add(new BasicNameValuePair("description", entity.getDescription()));
+        params.add(new BasicNameValuePair(TAG_START, "" + entity.getStartTime().getTimeInMillis()));
+        params.add(new BasicNameValuePair(TAG_END, "" + entity.getEndTime().getTimeInMillis()));
+        params.add(new BasicNameValuePair(TAG_DESCRIPTION, entity.getDescription()));
         params.add(new BasicNameValuePair("notes", entity.getNotes()));
         params.add(new BasicNameValuePair("limit", "" + entity.getLimit()));
-        params.add(new BasicNameValuePair("cost", "" + entity.getCost()));
+        params.add(new BasicNameValuePair(TAG_COST, "" + entity.getCost()));
         params.add(new BasicNameValuePair("category", "" + entity.getCategory().getId()));
         params.add(new BasicNameValuePair("location", "" + entity.getLocation().getId()));
-        params.add(new BasicNameValuePair("city", entity.getLocation().getCity()));
-        params.add(new BasicNameValuePair("street1", entity.getLocation().getStreet1()));
-        params.add(new BasicNameValuePair("street2", entity.getLocation().getStreet2()));
-        params.add(new BasicNameValuePair("location_name", entity.getLocation().getLocationName()));
+        params.add(new BasicNameValuePair(AddressRepository.TAG_CITY, entity.getLocation().getCity()));
+        params.add(new BasicNameValuePair(AddressRepository.TAG_STREET1, entity.getLocation().getStreet1()));
+        params.add(new BasicNameValuePair(AddressRepository.TAG_STREET2, entity.getLocation().getStreet2()));
+        params.add(new BasicNameValuePair(AddressRepository.TAG_LOCATION_NAME, entity.getLocation().getLocationName()));
         params.add(new BasicNameValuePair("organizer", "" + entity.getOrganizer().getUserId()));
 
         JSONObject json = jParser.makeHttpRequest(url_create_event, "POST", params);

@@ -340,7 +340,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
         protected String doInBackground(String... args) {
             // TODO set real user in storage
-            storage.setUser(new User(1, "Marek", "Kos"));
+            storage.setUser(new User(1, null, null, "Marek", "Kos"));
 
 
             categories = new CategoryRepository().getByUser(storage.getUser());
