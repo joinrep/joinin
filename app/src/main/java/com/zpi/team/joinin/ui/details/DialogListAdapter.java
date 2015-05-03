@@ -47,6 +47,7 @@ public class DialogListAdapter extends ArrayAdapter {
             ImageView photo = (ImageView) convertView.findViewById(R.id.photo);
             TextView title = (TextView) convertView.findViewById(R.id.title);
 
+            // TODO jak beda prawdziwi userzy
             String source, id;
             if(user.getGoogleId() != null){
                 source = SignInActivity.GOOGLE;
@@ -56,8 +57,8 @@ public class DialogListAdapter extends ArrayAdapter {
                 id = user.getFacebookId();
             }
 
-            new LoadProfilePhoto(photo, mContext).execute(source, id);
-//            photo.setImageResource(R.drawable.ic_launcher);
+//            new LoadProfilePhoto(photo, mContext).execute(source, id);
+            photo.setImageResource(R.drawable.ic_launcher);
 
             String nameAndSurname = user.getFirstName() + " " + user.getLastName();
             title.setText(nameAndSurname);

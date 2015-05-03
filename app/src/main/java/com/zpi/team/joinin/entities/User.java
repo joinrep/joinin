@@ -20,8 +20,10 @@ public class User {
     private List<User> friends;
     private List<User> followers;
 
-    public User(int userId, String firstName, String lastName) {
+    public User(int userId, String facebookId, String googleId, String firstName, String lastName) {
         this.userId = userId;
+        this.facebookId = facebookId;
+        this.googleId = googleId;
         this.firstName = firstName;
         this.lastName = lastName;
     }

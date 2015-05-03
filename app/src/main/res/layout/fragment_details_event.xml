@@ -48,6 +48,7 @@
         style="@style/Divider"/>
 
     <ScrollView
+        android:id="@+id/details"
         android:layout_below="@id/underline"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -176,9 +177,9 @@
                 <ImageView
                     android:id="@+id/ic_desc"
                     style="@style/FormIcon"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="top"
-                    android:src="@drawable/ic_form_description" />
+                    android:src="@drawable/ic_form_description"
+                    android:layout_marginTop="@dimen/keyline_1" />
 
                 <TextView
                     android:id="@+id/description"
@@ -206,6 +207,7 @@
         android:layout_alignParentBottom="true">
 
         <Button
+            android:id="@+id/btnParticipate"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="@string/join"

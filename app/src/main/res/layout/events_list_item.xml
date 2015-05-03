@@ -20,8 +20,9 @@
             android:background="@color/colorAccent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_category_bike"
-            android:tint="@color/icon_tint"
-            android:padding="8dp"/>
+            android:tint="@color/black_54"
+            android:padding="8dp"
+            android:layout_alignParentTop="true" />
 
         <TextView
             android:id="@+id/eventDate"
@@ -81,7 +82,7 @@
                 android:gravity="left"
                 android:text="11:00-13:00"
                 android:textStyle="normal"
-                android:textColor="@color/black_54"
+                android:textColor="@color/black_87"
                 android:textSize="16sp"
                 />
         </LinearLayout>
@@ -101,17 +102,33 @@
             android:paddingBottom="0dp">
 
             <Button
+                android:id="@+id/btnParticipate"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:text="@string/join"
                 android:background="?android:attr/selectableItemBackground"
-                android:paddingLeft="0dp"
-                android:paddingRight="12dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:text="@string/join"
+                android:gravity="left|center"
+                android:paddingLeft="8dp" />
+
+
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgParticipant"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:rotation="15"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_category_star"
+            android:tint="@color/colorPrimary"
+            android:padding="2dp"
+            android:visibility="invisible"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"/>
+
     </RelativeLayout>
 </android.support.v7.widget.CardView>

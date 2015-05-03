@@ -11,7 +11,7 @@
     <item name="white_100" type="color">#ffffff</item>
     <item name="tab_text" type="color">#ffffff</item>
     <item name="icon_tint" type="color">#757575</item>
-    <item name="bar_gray" type="color">#E6E6E6</item>
+    <item name="bar_gray" type="color">#D9D9D9</item>
 
     <!--Palette-->
     <array name="imageBackgroundColors">

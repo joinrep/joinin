@@ -154,7 +154,8 @@
                 style="@style/FormIcon"
                 android:src="@drawable/ic_form_description"
                 android:layout_gravity="top"
-                android:layout_centerVertical="true" />
+                android:layout_marginTop="@dimen/keyline_1"
+                android:adjustViewBounds="false" />
 
             <EditText
                 android:layout_toRightOf="@id/ic_desc"

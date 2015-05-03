@@ -21,9 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -53,6 +55,7 @@ public class InDetailEventFragment extends Fragment {
     private ProgressBar barParticipants, barLocalization, barDescription;
     private Event mInDetailEvent;
     private List<User> mParticipants;
+    private Button mParticipate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +72,7 @@ public class InDetailEventFragment extends Fragment {
         mLocalization = (TextView) rootView.findViewById(R.id.localization);
         mLimitContent = rootView.findViewById(R.id.limit_content);
         mPriceContent = rootView.findViewById(R.id.price_content);
+        mParticipate = (Button) rootView.findViewById(R.id.btnParticipate);
         barParticipants = (ProgressBar) rootView.findViewById(R.id.bar_participants);
         barLocalization = (ProgressBar) rootView.findViewById(R.id.bar_localization);
         barDescription = (ProgressBar) rootView.findViewById(R.id.bar_description);
@@ -98,7 +102,7 @@ public class InDetailEventFragment extends Fragment {
 
             @Override
             protected Event doInBackground(Void... params) {
-                return new EventRepository().getById(eventId);
+                return new EventRepository().getById(SessionStorage.getInstance().getUser(),eventId);
             }
 
             @Override
@@ -151,6 +155,21 @@ public class InDetailEventFragment extends Fragment {
         double price = mInDetailEvent.getCost();
         if (price != 0) mPrice.setText(price + " " + getString(R.string.currency));
         else mPriceContent.setVisibility(View.GONE);
+
+
+        if (mInDetailEvent.getStartTime().getTimeInMillis() < System.currentTimeMillis()) {
+            ((View)mParticipate.getParent()).setVisibility(View.INVISIBLE);
+        } else {
+            toggleParticipateBtn(mInDetailEvent);
+            mParticipate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mInDetailEvent.setParticipate(!mInDetailEvent.getParticipate());
+                    toggleParticipateBtn(mInDetailEvent);
+                    new ToggleParticipate(mInDetailEvent).execute();
+                }
+            });
+        }
     }
 
 
@@ -165,4 +184,29 @@ public class InDetailEventFragment extends Fragment {
 
         mLimit.setText(ppl);
     }
+
+    private void toggleParticipateBtn(Event event) {
+        if (event.getParticipate()) {
+            mParticipate.setText(getResources().getString(R.string.not_participate_event));
+        } else {
+            mParticipate.setText(getResources().getString(R.string.participate_event));
+        }
+    }
+
+    private class ToggleParticipate extends AsyncTask<String, String, String> {
+        SessionStorage storage = SessionStorage.getInstance();
+        private Event event;
+
+        ToggleParticipate(Event event) {
+            super();
+            this.event = event;
+        }
+
+        protected String doInBackground(String... args) {
+            new EventRepository().participate(event, storage.getUser(), event.getParticipate());
+            return "dumb";
+        }
+
+    }
+
 }

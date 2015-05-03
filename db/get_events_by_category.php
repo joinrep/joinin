@@ -1,16 +1,17 @@
 ﻿<?php
 $response = array();
-if (isset($_GET["category_id"])) {
+if (isset($_GET["category_id"]) && isset($_GET["user_id"])) {
     $category_id = $_GET['category_id'];
+    $user_id = $_GET['user_id'];
 	
 	require_once(dirname(__FILE__).'/db_connect.php');
 	$db = new DB_CONNECT();
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
-	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Event E WHERE canceled = 'N' AND category = $category_id";
+	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants, (SELECT 'true' FROM Participate WHERE joined_event = E.event_id AND participant_id = $user_id) isParticipant FROM Event E LEFT JOIN Address A  ON E.address = A.address_id WHERE canceled = 'N' AND category = $category_id";
 	if (isset($_GET['canceled'])) {
 		if ($_GET['canceled'] === 'Y') {
-			$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants FROM Event E WHERE category = $category_id";
+			$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants, (SELECT 'true' FROM Participate WHERE joined_event = E.event_id AND participant_id = $user_id) isParticipant FROM Event E LEFT JOIN Address A  ON E.address = A.address_id WHERE category = $category_id";
 		}
 	}
 
@@ -31,6 +32,16 @@ if (isset($_GET["category_id"])) {
 			} else {
 				$event["participants"] = 0;
 			}		
+			if ($row["isParticipant"]) {
+				$event["is_participant"] = $row["isParticipant"];
+			} else {
+				$event["is_participant"] = 'false';
+			}
+			if ($row["location_name"]) {
+				$event["location_name"] = $row["location_name"];
+			} else {
+				$event["location_name"] = '';
+			}
 			
 			array_push($response["events"], $event);
 		}

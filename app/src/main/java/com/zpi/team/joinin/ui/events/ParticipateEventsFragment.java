@@ -2,15 +2,18 @@ package com.zpi.team.joinin.ui.events;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
@@ -18,6 +21,7 @@ import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
+import com.zpi.team.joinin.ui.details.InDetailEventActivity;
 
 
 import java.util.ArrayList;
@@ -27,6 +31,8 @@ import java.util.List;
  * Created by Arkadiusz on 2015-03-08.
  */
 public class ParticipateEventsFragment extends EventsRecyclerFragment {
+    private static int INDETAIL_EVENT_REQUEST = 2;
+
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
     private OnToolbarElevationListener mOnToolbarElevationListener;
@@ -81,10 +87,19 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
         mSlidingTabLayout.setViewPager(mViewPager);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == INDETAIL_EVENT_REQUEST) {
+            PagerAdapter adapter = mViewPager.getAdapter();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     class ParticipateEventsPagerAdapter extends PagerAdapter {
         private String[] mPageTitle;
         private List<Event> mUpcomingEvents = new ArrayList<Event>();
         private List<Event> mHistoryEvents = new ArrayList<Event>();
+        private List<RecyclerView> mViews = new ArrayList<RecyclerView>();
 
         ParticipateEventsPagerAdapter(String[] titles, List<Event> events) {
             mPageTitle = titles;
@@ -100,7 +115,7 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(ViewGroup container, final int position) {
             View view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
                     container, false);
             container.addView(view);
@@ -111,8 +126,7 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             eventsList.setLayoutManager(layoutManager);
 
-            List<Event> events;
-            long now = System.currentTimeMillis();
+            final List<Event> events;
             switch (position) {
                 case 0:
                     events = mUpcomingEvents;
@@ -124,9 +138,18 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
                     events = new ArrayList<Event>();
             }
 
-            ParticipateEventsRecyclerAdapter adapter = new ParticipateEventsRecyclerAdapter(getActivity(), events);
 
+            ParticipateEventsRecyclerAdapter.OnRecyclerViewClickListener itemClickListener = new ParticipateEventsRecyclerAdapter.OnRecyclerViewClickListener() {
+                @Override
+                public void onRecyclerViewItemClicked(View v, int position) {
+                    SessionStorage.getInstance().setEventInDetail(events.get(position));
+                    startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
+                }
+            };
+
+            ParticipateEventsRecyclerAdapter adapter = new ParticipateEventsRecyclerAdapter(getActivity(), events, itemClickListener);
             eventsList.setAdapter(adapter);
+            mViews.add(eventsList);
 
             emptyView.setVisibility(eventsList.getAdapter().getItemCount() > 0 ? View.GONE : View.VISIBLE);
             eventsList.setVisibility(eventsList.getAdapter().getItemCount() > 0 ? View.VISIBLE : View.GONE);
@@ -152,6 +175,14 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            for (RecyclerView rv : mViews) {
+                rv.getAdapter().notifyDataSetChanged();
+            }
         }
 
     }
