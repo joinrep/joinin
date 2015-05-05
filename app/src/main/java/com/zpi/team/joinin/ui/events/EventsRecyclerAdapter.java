@@ -95,7 +95,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         holder.mDate.setText(dateFormat.format(event.getStartTime().getTime()));
 
         toggleParticipateBtn(event, holder);
-
+    //TODO sprawdzenie czy sa wolne miejsca, jesli nie to przycisk nieaktywny/'brak miejsc'
         holder.mParticipate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

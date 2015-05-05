@@ -40,6 +40,7 @@
     <string name="nolimit">Brak limitu</string>
     <string name="no_participants">Brak uczestników</string>
     <string name="participants">uczestników</string>
+    <string name="participant">uczestnik</string>
     !--My events -->    <string name="upcoming">Nadchodzące</string>
     <string name="past">Minione</string>
     <string name="title_activity_sign_in">SignInActivity</string>

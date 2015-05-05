@@ -56,6 +56,7 @@ public class InDetailEventFragment extends Fragment {
     private Event mInDetailEvent;
     private List<User> mParticipants;
     private Button mParticipate;
+    private int mParticipantsCount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,15 +89,14 @@ public class InDetailEventFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         final int eventId = getActivity().getIntent().getExtras().getInt(INDETAIL_EVENT_ID);
-        final int participantsCount = mInDetailEvent.getParticipantsCount();
+        mParticipantsCount = mInDetailEvent.getParticipantsCount();
         new AsyncTask<Void, Void, Event>() {
             @Override
             protected void onPreExecute() {
                 barDescription.setVisibility(View.VISIBLE);
                 barLocalization.setVisibility(View.VISIBLE);
-                if (participantsCount != 0)
+                if (mParticipantsCount != 0)
                     barParticipants.setVisibility(View.VISIBLE);
             }
 
@@ -109,15 +109,13 @@ public class InDetailEventFragment extends Fragment {
             protected void onPostExecute(Event event) {
                 mLocalization.setText(event.getLocation().getLocationName());
                 mDescription.setText(event.getDescription());
-                if (participantsCount != 0){
+                if (mParticipantsCount != 0){
                     mParticipants = event.getParticipants();
-                    mPpl.setText(participantsCount + " " + getResources().getString(R.string.participants));
-                    mPpl.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    updateParticipantsHeader(mParticipantsCount);
                     barParticipants.setVisibility(View.GONE);
                 }
                 barDescription.setVisibility(View.GONE);
                 barLocalization.setVisibility(View.GONE);
-
             }
         }.execute();
     }
@@ -140,6 +138,24 @@ public class InDetailEventFragment extends Fragment {
             });
         }
 
+        mPpl.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                Log.d("onTextChanged", "" +s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         mTitle.setText(mInDetailEvent.getName());
         mCategory.setText(mInDetailEvent.getCategory().getName());
         SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM, HH:mm");
@@ -157,15 +173,15 @@ public class InDetailEventFragment extends Fragment {
         else mPriceContent.setVisibility(View.GONE);
 
 
-        if (mInDetailEvent.getStartTime().getTimeInMillis() < System.currentTimeMillis()) {
+        if (mInDetailEvent.getStartTime().getTimeInMillis() > System.currentTimeMillis()) {
             ((View)mParticipate.getParent()).setVisibility(View.INVISIBLE);
         } else {
-            toggleParticipateBtn(mInDetailEvent);
+            toggleParticipateBtn(mInDetailEvent, false);
             mParticipate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mInDetailEvent.setParticipate(!mInDetailEvent.getParticipate());
-                    toggleParticipateBtn(mInDetailEvent);
+                    toggleParticipateBtn(mInDetailEvent, true);
                     new ToggleParticipate(mInDetailEvent).execute();
                 }
             });
@@ -185,11 +201,30 @@ public class InDetailEventFragment extends Fragment {
         mLimit.setText(ppl);
     }
 
-    private void toggleParticipateBtn(Event event) {
+    private void toggleParticipateBtn(Event event, boolean update) {
         if (event.getParticipate()) {
             mParticipate.setText(getResources().getString(R.string.not_participate_event));
+            if(update) updateParticipantsHeader(++mParticipantsCount);
         } else {
             mParticipate.setText(getResources().getString(R.string.participate_event));
+            if(update) updateParticipantsHeader(--mParticipantsCount);
+        }
+    }
+
+    private void updateParticipantsHeader(int count) {
+        Log.d("updateParticipants", mParticipantsCount + ", " + count);
+        String postscript;
+        if(count == 0){
+            mPpl.setText(getResources().getString(R.string.no_participants));
+            mPpl.setClickable(false);
+            mPpl.setTextColor(getResources().getColor(R.color.black_87));
+        }else {
+            if (count == 1) postscript = getResources().getString(R.string.participant);
+            else postscript = getResources().getString(R.string.participants);
+
+            mPpl.setText(count + " " + postscript);
+            mPpl.setClickable(true);
+            mPpl.setTextColor(getResources().getColor(R.color.colorPrimary));
         }
     }
 
