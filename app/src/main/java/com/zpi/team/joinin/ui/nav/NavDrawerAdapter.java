@@ -1,6 +1,7 @@
 package com.zpi.team.joinin.ui.nav;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +37,10 @@ public class NavDrawerAdapter extends ArrayAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
             switch (type) {
                 case TYPE_ITEM:
+
                     convertView = inflater.inflate(R.layout.navdrawer_item, null);
                     ImageView icon = (ImageView)convertView.findViewById(R.id.nav_drawer_icon);
                     icon.setImageResource(mNavDrawerItems.get(position).getIcon());
@@ -52,6 +55,14 @@ public class NavDrawerAdapter extends ArrayAdapter {
                     TextView subheader = (TextView)convertView.findViewById(R.id.navdrawer_subheader);
                     subheader.setText(mNavDrawerItems.get(position).getTitle());
                     break;
+            }
+        } else {
+            // TODO MK: ostatnia kategoria ma nie nullowego convertView - do zbadania w dodawaniu ketogorii do navbara
+            if (type == TYPE_ITEM) {
+                ImageView icon = (ImageView)convertView.findViewById(R.id.nav_drawer_icon);
+                icon.setImageResource(mNavDrawerItems.get(position).getIcon());
+                TextView title = (TextView)convertView.findViewById(R.id.nav_drawer_title);
+                title.setText(mNavDrawerItems.get(position).getTitle());
             }
         }
 

@@ -153,6 +153,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
         int id = mEvents.get(position).getId();
         Log.d("EventsRecyclerFragment", "eventClicked(), id: " + id);
 
+        //TODO po jakiego wała przekazywać samo id jak i tak już przekazujemy cały event
         SessionStorage.getInstance().setEventInDetail(mEvents.get(position));
         Intent detail = new Intent(getActivity(), InDetailEventActivity.class);
         detail.putExtra(INDETAIL_EVENT_ID, id);

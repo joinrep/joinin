@@ -31,6 +31,8 @@ import java.util.List;
  * Created by Arkadiusz on 2015-03-08.
  */
 public class ParticipateEventsFragment extends EventsRecyclerFragment {
+
+    private static String INDETAIL_EVENT_ID = "indetail_event_id";
     private static int INDETAIL_EVENT_REQUEST = 2;
 
     private SlidingTabLayout mSlidingTabLayout;
@@ -142,8 +144,14 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
             ParticipateEventsRecyclerAdapter.OnRecyclerViewClickListener itemClickListener = new ParticipateEventsRecyclerAdapter.OnRecyclerViewClickListener() {
                 @Override
                 public void onRecyclerViewItemClicked(View v, int position) {
-                    SessionStorage.getInstance().setEventInDetail(events.get(position));
-                    startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
+                    //SessionStorage.getInstance().setEventInDetail(events.get(position));
+                    //startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
+                    Event event = events.get(position);
+                    SessionStorage.getInstance().setEventInDetail(event);
+                    Intent detail = new Intent(getActivity(), InDetailEventActivity.class);
+                    detail.putExtra(INDETAIL_EVENT_ID, event.getId());
+                    startActivityForResult(detail, INDETAIL_EVENT_REQUEST);
+
                 }
             };
 
