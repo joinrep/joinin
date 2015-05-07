@@ -41,6 +41,7 @@ public class EventRepository implements IRepository<Event> {
     private static String url_events_by_category = hostname + "get_events_by_category.php";
     private static String url_events_by_participant = hostname + "get_events_by_participant.php";
     private static String url_events_by_organizer = hostname + "get_events_by_participant.php";
+    private static String url_cancel_event = hostname + "delete_event.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -337,6 +338,28 @@ public class EventRepository implements IRepository<Event> {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public void cancel(Event event) {
+        cancel(event, true);
+    }
+
+    public void cancel(Event event, boolean canceled) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("event_id", "" + event.getId()));
+        params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
+        JSONObject json = jParser.makeHttpRequest(url_cancel_event, "POST", params);
+        // check for success tag
+        try {
+            int success = json.getInt(TAG_SUCCESS);
+            if (success == 1) {
+                // successfully created
+            } else {
+                // failed to create
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void delete(Event entity) {
