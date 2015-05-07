@@ -33,6 +33,7 @@ import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
+import com.zpi.team.joinin.repository.UserRepository;
 import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
@@ -306,7 +307,6 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         protected Void doInBackground(String... args) {
             // TODO set real user in storage
             storage.setUser(new User(1, null, null, "Marek", "Kos"));
-
 
             categories = new CategoryRepository().getByUser(storage.getUser());
             // resolve categories icon id
