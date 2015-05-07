@@ -258,7 +258,7 @@ public class CreateEventFragment extends Fragment {
          */
         newEvent.setLocation(new Address(0, "city", "street", "street", address));
 //        newEvent.setOrganizer(SessionStorage.getInstance().getUser());
-        newEvent.setOrganizer(new User(12, null, null, "jan", "probny"));
+        newEvent.setOrganizer(SessionStorage.getInstance().getUser());
         newEvent.setCategory((Category) mCategories.getSelectedItem());
         new SaveNewEvent().execute(newEvent);
 

@@ -40,7 +40,7 @@ public class EventRepository implements IRepository<Event> {
     private static String url_participate_event = hostname + "participate_event.php";
     private static String url_events_by_category = hostname + "get_events_by_category.php";
     private static String url_events_by_participant = hostname + "get_events_by_participant.php";
-
+    private static String url_events_by_organizer = hostname + "get_events_by_participant.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -301,6 +301,42 @@ public class EventRepository implements IRepository<Event> {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+    }
+
+    public List<Event> getByOrganizer(User organizer) {
+        return getByParticipant(organizer, false);
+    }
+
+    public List<Event> getByOrganizer(User organizer, boolean canceled) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user_id", "" + organizer.getUserId()));
+        params.add(new BasicNameValuePair("canceled", canceled?"Y":"N"));
+
+        JSONObject json = jParser.makeHttpRequest(url_events_by_organizer, "GET", params);
+
+        Log.d("Participant Events: ", json.toString());
+
+        List<Event> result = new ArrayList<Event>();
+
+        try {
+            int success = json.getInt(TAG_SUCCESS);
+            if (success == 1) {
+                JSONArray events = json.getJSONArray(TAG_EVENTS);
+                for (int i = 0; i < events.length(); i++) {
+                    JSONObject eventJSON = events.getJSONObject(i);
+
+                    Event event = parseSimpleEvent(eventJSON);
+
+                    result.add(event);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public void delete(Event entity) {
