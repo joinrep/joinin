@@ -1,25 +1,35 @@
 package com.zpi.team.joinin.ui.events;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
+import com.zpi.team.joinin.ui.details.InDetailEventActivity;
+import com.zpi.team.joinin.ui.details.InDetailEventFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Arkadiusz on 2015-04-25.
  */
 public class MyOwnEventsFragment extends EventsRecyclerFragment {
+    private static int INDETAIL_EVENT_REQUEST = 2;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
     private OnToolbarElevationListener mOnToolbarElevationListener;
@@ -70,56 +80,15 @@ public class MyOwnEventsFragment extends EventsRecyclerFragment {
     public void onCustomPostExecute(List<Event> events) {
         String upcoming = getResources().getString(R.string.upcoming);
         String past = getResources().getString(R.string.past);
-        mViewPager.setAdapter(new MyEventsPagerAdapter(new String[]{upcoming, past}, events));
+        mViewPager.setAdapter(new EventsPagerAdapter(getActivity(), new String[]{upcoming, past}, events));
         mSlidingTabLayout.setViewPager(mViewPager);
     }
 
-    class MyEventsPagerAdapter extends PagerAdapter {
-        private String[] mPageTitle;
-        private List<Event> mEvents;
-
-        MyEventsPagerAdapter(String[] titles, List<Event> events) {
-            mPageTitle = titles;
-            mEvents = events;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == INDETAIL_EVENT_REQUEST) {
+            PagerAdapter adapter = mViewPager.getAdapter();
+            adapter.notifyDataSetChanged();
         }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            View view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
-                    container, false);
-            container.addView(view);
-
-            RecyclerView eventsList = (RecyclerView) view.findViewById(R.id.tabEventsList);
-            eventsList.setHasFixedSize(true);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            eventsList.setLayoutManager(layoutManager);
-
-            MyOwnEventsRecyclerAdapter adapter = new MyOwnEventsRecyclerAdapter(getActivity(), mEvents);
-
-            eventsList.setAdapter(adapter);
-
-            return view;
-        }
-
-        @Override
-        public int getCount() {
-            return mPageTitle.length;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object o) {
-            return o == view;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mPageTitle[position];
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
     }
 }

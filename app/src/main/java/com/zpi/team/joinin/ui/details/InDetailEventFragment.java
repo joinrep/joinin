@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class InDetailEventFragment extends Fragment {
-    private static String INDETAIL_EVENT_ID = "indetail_event_id";
+    public static String INDETAIL_EVENT_ID = "indetail_event_id";
     private TextView mTitle, mCategory, mPpl, mLimit, mPrice, mDescription, mLocalization, mStartTime, mEndTime;
     private View mLimitContent, mPriceContent;
     private ProgressBar barParticipants, barLocalization, barDescription;
@@ -137,24 +137,6 @@ public class InDetailEventFragment extends Fragment {
                 }
             });
         }
-
-        mPpl.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                Log.d("onTextChanged", "" +s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
 
         mTitle.setText(mInDetailEvent.getName());
         mCategory.setText(mInDetailEvent.getCategory().getName());

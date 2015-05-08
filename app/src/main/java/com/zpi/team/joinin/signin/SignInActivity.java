@@ -65,7 +65,7 @@ public class SignInActivity extends Activity implements
     private AccessTokenTracker mAccessTokenTracker;
     private ProfileTracker mProfileTracker;
 
-   private String mPersonId, mPersonName, mPersonMail, mPhotoSource;
+    private String mPersonId, mPersonName, mPersonMail, mPhotoSource;
 
 
     // TODO signout
@@ -108,7 +108,7 @@ public class SignInActivity extends Activity implements
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                if(currentProfile != null){
+                if (currentProfile != null) {
                     Log.d("SiginInActivity", "mProfileTracker");
                     mPersonId = currentProfile.getId();
                     mPersonName = currentProfile.getFirstName() + " " + currentProfile.getLastName();
@@ -143,24 +143,6 @@ public class SignInActivity extends Activity implements
                 }
             }
         });
-
-        //dla testow
-        findViewById(R.id.skip).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.skip) {
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-//                        finish();
-                    } else {
-                        startActivity(launchApp);
-//                        finish();
-                    }
-
-                }
-            }
-        });
-
     }
 
     @Override
@@ -232,13 +214,13 @@ public class SignInActivity extends Activity implements
         launchApp.putExtra(PERSON_MAIL, mPersonMail);
         launchApp.putExtra(PHOTO_SOURCE, mPhotoSource);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
 //                        finish();
-            } else {
-                startActivity(launchApp);
+        } else {
+            startActivity(launchApp);
 //                        finish();
-            }
+        }
 
     }
 

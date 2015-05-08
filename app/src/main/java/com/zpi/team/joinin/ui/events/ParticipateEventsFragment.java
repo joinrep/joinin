@@ -22,6 +22,7 @@ import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
+import com.zpi.team.joinin.ui.details.InDetailEventFragment;
 
 
 import java.util.ArrayList;
@@ -139,11 +140,14 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
             }
 
 
-            ParticipateEventsRecyclerAdapter.OnRecyclerViewClickListener itemClickListener = new ParticipateEventsRecyclerAdapter.OnRecyclerViewClickListener() {
+            OnRecyclerViewClickListener itemClickListener = new OnRecyclerViewClickListener() {
                 @Override
                 public void onRecyclerViewItemClicked(View v, int position) {
+                    int id = events.get(position).getId();
                     SessionStorage.getInstance().setEventInDetail(events.get(position));
-                    startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
+                    Intent detail = new Intent(getActivity(), InDetailEventActivity.class);
+                    detail.putExtra(InDetailEventFragment.INDETAIL_EVENT_ID, id);
+                    startActivityForResult(detail, INDETAIL_EVENT_REQUEST);
                 }
             };
 

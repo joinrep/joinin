@@ -35,10 +35,6 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
         mItemListener = listener;
     }
 
-    public interface OnRecyclerViewClickListener {
-        public void onRecyclerViewItemClicked(View v, int position);
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mTitle;
         public TextView mDeadline;

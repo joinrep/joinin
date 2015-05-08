@@ -27,6 +27,7 @@ import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
+import com.zpi.team.joinin.ui.details.InDetailEventFragment;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
 
 import java.util.List;
@@ -35,9 +36,8 @@ import java.util.List;
  * Created by Arkadiusz on 2015-04-25.
  */
 
-public abstract class EventsRecyclerFragment extends Fragment implements EventsRecyclerAdapter.OnRecyclerViewClickListener {
+public abstract class EventsRecyclerFragment extends Fragment implements OnRecyclerViewClickListener {
 
-    private static String INDETAIL_EVENT_ID = "indetail_event_id";
     private static int CREATE_EVENT_REQUEST = 1;
     private static int INDETAIL_EVENT_REQUEST = 2;
     public final static int ALL = 1;
@@ -155,7 +155,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
 
         SessionStorage.getInstance().setEventInDetail(mEvents.get(position));
         Intent detail = new Intent(getActivity(), InDetailEventActivity.class);
-        detail.putExtra(INDETAIL_EVENT_ID, id);
+        detail.putExtra(InDetailEventFragment.INDETAIL_EVENT_ID, id);
         startActivityForResult(detail, INDETAIL_EVENT_REQUEST);
     }
 
@@ -197,7 +197,6 @@ public abstract class EventsRecyclerFragment extends Fragment implements EventsR
     public void onCustomPostExecute(List<Event> events) {
         EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events, EventsRecyclerFragment.this);
         mEventsRecycler.setAdapter(adapter);
-
         checkIfEmpty();
     }
 
