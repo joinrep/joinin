@@ -55,7 +55,7 @@
                 android:textColor="@color/black_87"
                 android:textSize="18sp"
                 android:layout_marginTop="@dimen/keyline_1"
-                android:layout_centerVertical="true" />
+                android:layout_centerHorizontal="true" />
 
             <ImageButton
                 android:id="@+id/more"

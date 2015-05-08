@@ -13,16 +13,6 @@
     <item name="icon_tint" type="color">#757575</item>
     <item name="bar_gray" type="color">#D9D9D9</item>
 
-    <!--Palette-->
-    <array name="imageBackgroundColors">
-        <item name="purple_50" type="color">#F3E5F5</item>
-        <item name="purple_100" type="color">#E1BEE7</item>
-        <item name="red_50" type="color">#FFEBEE</item>
-        <item name="blue_50" type="color">#E3F2FD</item>
-        <item name="indigo_100" type="color">#C5CAE9</item>
-        <item name="lime_50" type="color">#F9FBE7</item>
-        <item name="green_50" type="color">#E8F5E9</item>
-        <item name="orange_100" type="color">#FFE0B2</item>
-        <item name="yellow_50" type="color">#FFFDE7</item>
-    </array>
+    <item name="google" type="color">#dd4b39</item>
+    <item name="facebook" type="color">#3b5998</item>
 </resources>

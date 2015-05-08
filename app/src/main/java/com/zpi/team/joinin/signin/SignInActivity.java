@@ -6,10 +6,15 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -27,6 +32,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
+import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
 import com.zpi.team.joinin.ui.main.MainActivity;
 
@@ -36,6 +44,7 @@ public class SignInActivity extends Activity implements
 
     private static final String TAG = "SignInActivity";
     private static final String KEY_IN_RESOLUTION = "is_in_resolution";
+    public final static String SHUT_SIGIN_ACTIVITY_REQUEST = "shut_activity";
     public final static String GOOGLE = "google";
     public final static String FACEBOOK = "fb";
     public static final String PERSON_NAME = "name";
@@ -65,6 +74,7 @@ public class SignInActivity extends Activity implements
     private AccessTokenTracker mAccessTokenTracker;
     private ProfileTracker mProfileTracker;
 
+    private ProgressBar mBarLoading;
     private String mPersonId, mPersonName, mPersonMail, mPhotoSource;
 
 
@@ -77,33 +87,34 @@ public class SignInActivity extends Activity implements
         }
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_signin);
-
+        mBarLoading = (ProgressBar) findViewById(R.id.bar_loading);
         launchApp = new Intent(SignInActivity.this, MainActivity.class);
-        fLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
-        fLoginButton.setReadPermissions(PERMISSIONS);
+//        launchApp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        fLoginButton = (LoginButton) findViewById(R.id.facebook_button);
+//        fLoginButton.setReadPermissions(PERMISSIONS);
         callbackManager = CallbackManager.Factory.create();
-        fLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-
-                Log.d("SignInActivity", "onSuccess");
-
-//                Profile profile = Profile.getCurrentProfile();
-//                if(profile != null)
-//                {
+//        fLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
 //
-//                }
-//                startActivity(launchApp);
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-            }
-        });
+//                Log.d("SignInActivity", "onSuccess");
+//
+////                Profile profile = Profile.getCurrentProfile();
+////                if(profile != null)
+////                {
+////
+////                }
+////                startActivity(launchApp);
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//            }
+//
+//            @Override
+//            public void onError(FacebookException exception) {
+//            }
+//        });
 
         mProfileTracker = new ProfileTracker() {
             @Override
@@ -129,18 +140,28 @@ public class SignInActivity extends Activity implements
             }
         };
 
-        /**TODO
-         * po pierwszym logowaniu pokazywac tylko progress bar/
-         *   => zmiana lanuchera w manifescie
-         * */
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+
+        Button googleBtn =  (Button) findViewById(R.id.google_button);
+        googleBtn.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/catull-regular.ttf"));
+        googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.sign_in_button) {
+                if (v.getId() == R.id.google_button) {
                     if (InternetConnection.isAvailable(SignInActivity.this)) {
                         mGoogleApiClient.connect();
                     }
                 }
+            }
+        });
+
+
+        Button facebookBtn =  (Button) findViewById(R.id.facebook_button);
+        facebookBtn.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/Facebook Letter Faces.ttf"));
+        facebookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                com.facebook.login.widget.LoginButton btn = new LoginButton(SignInActivity.this);
+                btn.performClick();
             }
         });
     }
@@ -214,13 +235,8 @@ public class SignInActivity extends Activity implements
         launchApp.putExtra(PERSON_MAIL, mPersonMail);
         launchApp.putExtra(PHOTO_SOURCE, mPhotoSource);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-//                        finish();
-        } else {
-            startActivity(launchApp);
-//                        finish();
-        }
+        startActivity(launchApp);
+        finish();
 
     }
 
@@ -253,6 +269,30 @@ public class SignInActivity extends Activity implements
         } catch (SendIntentException e) {
             Log.e(TAG, "Exception while starting resolution activity", e);
             retryConnecting();
+        }
+    }
+
+    private class PrepareContent extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected void onPreExecute() {
+            mBarLoading.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+
+            mBarLoading.setVisibility(View.GONE);
         }
     }
 }
