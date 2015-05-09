@@ -54,6 +54,9 @@
     <string name="loading_events">Trwa ładowanie wydarzeń...</string>
     <string name="loading_favorite_category">Aktualizowanie ulubionych kategorii...</string>
     <string name="loading_participate_event">Aktualizowanie uczestnictwa w wydarzeniu...</string>
+    <string name="are_u_sure">Czy wylogować z konta?</string>
+    <string name="logout">Wyloguj</string>
+    <string name="cancel">Anuluj</string>
 
 
     <string name="facebook_app_id">1559652434287421</string>
