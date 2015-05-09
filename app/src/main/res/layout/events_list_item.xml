@@ -20,7 +20,7 @@
             android:background="@color/colorAccent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_category_bike"
-            android:tint="@color/black_54"
+            android:tint="@color/black_12"
             android:padding="8dp"
             android:layout_alignParentTop="true" />
 

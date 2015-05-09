@@ -71,17 +71,14 @@ public class CategoriesFragment extends Fragment {
         super.onDetach();
     }
 
-    private class SyncCategories extends AsyncTask<String, String, String> {
+    private class SyncCategories extends AsyncTask<Void, Void, Void> {
         SessionStorage storage = SessionStorage.getInstance();
 
-        protected String doInBackground(String... args) {
+        protected Void doInBackground(Void... args) {
             Log.d("async", "begin syncing categories");
             new CategoryRepository().syncFavorite(storage.getUser(), storage.getCategories());
             Log.d("async", "end syncing categories");
-            return "dumb";
-        }
-
-        protected void onPostExecute(String s) {
+            return null;
         }
     }
 

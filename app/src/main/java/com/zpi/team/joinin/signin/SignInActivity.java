@@ -1,25 +1,27 @@
 package com.zpi.team.joinin.signin;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
-import android.os.Build;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
-import com.facebook.login.LoginResult;
+import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -27,7 +29,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.zpi.team.joinin.R;
-import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
+import com.zpi.team.joinin.database.MyPreferences;
 import com.zpi.team.joinin.ui.main.MainActivity;
 
 public class SignInActivity extends Activity implements
@@ -36,13 +38,14 @@ public class SignInActivity extends Activity implements
 
     private static final String TAG = "SignInActivity";
     private static final String KEY_IN_RESOLUTION = "is_in_resolution";
+    public final static String SHUT_SIGIN_ACTIVITY_REQUEST = "shut_activity";
     public final static String GOOGLE = "google";
     public final static String FACEBOOK = "fb";
     public static final String PERSON_NAME = "name";
     public static final String PERSON_ID = "id";
-    public static final String PHOTO_SOURCE = "photo";
     public static final String PERSON_MAIL = "mail";
     private static final String[] PERMISSIONS = {"user_friends"};
+
 
     /**
      * Request code for auto Google Play Services error resolution.
@@ -57,7 +60,8 @@ public class SignInActivity extends Activity implements
      */
     private boolean mIsInResolution;
 
-    private Intent launchApp;
+    private Context mContext;
+    private Intent signInData;
 
     //Facebook stuff
     LoginButton fLoginButton;
@@ -65,7 +69,10 @@ public class SignInActivity extends Activity implements
     private AccessTokenTracker mAccessTokenTracker;
     private ProfileTracker mProfileTracker;
 
-   private String mPersonId, mPersonName, mPersonMail, mPhotoSource;
+    private TextView mSignWith;
+    private Button mGoogleBtn, mFacebookBtn;
+    private ProgressBar mBarLoading;
+    private String mLoginSource, mPersonId, mPersonName, mPersonMail;
 
 
     // TODO signout
@@ -75,46 +82,27 @@ public class SignInActivity extends Activity implements
         if (savedInstanceState != null) {
             mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
         }
-        FacebookSdk.sdkInitialize(getApplicationContext());
+
+        mContext = getApplicationContext();
+        MyPreferences.setContext(mContext);
+        FacebookSdk.sdkInitialize(mContext);
         setContentView(R.layout.activity_signin);
-
-        launchApp = new Intent(SignInActivity.this, MainActivity.class);
-        fLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
-        fLoginButton.setReadPermissions(PERMISSIONS);
+        signInData = new Intent(SignInActivity.this, MainActivity.class);
         callbackManager = CallbackManager.Factory.create();
-        fLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
 
-                Log.d("SignInActivity", "onSuccess");
-
-//                Profile profile = Profile.getCurrentProfile();
-//                if(profile != null)
-//                {
-//
-//                }
-//                startActivity(launchApp);
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-            }
-        });
 
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                if(currentProfile != null){
+                Log.d("SiginInActivity", "mProfileTracker");
+                if (currentProfile != null) {
                     Log.d("SiginInActivity", "mProfileTracker");
                     mPersonId = currentProfile.getId();
                     mPersonName = currentProfile.getFirstName() + " " + currentProfile.getLastName();
                     mPersonMail = null;
-                    mPhotoSource = FACEBOOK;
-                    lanuchActivity();
+                    mLoginSource = FACEBOOK;
+
+                    keeepDataAndLaunchMainActivity();
                 }
             }
         };
@@ -129,14 +117,15 @@ public class SignInActivity extends Activity implements
             }
         };
 
-        /**TODO
-         * po pierwszym logowaniu pokazywac tylko progress bar/
-         *   => zmiana lanuchera w manifescie
-         * */
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+
+        mGoogleBtn = (Button) findViewById(R.id.google_button);
+        mGoogleBtn.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/catull-regular.ttf"));
+        mGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.sign_in_button) {
+                if (v.getId() == R.id.google_button) {
+
+                    authentication();
                     if (InternetConnection.isAvailable(SignInActivity.this)) {
                         mGoogleApiClient.connect();
                     }
@@ -144,30 +133,43 @@ public class SignInActivity extends Activity implements
             }
         });
 
-        //dla testow
-        findViewById(R.id.skip).setOnClickListener(new View.OnClickListener() {
+        final com.facebook.login.widget.LoginButton btn = new LoginButton(SignInActivity.this);
+
+        LoginManager.getInstance().logOut();
+        mFacebookBtn =  (Button) findViewById(R.id.facebook_button);
+        mFacebookBtn.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/fb-letter-faces.ttf"));
+        mFacebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.skip) {
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-//                        finish();
-                    } else {
-                        startActivity(launchApp);
-//                        finish();
-                    }
 
-                }
+                Log.d("SignInActivity", "btnCLicked");
+                btn.performClick();
             }
         });
 
+
+
+        mBarLoading = (ProgressBar) findViewById(R.id.bar_loading);
+        mSignWith = (TextView) findViewById(R.id.sign_with);
+
+        if(MyPreferences.isAlreadyLoggedIn()){
+            Log.d("SignInActivity", "already logged in");
+            hideSignInComponents();
+            signInData = MyPreferences.getIntent(MyPreferences.SIGN_IN_INTENT);
+            new PrepareContent().execute();
+        }
     }
 
+    private void hideSignInComponents(){
+        mSignWith.setVisibility(View.GONE);
+        mGoogleBtn.setVisibility(View.GONE);
+        mFacebookBtn.setVisibility(View.GONE);
+    }
     @Override
     protected void onStart() {
         super.onStart();
-
-        authentication();
+//
+//        authentication();
     }
 
     private void authentication() {
@@ -183,9 +185,9 @@ public class SignInActivity extends Activity implements
 
     @Override
     protected void onStop() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
+//        if (mGoogleApiClient != null) {
+//            mGoogleApiClient.disconnect();
+//        }
         super.onStop();
     }
 
@@ -197,6 +199,7 @@ public class SignInActivity extends Activity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("SignInActivity", "onActivityREsult(), callbackManager");
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -221,25 +224,34 @@ public class SignInActivity extends Activity implements
             mPersonName = currentPerson.getDisplayName();
             mPersonId = currentPerson.getId();
             mPersonMail = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            mPhotoSource = GOOGLE;
-            lanuchActivity();
+            mLoginSource = GOOGLE;
+
+            keeepDataAndLaunchMainActivity();
         }
     }
 
-    private void lanuchActivity() {
-        launchApp.putExtra(PERSON_ID, mPersonId);
-        launchApp.putExtra(PERSON_NAME, mPersonName);
-        launchApp.putExtra(PERSON_MAIL, mPersonMail);
-        launchApp.putExtra(PHOTO_SOURCE, mPhotoSource);
+    private void keeepDataAndLaunchMainActivity() {
+        Log.d("SignInActivity", "setting preferences...");
+        MyPreferences.setAsLoggedIn();
+        MyPreferences.setLoginSource(mLoginSource);
+        saveAccountDataIntent();
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                startActivity(launchApp, ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this).toBundle());
-//                        finish();
-            } else {
-                startActivity(launchApp);
-//                        finish();
-            }
+        Log.d("SignInActivity", "launching activity...");
+        startActivity(signInData);
+        finish();
+    }
 
+    private void saveAccountDataIntent(){
+        signInData.putExtra(PERSON_ID, mPersonId);
+        signInData.putExtra(PERSON_NAME, mPersonName);
+        signInData.putExtra(PERSON_MAIL, mPersonMail);
+
+        MyPreferences.putIntent(signInData);
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     @Override
@@ -271,6 +283,31 @@ public class SignInActivity extends Activity implements
         } catch (SendIntentException e) {
             Log.e(TAG, "Exception while starting resolution activity", e);
             retryConnecting();
+        }
+    }
+
+    private class PrepareContent extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute() {
+            mBarLoading.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+
+            mBarLoading.setVisibility(View.GONE);
+            startActivity(signInData);
+            finish();
         }
     }
 }

@@ -6,6 +6,7 @@
     android:paddingBottom="8dp">
 
     <ImageView
+        android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:background="@drawable/header_background"
@@ -27,7 +28,8 @@
         android:nestedScrollingEnabled="false"
         android:longClickable="false" />
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:orientation="vertical"
@@ -58,7 +60,17 @@
             android:textSize="14sp"
             android:textStyle="normal"
             android:layout_gravity="center_vertical" />
-    </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_menu_logout"
+            android:layout_marginRight="@dimen/keyline_1"
+            android:padding="6dp"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"/>
+    </RelativeLayout>
 
 
 </RelativeLayout>

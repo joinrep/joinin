@@ -1,10 +1,9 @@
 package com.zpi.team.joinin.ui.events;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,22 +14,20 @@ import com.zpi.team.joinin.entities.Event;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Random;
 
 /**
- * Created by Arkadiusz on 2015-04-08.
+ * Created by Arkadiusz on 2015-05-06.
  */
-public class MyOwnEventsRecyclerAdapter extends RecyclerView.Adapter<MyOwnEventsRecyclerAdapter.ViewHolder> {
+public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
     private Context mContext;
     private OnRecyclerViewClickListener mItemListener;
     private OnPopUpListener mPopupListener;
 
-
-    public MyOwnEventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener itemListener, OnPopUpListener popupListener) {
+    public TabEventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener, OnPopUpListener popupListener) {
         mEvents = events;
         mContext = context;
-        mItemListener = itemListener;
+        mItemListener = listener;
         mPopupListener = popupListener;
     }
 
@@ -72,7 +69,7 @@ public class MyOwnEventsRecyclerAdapter extends RecyclerView.Adapter<MyOwnEvents
     }
 
     @Override
-    public MyOwnEventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public TabEventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                     int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.myevents_list_item, parent, false);
@@ -101,7 +98,6 @@ public class MyOwnEventsRecyclerAdapter extends RecyclerView.Adapter<MyOwnEvents
             holder.mParticipants.setText(event.getParticipantsCount() + " / " + event.getLimit());
         }
     }
-
 
     @Override
     public int getItemCount() {

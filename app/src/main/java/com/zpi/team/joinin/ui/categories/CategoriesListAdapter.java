@@ -62,7 +62,9 @@ public class CategoriesListAdapter extends BaseAdapter {
         //TODO MK set category icon
         final Category category = (Category) getItem(position);
         holder.categoryName.setText(category.getName());
-        holder.categoryIcon.setImageResource(category.getIconId());
+        if(category.getName().equals("Inne"))
+            holder.categoryIcon.setImageResource(R.drawable.ic_category_other);
+        else holder.categoryIcon.setImageResource(category.getIconId());
 
         final ImageView categoryStar = holder.categoryStar;
         toggleCategoryStar(category, categoryStar);

@@ -30,7 +30,7 @@ import java.util.Random;
 public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> {
     private List<Event> mEvents;
     private Context mContext;
-    private static OnRecyclerViewClickListener mItemListener;
+    private OnRecyclerViewClickListener mItemListener;
 
     public EventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener) {
         mEvents = events;
@@ -38,11 +38,8 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         mItemListener = listener;
     }
 
-    public interface OnRecyclerViewClickListener {
-        public void onRecyclerViewItemClicked(View v, int position);
-    }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mTitle;
         public TextView mAddress;
         public TextView mTime;
@@ -95,7 +92,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         holder.mDate.setText(dateFormat.format(event.getStartTime().getTime()));
 
         toggleParticipateBtn(event, holder);
-
+    //TODO sprawdzenie czy sa wolne miejsca, jesli nie to przycisk nieaktywny/'brak miejsc'
         holder.mParticipate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

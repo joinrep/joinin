@@ -7,6 +7,12 @@
     <string name="drawer_close">Drawer close</string>
     <string name="title_activity_create_event">Nowe wydarzenie</string>
 
+
+    !-- Signin -->
+    <string name="google">g+</string>
+    <string name="facebook">f</string>
+    <string name="sign_with">Zaloguj się poprzez</string>
+
     !-- Navigation Drawer items -->
     <string name="navdrawer_header_login_source">Zalogowany przez Facebook</string>
     <string name="navdrawer_events">Wydarzenia</string>
@@ -40,6 +46,7 @@
     <string name="nolimit">Brak limitu</string>
     <string name="no_participants">Brak uczestników</string>
     <string name="participants">uczestników</string>
+    <string name="participant">uczestnik</string>
     !--My events -->    <string name="upcoming">Nadchodzące</string>
     <string name="past">Minione</string>
     <string name="title_activity_sign_in">SignInActivity</string>
@@ -47,6 +54,9 @@
     <string name="loading_events">Trwa ładowanie wydarzeń...</string>
     <string name="loading_favorite_category">Aktualizowanie ulubionych kategorii...</string>
     <string name="loading_participate_event">Aktualizowanie uczestnictwa w wydarzeniu...</string>
+    <string name="are_u_sure">Czy wylogować z konta?</string>
+    <string name="logout">Wyloguj</string>
+    <string name="cancel">Anuluj</string>
 
 
     <string name="facebook_app_id">1559652434287421</string>

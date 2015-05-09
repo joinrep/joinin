@@ -47,8 +47,30 @@
         android:layout_below="@id/ppl"
         style="@style/Divider"/>
 
+    <RelativeLayout
+        android:id="@+id/btns_content"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:elevation="4dp"
+        android:background="@color/white_100"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/btnParticipate"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/join"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
     <ScrollView
         android:id="@+id/details"
+        android:layout_above="@id/btns_content"
         android:layout_below="@id/underline"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -199,23 +221,5 @@
         </LinearLayout>
     </ScrollView>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:elevation="4dp"
-        android:background="@color/white_100"
-        android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/btnParticipate"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:text="@string/join"
-            android:background="?android:attr/selectableItemBackground"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:layout_centerInParent="true" />
-
-    </RelativeLayout>
 </RelativeLayout>

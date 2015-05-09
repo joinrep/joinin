@@ -22,10 +22,12 @@ import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
+import com.zpi.team.joinin.ui.details.InDetailEventFragment;
 
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by Arkadiusz on 2015-03-08.
@@ -97,6 +99,7 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
         }
     }
 
+    //TODO do zamiany na EventsPagerAdapter
     class ParticipateEventsPagerAdapter extends PagerAdapter {
         private String[] mPageTitle;
         private List<Event> mUpcomingEvents = new ArrayList<Event>();
@@ -141,17 +144,11 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
             }
 
 
-            ParticipateEventsRecyclerAdapter.OnRecyclerViewClickListener itemClickListener = new ParticipateEventsRecyclerAdapter.OnRecyclerViewClickListener() {
+            OnRecyclerViewClickListener itemClickListener = new OnRecyclerViewClickListener() {
                 @Override
                 public void onRecyclerViewItemClicked(View v, int position) {
-                    //SessionStorage.getInstance().setEventInDetail(events.get(position));
-                    //startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
-                    Event event = events.get(position);
-                    SessionStorage.getInstance().setEventInDetail(event);
-                    Intent detail = new Intent(getActivity(), InDetailEventActivity.class);
-                    detail.putExtra(INDETAIL_EVENT_ID, event.getId());
-                    startActivityForResult(detail, INDETAIL_EVENT_REQUEST);
-
+                    SessionStorage.getInstance().setEventInDetail(events.get(position));
+                    startActivityForResult(new Intent(getActivity(), InDetailEventActivity.class), INDETAIL_EVENT_REQUEST);
                 }
             };
 

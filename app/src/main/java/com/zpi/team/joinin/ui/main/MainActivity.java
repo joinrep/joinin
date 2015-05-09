@@ -1,8 +1,14 @@
 package com.zpi.team.joinin.ui.main;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.os.Build;
@@ -18,24 +24,19 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookSdk;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
-import com.facebook.login.widget.ProfilePictureView;
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.MyPreferences;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Category;
-import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
-import com.zpi.team.joinin.repository.EventRepository;
-import com.zpi.team.joinin.repository.UserRepository;
+import com.zpi.team.joinin.signin.LogOutDialog;
 import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
@@ -53,7 +54,7 @@ import com.zpi.team.joinin.ui.nav.NavDrawerItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements OnToolbarElevationListener {
+public class MainActivity extends ActionBarActivity implements OnToolbarElevationListener, View.OnClickListener {
 
     private final static int ALL = 1;
     private final static int PARTICIPATE = 2;
@@ -68,6 +69,8 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerAdapter mNavDrawerAdapter;
     private View mHeader;
+    private ImageButton mLogout;
+    private BroadcastReceiver mLogoutReceiver;
     private int mCurrentPosition;
     private List<Category> favCategories = new ArrayList<Category>();
 
@@ -117,6 +120,8 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
         mHeader = View.inflate(this, R.layout.navdrawer_header, null);
         inflateHeaderWithPersonData();
+        mLogout = (ImageButton) mHeader.findViewById(R.id.logout);
+        mLogout.setOnClickListener(this);
 
         mDrawerList.addHeaderView(mHeader, null, false);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -138,6 +143,22 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
         syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
         new Initialize().execute();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.zpi.team.joinin.ACTION_LOGOUT");
+        mLogoutReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                new LogOutDialog(mContext, MainActivity.this).show();
+            }
+        };
+        registerReceiver(mLogoutReceiver, intentFilter);
+    }
+
+    //TODO prowizorka
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     private void inflateHeaderWithPersonData() {
@@ -146,21 +167,19 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         TextView personMail = (TextView) mHeader.findViewById(R.id.mail);
 
         Intent personData = getIntent();
-        //TODO przy pierwszym logowaniu zapisac lokalnie
 
         if (personData.getExtras() != null) {
-            Log.d("SignInActivity", "inflateHeaderWithPersonData(), logging in.");
-            String photoSource = personData.getStringExtra(SignInActivity.PHOTO_SOURCE);
+            Log.d("MainActivity", "inflateHeaderWithPersonData(), logging in.");
             String id = personData.getStringExtra(SignInActivity.PERSON_ID);
             String name = personData.getStringExtra(SignInActivity.PERSON_NAME);
             String mail = personData.getStringExtra(SignInActivity.PERSON_MAIL);
-
-            new LoadProfilePhoto(personPhoto, this).execute(photoSource, id);
+            Log.d("MainActivity" , "getLoginSource(), " + MyPreferences.getLoginSource());
+            new LoadProfilePhoto(personPhoto, this).execute(MyPreferences.getLoginSource(), id);
             personName.setText(name);
             if (mail == null) mail = "Zalogowany przez Facebook";
             personMail.setText(mail);
         } else
-            Log.d("SignInActivity", "inflateHeaderWithPersonData(), cannot log in.");
+            Log.d("MainActivity", "inflateHeaderWithPersonData(), cannot log in.");
     }
 
     @Override
@@ -214,6 +233,23 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             mDrawerList.setAdapter(mNavDrawerAdapter);
             syncToolbarTitleAndMenuItemCheckedState(mCurrentPosition);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch(id){
+            case R.id.logout:
+                Log.d("MainActivity", " onClick(), loggin out");
+                logout();
+                break;
+        }
+    }
+
+    private void logout(){
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("com.zpi.team.joinin.ACTION_LOGOUT");
+        sendBroadcast(broadcastIntent);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -297,9 +333,15 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_filter).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLogoutReceiver);
+    }
 
     // Initialization
     private class Initialize extends AsyncTask<String, Void, Void> {
@@ -323,6 +365,4 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             updateNavDrawerItems();
         }
     }
-
-
 }
