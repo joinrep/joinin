@@ -18,7 +18,7 @@ if (isset($_GET["user_id"])) {
 
 	// get all categories from categories table
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
-	$result = mysql_query("SELECT * FROM Category C LEFT JOIN Favorites F ON C.category_id = F.category WHERE F.subscriber = $user_id OR F.subscriber IS NULL ORDER BY category_name") or die(mysql_error());
+	$result = mysql_query("SELECT *, (SELECT 'Y' FROM Favorites F WHERE F.category = C.category_id AND F.subscriber = $user_id) subscriber FROM Category C ORDER BY category_name") or die(mysql_error());
 
 	// check for empty result
 	if (mysql_num_rows($result) > 0) {

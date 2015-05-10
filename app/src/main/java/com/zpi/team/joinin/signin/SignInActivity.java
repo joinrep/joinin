@@ -30,6 +30,8 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.MyPreferences;
+import com.zpi.team.joinin.database.SessionStorage;
+import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.ui.main.MainActivity;
 
 public class SignInActivity extends Activity implements
@@ -235,6 +237,16 @@ public class SignInActivity extends Activity implements
         MyPreferences.setAsLoggedIn();
         MyPreferences.setLoginSource(mLoginSource);
         saveAccountDataIntent();
+
+        String fName = mPersonName.substring(mPersonName.lastIndexOf(' ') + 1);
+        String lName = mPersonName.substring(0, mPersonName.lastIndexOf(' '));
+        User loggedInUser = new User(fName, lName);
+        if (mLoginSource == GOOGLE) {
+            loggedInUser.setGoogleId(mPersonId);
+        } else {
+            loggedInUser.setFacebookId(mPersonId);
+        }
+        SessionStorage.getInstance().setUser(loggedInUser);
 
         Log.d("SignInActivity", "launching activity...");
         startActivity(signInData);
