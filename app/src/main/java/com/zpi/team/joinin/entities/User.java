@@ -123,4 +123,12 @@ public class User {
     public void setFollowers(List<User> followers) {
         this.followers = followers;
     }
+
+    public boolean isFacebook() {
+        return facebookId != null;
+    }
+
+    public boolean isGoogle() {
+        return googleId != null;
+    }
 }

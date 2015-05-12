@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.main.MainActivity;
@@ -99,6 +100,14 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
                 Log.d("participate", ""+event.getId() + ":" + event.getName());
 
                 event.setParticipate(!event.getParticipate());
+                User currentUser = SessionStorage.getInstance().getUser();
+                if (event.getParticipate()) {
+                    event.getParticipants().add(currentUser);
+                    event.setParticipantsCount(event.getParticipantsCount() + 1);
+                } else {
+                    event.getParticipants().remove(currentUser);
+                    event.setParticipantsCount(event.getParticipantsCount() - 1);
+                }
                 toggleParticipateBtn(event, holder);
                 new ToggleParticipate(event).execute();
 

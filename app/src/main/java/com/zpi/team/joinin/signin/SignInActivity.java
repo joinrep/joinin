@@ -76,8 +76,6 @@ public class SignInActivity extends Activity implements
     private ProgressBar mBarLoading;
     private String mLoginSource, mPersonId, mPersonName, mPersonMail;
 
-
-    // TODO signout
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,6 +185,7 @@ public class SignInActivity extends Activity implements
 
     @Override
     protected void onStop() {
+        // TODO signout - problemy z wylogowaniem u MK
 //        if (mGoogleApiClient != null) {
 //            mGoogleApiClient.disconnect();
 //        }
@@ -238,8 +237,8 @@ public class SignInActivity extends Activity implements
         MyPreferences.setLoginSource(mLoginSource);
         saveAccountDataIntent();
 
-        String fName = mPersonName.substring(mPersonName.lastIndexOf(' ') + 1);
-        String lName = mPersonName.substring(0, mPersonName.lastIndexOf(' '));
+        String lName = mPersonName.substring(mPersonName.lastIndexOf(' ') + 1);
+        String fName = mPersonName.substring(0, mPersonName.lastIndexOf(' '));
         User loggedInUser = new User(fName, lName);
         if (mLoginSource == GOOGLE) {
             loggedInUser.setGoogleId(mPersonId);

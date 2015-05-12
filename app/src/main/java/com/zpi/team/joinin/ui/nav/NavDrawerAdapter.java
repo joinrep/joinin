@@ -40,7 +40,6 @@ public class NavDrawerAdapter extends ArrayAdapter {
 
             switch (type) {
                 case TYPE_ITEM:
-
                     convertView = inflater.inflate(R.layout.navdrawer_item, null);
                     ImageView icon = (ImageView)convertView.findViewById(R.id.nav_drawer_icon);
                     icon.setImageResource(mNavDrawerItems.get(position).getIcon());
@@ -57,7 +56,6 @@ public class NavDrawerAdapter extends ArrayAdapter {
                     break;
             }
         } else {
-            // TODO MK: ostatnia kategoria ma nie nullowego convertView - do zbadania w dodawaniu ketogorii do navbara
             if (type == TYPE_ITEM) {
                 ImageView icon = (ImageView)convertView.findViewById(R.id.nav_drawer_icon);
                 icon.setImageResource(mNavDrawerItems.get(position).getIcon());

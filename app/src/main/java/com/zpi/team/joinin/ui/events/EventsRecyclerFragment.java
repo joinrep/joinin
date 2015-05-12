@@ -173,8 +173,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
                     mEvents = new EventRepository().getByParticipant(storage.getUser());
                     break;
                 case MY_OWN:
-                    //TODO: MK sql do pobierania organizowanych przez usera eventów
-                    mEvents = new EventRepository().getAll(storage.getUser());
+                    mEvents = new EventRepository().getByOrganizer(storage.getUser());
                     break;
                 case BY_CATEGORY:
                     mEvents = new EventRepository().getByCategory(getCategory(), storage.getUser());

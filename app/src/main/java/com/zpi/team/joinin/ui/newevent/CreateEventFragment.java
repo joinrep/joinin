@@ -245,7 +245,6 @@ public class CreateEventFragment extends Fragment {
         int limit = (int) parseEditText(mLimitSwitch, mLimit, -1d);
         double cost = parseEditText(mPaySwitch, mPay, 0d);
 
-        // TODO: MK czy organizator jest też uczestnikiem? nie wyświetlać jego eventów? czy odłączenie będzie jednoznaczne ze zniszczeniem eventu?
         final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, limit, cost, false, 0, false);
 
         String out = "Title: " + title + "\nStart time: " + mCalendarStart.toString() + "\nEnd time: " + mCalendarEnd.toString() +
@@ -257,7 +256,6 @@ public class CreateEventFragment extends Fragment {
          * - przypisanie uzytkownika
          */
         newEvent.setLocation(new Address(0, "city", "street", "street", address));
-//        newEvent.setOrganizer(SessionStorage.getInstance().getUser());
         newEvent.setOrganizer(SessionStorage.getInstance().getUser());
         newEvent.setCategory((Category) mCategories.getSelectedItem());
         new SaveNewEvent().execute(newEvent);

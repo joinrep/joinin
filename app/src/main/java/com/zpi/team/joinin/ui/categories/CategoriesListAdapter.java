@@ -59,7 +59,7 @@ public class CategoriesListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        //TODO MK set category icon
+        //TODO MK set INNE category icon
         final Category category = (Category) getItem(position);
         holder.categoryName.setText(category.getName());
         if(category.getName().equals("Inne"))

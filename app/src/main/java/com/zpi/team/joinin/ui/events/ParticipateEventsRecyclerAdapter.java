@@ -94,7 +94,7 @@ public class ParticipateEventsRecyclerAdapter extends RecyclerView.Adapter<Parti
         holder.mMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO MK dropdown menu
+                // TODO MK dropdown menu - dodać usuwanie uczestnictwa
                 event.setParticipate(!event.getParticipate());
                 toggleParticipateBtn(event, holder);
                 new ToggleParticipate(event).execute();

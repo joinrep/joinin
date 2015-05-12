@@ -1,5 +1,6 @@
 package com.zpi.team.joinin.entities;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class Event {
     private Address location;
     private Category category;
     private User organizer;
-    private List<User> participants;
-    private List<Comment> comments;
+    private List<User> participants = new ArrayList<User>();
+    private List<Comment> comments = new ArrayList<Comment>();
 
     public Event(int id, String name, Calendar startTime, Calendar endTime, String description, String notes, int limit, double cost, boolean canceled, int participantsCount, boolean isParticipant) {
         this.id = id;

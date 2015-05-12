@@ -85,8 +85,8 @@ public class InDetailEventFragment extends Fragment {
             protected void onPostExecute(Event event) {
                 mLocalization.setText(event.getLocation().getLocationName());
                 mDescription.setText(event.getDescription());
+                mParticipants = event.getParticipants();
                 if (mParticipantsCount != 0){
-                    mParticipants = event.getParticipants();
                     updateParticipantsHeader(mParticipantsCount);
                     mBarParticipants.setVisibility(View.GONE);
                 }
@@ -100,19 +100,18 @@ public class InDetailEventFragment extends Fragment {
         mInDetailEvent = SessionStorage.getInstance().getEventInDetail();
         if (mInDetailEvent.getParticipantsCount() == 0) {
             mPpl.setText(getString(R.string.no_participants));
-        } else {
-            mPpl.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Dialog dialog = new Dialog(getActivity());
-                    dialog.setContentView(R.layout.dialog_participants);
-                    ListView list = (ListView) dialog.findViewById(R.id.dialog_participants);
-
-                    list.setAdapter(new DialogListAdapter(getActivity(), mParticipants));
-                    dialog.show();
-                }
-            });
         }
+        mPpl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_participants);
+                ListView list = (ListView) dialog.findViewById(R.id.dialog_participants);
+
+                list.setAdapter(new DialogListAdapter(getActivity(), mParticipants));
+                dialog.show();
+            }
+        });
 
         mTitle.setText(mInDetailEvent.getName());
         mCategory.setText(mInDetailEvent.getCategory().getName());
@@ -139,6 +138,14 @@ public class InDetailEventFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mInDetailEvent.setParticipate(!mInDetailEvent.getParticipate());
+                    User currentUser = SessionStorage.getInstance().getUser();
+                    if (mInDetailEvent.getParticipate()) {
+                        mParticipants.add(currentUser);
+                        mInDetailEvent.setParticipantsCount(mInDetailEvent.getParticipantsCount() + 1);
+                    } else {
+                        mParticipants.remove(currentUser);
+                        mInDetailEvent.setParticipantsCount(mInDetailEvent.getParticipantsCount() - 1);
+                    }
                     toggleParticipateBtn(mInDetailEvent, true);
                     new ToggleParticipate(mInDetailEvent).execute();
                 }
@@ -176,7 +183,7 @@ public class InDetailEventFragment extends Fragment {
             mPpl.setText(getResources().getString(R.string.no_participants));
             mPpl.setClickable(false);
             mPpl.setTextColor(getResources().getColor(R.color.black_87));
-        }else {
+        } else {
             if (count == 1) postscript = getResources().getString(R.string.participant);
             else postscript = getResources().getString(R.string.participants);
 

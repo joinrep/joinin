@@ -361,12 +361,4 @@ public class EventRepository implements IRepository<Event> {
             e.printStackTrace();
         }
     }
-
-    public void delete(Event entity) {
-        // TODO
-    }
-
-    public void update(Event entity) {
-        // TODO
-    }
 }
