@@ -156,7 +156,6 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         registerReceiver(mLogoutReceiver, intentFilter);
     }
 
-    //TODO prowizorka
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
@@ -350,9 +349,13 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         List<Category> categories;
 
         protected Void doInBackground(String... args) {
-            // TODO set real user in storage
-
-            storage.setUser(new UserRepository().loginUser(storage.getUser()));
+            // TODO set real user in storage, wywalić marka kosa
+            User userToLogIn = storage.getUser();
+            if (userToLogIn == null) {
+                userToLogIn = new User("Marek", "Kos");
+                userToLogIn.setFacebookId("999788396717633");
+            }
+            storage.setUser(new UserRepository().loginUser(userToLogIn));
 
             categories = new CategoryRepository().getByUser(storage.getUser());
             // resolve categories icon id
