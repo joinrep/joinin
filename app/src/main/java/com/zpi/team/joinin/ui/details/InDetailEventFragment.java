@@ -167,19 +167,28 @@ public class InDetailEventFragment extends Fragment {
     }
 
     private void toggleParticipateBtn(Event event, boolean update) {
+        ((View)mParticipate.getParent()).setVisibility(View.VISIBLE);
         if (event.getParticipate()) {
             mParticipate.setText(getResources().getString(R.string.not_participate_event));
-            if(update) updateParticipantsHeader(++mParticipantsCount);
+            if(update) {
+                updateParticipantsHeader(++mParticipantsCount);
+            }
         } else {
-            mParticipate.setText(getResources().getString(R.string.participate_event));
-            if(update) updateParticipantsHeader(--mParticipantsCount);
+            if (event.getLimit() - mParticipantsCount > 0) {
+                mParticipate.setText(getResources().getString(R.string.participate_event));
+                if(update) {
+                    updateParticipantsHeader(--mParticipantsCount);
+                }
+            } else {
+                ((View)mParticipate.getParent()).setVisibility(View.INVISIBLE);
+            }
         }
     }
 
     private void updateParticipantsHeader(int count) {
         Log.d("updateParticipants", mParticipantsCount + ", " + count);
         String postscript;
-        if(count == 0){
+        if(count == 0) {
             mPpl.setText(getResources().getString(R.string.no_participants));
             mPpl.setClickable(false);
             mPpl.setTextColor(getResources().getColor(R.color.black_87));
