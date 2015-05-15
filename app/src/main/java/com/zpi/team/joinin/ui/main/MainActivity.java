@@ -1,16 +1,12 @@
 package com.zpi.team.joinin.ui.main;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -22,6 +18,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -41,21 +38,20 @@ import com.zpi.team.joinin.signin.LogOutDialog;
 import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
-import com.zpi.team.joinin.ui.events.AllEventsFragment;
-
-import com.zpi.team.joinin.ui.events.MyOwnEventsFragment;
-
-import com.zpi.team.joinin.ui.events.ByCategoryEventsFragment;
 import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
+import com.zpi.team.joinin.ui.events.AllEventsFragment;
+import com.zpi.team.joinin.ui.events.ByCategoryEventsFragment;
+import com.zpi.team.joinin.ui.events.EventsFilter;
+import com.zpi.team.joinin.ui.events.EventsRecyclerFragment;
+import com.zpi.team.joinin.ui.events.MyOwnEventsFragment;
 import com.zpi.team.joinin.ui.events.ParticipateEventsFragment;
-
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
 import com.zpi.team.joinin.ui.nav.NavDrawerItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements OnToolbarElevationListener, View.OnClickListener {
+public class MainActivity extends ActionBarActivity implements OnToolbarElevationListener, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
     private final static int ALL = 1;
     private final static int PARTICIPATE = 2;
@@ -71,16 +67,17 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     private NavDrawerAdapter mNavDrawerAdapter;
     private View mHeader;
     private ImageButton mLogout;
+    private Menu mMenu;
     private BroadcastReceiver mLogoutReceiver;
     private int mCurrentPosition;
     private List<Category> favCategories = new ArrayList<Category>();
+    Fragment mCurrentFragment;
 
     private static Context mContext;
 
     public static Context getAppContext() {
         return MainActivity.mContext;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +90,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        mToolbar.setOnMenuItemClickListener(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
             mDrawerLayout.setStatusBarBackgroundColor(
@@ -130,11 +128,11 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         mDrawerList.setAdapter(mNavDrawerAdapter);
 
         FragmentManager fm = getFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
-        if (fragment == null) {
-            fragment = new AllEventsFragment();
+        mCurrentFragment = fm.findFragmentById(R.id.fragmentContainer);
+        if (mCurrentFragment == null) {
+            mCurrentFragment = new AllEventsFragment();
             fm.beginTransaction()
-                    .add(R.id.fragmentContainer, fragment)
+                    .add(R.id.fragmentContainer, mCurrentFragment)
                     .commit();
         }
 
@@ -246,6 +244,36 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         }
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        if (mCurrentFragment instanceof EventsRecyclerFragment) {
+            EventsRecyclerFragment fragment = (EventsRecyclerFragment) mCurrentFragment;
+            menuItem.setChecked(!menuItem.isChecked());
+            switch (menuItem.getItemId()) {
+                case R.id.action_filter_full: case R.id.action_filter_free:
+                    Log.d("Filter", "");
+                    MenuItem fullItem = mMenu.findItem(R.id.action_filter_full);
+                    MenuItem freeItem = mMenu.findItem(R.id.action_filter_free);
+                    if (fullItem.isChecked()) {
+                        if (freeItem.isChecked()) {
+                            fragment.filter(EventsFilter.HIDE_FULL_ONLY_FREE);
+                        } else {
+                            fragment.filter(EventsFilter.HIDE_FULL);
+                        }
+                    } else {
+                        if (freeItem.isChecked()) {
+                            fragment.filter(EventsFilter.ONLY_FREE);
+                        } else {
+                            fragment.filter(EventsFilter.SHOW_ALL);
+                        }
+                    }
+
+                    break;
+            }
+        }
+        return false;
+    }
+
     private void logout(){
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("com.zpi.team.joinin.ACTION_LOGOUT");
@@ -260,34 +288,34 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     }
 
     private void selectMenuItem(int position) {
-        Fragment fragment = null;
+        mCurrentFragment = null;
         switch (position) {
             case ALL:
-                fragment = new AllEventsFragment();
+                mCurrentFragment = new AllEventsFragment();
                 break;
             case PARTICIPATE:
-                fragment = new ParticipateEventsFragment();
+                mCurrentFragment = new ParticipateEventsFragment();
                 break;
             case MYOWN:
-                fragment = new MyOwnEventsFragment();
+                mCurrentFragment = new MyOwnEventsFragment();
                 break;
             case ADD_CATEGORY_POSITION:
                 if (mCurrentPosition == position) {
                     mDrawerLayout.closeDrawer(mDrawerList);
                     return;
                 }
-                fragment = new CategoriesFragment();
+                mCurrentFragment = new CategoriesFragment();
                 break;
             default:
                 if (position > ADD_CATEGORY_POSITION && position <= ADD_CATEGORY_POSITION + favCategories.size()) {
                     Log.d("click", favCategories.get(position - (ADD_CATEGORY_POSITION + 1)).getName());
                     setToolbarElevation(true);
-                    fragment = new ByCategoryEventsFragment().setCategory(favCategories.get(position - (ADD_CATEGORY_POSITION + 1)));
+                    mCurrentFragment = new ByCategoryEventsFragment().setCategory(favCategories.get(position - (ADD_CATEGORY_POSITION + 1)));
                 }
                 break;
         }
 
-        switchFragment(fragment, position);
+        switchFragment(mCurrentFragment, position);
     }
 
     public void switchFragment(Fragment fragment, int position) {
@@ -325,6 +353,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mMenu = menu;
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }

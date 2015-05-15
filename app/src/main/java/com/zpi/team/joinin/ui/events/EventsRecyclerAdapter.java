@@ -1,8 +1,6 @@
 package com.zpi.team.joinin.ui.events;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,24 +17,24 @@ import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
-import com.zpi.team.joinin.repository.CategoryRepository;
 import com.zpi.team.joinin.repository.EventRepository;
-import com.zpi.team.joinin.ui.main.MainActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Arkadiusz on 2015-03-15.
  */
-public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> {
+public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> implements Filterable {
     private List<Event> mEvents;
+    private List<Event> mFilteredEvents;
     private Context mContext;
     private OnRecyclerViewClickListener mItemListener;
+    private Filter mEventFilter;
 
     public EventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener) {
         mEvents = events;
+        mFilteredEvents = events;
         mContext = context;
         mItemListener = listener;
     }
@@ -78,7 +78,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Event event = mEvents.get(position);
+        final Event event = mFilteredEvents.get(position);
 
         holder.mImage.setImageResource(event.getCategory().getIconId());
         holder.mImage.setBackgroundColor(event.getCategory().getColor());
@@ -93,7 +93,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         holder.mDate.setText(dateFormat.format(event.getStartTime().getTime()));
 
         toggleParticipateBtn(event, holder);
-    //TODO sprawdzenie czy sa wolne miejsca, jesli nie to przycisk nieaktywny/'brak miejsc'
+        //TODO sprawdzenie czy sa wolne miejsca, jesli nie to przycisk nieaktywny/'brak miejsc'
         holder.mParticipate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +116,27 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
 
     }
 
+    @Override
+    public Filter getFilter() {
+        if (mEventFilter == null) {
+            mEventFilter = new EventsFilter(this, mEvents);
+        }
+        return mEventFilter;
+    }
+
+    public Event getItem(int id) {
+        return mFilteredEvents.get(id);
+    }
+
+    public void putItem(Event event) {
+        mEvents.add(event);
+    }
+
+    protected void publishFilteredEvents(List<Event> events) {
+        mFilteredEvents = events;
+        notifyDataSetChanged();
+    }
+
     private void toggleParticipateBtn(Event event, ViewHolder holder) {
         if (event.getParticipate()) {
             holder.mParticipate.setText(mContext.getResources().getString(R.string.not_participate_event));
@@ -128,7 +149,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
 
     @Override
     public int getItemCount() {
-        return mEvents.size();
+        return mFilteredEvents.size();
     }
 
 

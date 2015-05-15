@@ -27,7 +27,6 @@ import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
-import com.zpi.team.joinin.ui.details.InDetailEventFragment;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
 
 import java.util.List;
@@ -50,7 +49,8 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private List<Event> mEvents;
+    //private List<Event> mEvents;
+    EventsRecyclerAdapter mAdapter;
 
     public abstract int getType();
 
@@ -86,7 +86,8 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
             public void onRefresh() {
                 //TODO jesli zmieni sie cos w bazie ofc
                 Log.d("EventsFragment", "refresh()");
-                mEventsRecycler.getAdapter().notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();;
+                //mEventsRecycler.getAdapter().notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -132,13 +133,13 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
         if (requestCode == CREATE_EVENT_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 Event newEvent = SessionStorage.getInstance().getNewlyCreated();
-                if (newEvent != null) mEvents.add(newEvent);
+                if (newEvent != null) mAdapter.putItem(newEvent);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
             }
         } else if (requestCode == INDETAIL_EVENT_REQUEST) {
-            RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
-            adapter.notifyDataSetChanged();
+            //RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -150,13 +151,15 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 
     @Override
     public void onRecyclerViewItemClicked(View v, int position) {
-        SessionStorage.getInstance().setEventInDetail(mEvents.get(position));
+        RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
+        SessionStorage.getInstance().setEventInDetail(mAdapter.getItem(position));
         Intent detail = new Intent(getActivity(), InDetailEventActivity.class);
         startActivityForResult(detail, INDETAIL_EVENT_REQUEST);
     }
 
     private class LoadEvents extends AsyncTask<Void, Void, Void> {
         ProgressDialog progressDialog;
+        List<Event> mEvents;
 
         @Override
         protected void onPreExecute() {
@@ -190,9 +193,13 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
     }
 
     public void onCustomPostExecute(List<Event> events) {
-        EventsRecyclerAdapter adapter = new EventsRecyclerAdapter(getActivity(), events, EventsRecyclerFragment.this);
-        mEventsRecycler.setAdapter(adapter);
+        mAdapter = new EventsRecyclerAdapter(getActivity(), events, EventsRecyclerFragment.this);
+        mEventsRecycler.setAdapter(mAdapter);
         checkIfEmpty();
+    }
+
+    public void filter(String constraint) {
+        mAdapter.getFilter().filter(constraint);
     }
 
 //    @Override

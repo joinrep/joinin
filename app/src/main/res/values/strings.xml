@@ -65,4 +65,7 @@
     <string name="participate_event">Dołącz</string>
     <string name="not_participate_event">Rezygnuj</string>
 
+    <string name="filter_hide_full">Ukryj pełne</string>
+    <string name="filter_only_free">Ukryj płatne</string>
+
 </resources>
