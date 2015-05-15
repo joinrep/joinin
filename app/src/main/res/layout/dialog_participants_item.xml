@@ -4,19 +4,32 @@
     android:layout_height="64dp"
     android:minHeight="64dp">
 
+    <FrameLayout
+        android:id="@+id/photo_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
     <ImageView
         android:id="@+id/photo"
         android:layout_height="54dp"
-        android:layout_width="wrap_content"
-        android:src="@drawable/ic_launcher"
-        android:layout_centerVertical="true" />
+        android:layout_width="54dp"
+        android:visibility="gone" />
 
+    <ProgressBar
+        android:indeterminate="true"
+        android:id="@+id/bar_photo"
+        android:visibility="visible"
+        android:layout_height="54dp"
+        android:layout_width="54dp" />
+    </FrameLayout>
     <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginLeft="56dp"
-        android:fontFamily="sans-serif"
+        android:layout_marginLeft="16dp"
+
+        android:layout_toRightOf="@id/photo_content"
         android:text="Jan kowalski"
         android:textSize="14sp"
         android:textColor="@color/black_87"

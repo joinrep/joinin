@@ -100,6 +100,7 @@ public class InDetailEventFragment extends Fragment {
         mInDetailEvent = SessionStorage.getInstance().getEventInDetail();
         if (mInDetailEvent.getParticipantsCount() == 0) {
             mPpl.setText(getString(R.string.no_participants));
+            mPpl.setEnabled(false);
         }
         mPpl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,7 +203,7 @@ public class InDetailEventFragment extends Fragment {
         }
     }
 
-    private class ToggleParticipate extends AsyncTask<String, String, String> {
+    private class ToggleParticipate extends AsyncTask<Void, Void, Void> {
         SessionStorage storage = SessionStorage.getInstance();
         private Event event;
 
@@ -211,9 +212,9 @@ public class InDetailEventFragment extends Fragment {
             this.event = event;
         }
 
-        protected String doInBackground(String... args) {
+        protected Void doInBackground(Void... args) {
             new EventRepository().participate(event, storage.getUser(), event.getParticipate());
-            return "dumb";
+            return null;
         }
 
     }
