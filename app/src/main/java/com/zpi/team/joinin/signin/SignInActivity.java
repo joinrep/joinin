@@ -156,6 +156,10 @@ public class SignInActivity extends Activity implements
             Log.d("SignInActivity", "already logged in");
             hideSignInComponents();
             signInData = MyPreferences.getIntent(MyPreferences.SIGN_IN_INTENT);
+
+            User loggedInUser = loadAccountDataIntent();
+            SessionStorage.getInstance().setUser(loggedInUser);
+
             new PrepareContent().execute();
         }
     }
@@ -258,6 +262,16 @@ public class SignInActivity extends Activity implements
         signInData.putExtra(PERSON_MAIL, mPersonMail);
 
         MyPreferences.putIntent(signInData);
+    }
+
+    private User loadAccountDataIntent() {
+        User loggedInUser = new User("", "");
+        if (GOOGLE.equals(MyPreferences.getLoginSource())) {
+            loggedInUser.setGoogleId(signInData.getStringExtra(PERSON_ID));
+        } else {
+            loggedInUser.setFacebookId(signInData.getStringExtra(PERSON_ID));
+        }
+        return loggedInUser;
     }
 
     @Override
