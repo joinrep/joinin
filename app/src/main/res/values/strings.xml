@@ -68,4 +68,7 @@
 
     <string name="hello_world">Hello world!</string>
 
+    <string name="filter_hide_full">Ukryj pełne</string>
+    <string name="filter_only_free">Ukryj płatne</string>
+
 </resources>
