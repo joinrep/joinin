@@ -123,8 +123,6 @@ public class CreateEventFragment extends Fragment {
         mPaySwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
         mLimitSwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
 
-        //TODO nie pokazuje sie zł przy akceptacji \/
-
         return rootView;
     }
 
@@ -133,7 +131,11 @@ public class CreateEventFragment extends Fragment {
         return mTitle.getText().toString().trim().length() != 0 &&
                 !((Category) mCategories.getSelectedItem()).getName().contentEquals(getResources().getString(R.string.choose_category)) &&
                 mAddress.getText().toString().trim().length() != 0 &&
-                mDescription.getText().toString().trim().length() != 0;
+                mDescription.getText().toString().trim().length() != 0 && datesAreValid();
+    }
+
+    private boolean datesAreValid() {
+        return mCalendarEnd.getTimeInMillis() - mCalendarStart.getTimeInMillis() > 0;
     }
 
     public void highlightInputs() {
@@ -144,8 +146,12 @@ public class CreateEventFragment extends Fragment {
             mAddress.setHintTextColor(color);
         if (isEmpty(mDescription))
             mDescription.setHintTextColor(color);
-
-        ((TextView) mCategories.getSelectedView()).setTextColor(color);
+        if(!datesAreValid()) {
+            mEndDate.setTextColor(color);
+            mEndTime.setTextColor(color);
+        }
+        if(((Category) mCategories.getSelectedItem()).getName().contentEquals(getResources().getString(R.string.choose_category)))
+            ((TextView) mCategories.getSelectedView()).setTextColor(color);
     }
 
     private boolean isEmpty(TextView input) {

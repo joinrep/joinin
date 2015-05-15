@@ -47,15 +47,11 @@ public class DialogListAdapter extends ArrayAdapter {
             ImageView photo = (ImageView) convertView.findViewById(R.id.photo);
             TextView title = (TextView) convertView.findViewById(R.id.title);
 
-            // TODO jak beda prawdziwi userzy
-            String source, id;
-
-            source = user.getSource();
-            id = user.getLoginId();
+            String source = user.getSource();
+            String id = user.getLoginId();
 
             Log.d("DialogListAdapter", source + ", " + user.getLoginId());
             new LoadProfilePhoto(photo, mContext).execute(source, id);
-            //photo.setImageResource(R.drawable.ic_launcher);
 
             String nameAndSurname = user.getFirstName() + " " + user.getLastName();
             title.setText(nameAndSurname);

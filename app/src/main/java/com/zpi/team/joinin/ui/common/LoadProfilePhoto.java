@@ -91,7 +91,6 @@ public class LoadProfilePhoto extends AsyncTask<String, Void, Bitmap> {
             e.printStackTrace();
         }
 
-        Log.d("LoadProfilePhoto", "getGOoglePhotoUrl, " + builder.toString());
         int index = builder.indexOf("gphoto$thumbnail");
         responseText = builder.substring(index);
         String http = responseText.substring(responseText.indexOf("http"), responseText.length() - 5);
