@@ -25,12 +25,14 @@ public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecy
     private Context mContext;
     private OnRecyclerViewClickListener mItemListener;
     private OnPopUpListener mPopupListener;
+    private boolean mWithMenu;
 
-    public TabEventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener, OnPopUpListener popupListener) {
+    public TabEventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener, OnPopUpListener popupListener, boolean withMenu) {
         mEvents = events;
         mContext = context;
         mItemListener = listener;
         mPopupListener = popupListener;
+        mWithMenu = withMenu;
     }
 
     public interface OnPopUpListener {
@@ -53,7 +55,10 @@ public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecy
             mDate = (TextView) v.findViewById(R.id.eventDate);
             mImage = (ImageView) v.findViewById(R.id.eventImage);
             mMore = (ImageView) v.findViewById(R.id.more);
-            mMore.setOnClickListener(this);
+            if(mWithMenu)
+                mMore.setOnClickListener(this);
+            else
+                mMore.setVisibility(View.INVISIBLE);
         }
 
         @Override

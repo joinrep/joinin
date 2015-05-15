@@ -72,17 +72,19 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         eventsList.setLayoutManager(layoutManager);
 
+        boolean includeMenu = false;
         final List<Event> events;
         switch (position) {
             case UPCOMING_TYPE:
                 events = mUpcomingEvents;
+                includeMenu = true;
                 if(mType == EventsRecyclerFragment.MY_OWN) mUpcomingMenuItems = new String[]{"Odwołaj", "Edytuj"};
                 else if(mType == EventsRecyclerFragment.PARTICIPATE) mUpcomingMenuItems = new String[]{"Zrezygnuj"};
                 break;
             case HISTORY_TYPE:
                 events = mHistoryEvents;
-                if(mType == EventsRecyclerFragment.MY_OWN) mHistoryMenuItems = new String[]{"Usuń"};
-                else if(mType == EventsRecyclerFragment.PARTICIPATE) mHistoryMenuItems = new String[]{};
+//                if(mType == EventsRecyclerFragment.MY_OWN) mHistoryMenuItems = new String[]{"Usuń"};
+//                else if(mType == EventsRecyclerFragment.PARTICIPATE) mHistoryMenuItems = new String[]{};
                 break;
             default:
                 events = new ArrayList<Event>();
@@ -98,7 +100,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
             }
         };
 
-        TabEventsRecyclerAdapter adapter = new TabEventsRecyclerAdapter(mActivity, events, itemClickListener, this);
+        TabEventsRecyclerAdapter adapter = new TabEventsRecyclerAdapter(mActivity, events, itemClickListener, this, includeMenu);
         eventsList.setAdapter(adapter);
         mViews.add(eventsList);
 
@@ -153,7 +155,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
 
         CustomPopupMenu menu = new CustomPopupMenu(mActivity);
 
-        menu.setAdapter(new ArrayAdapter<>(mActivity, R.layout.overflow_item, mUpcomingEvents));
+        menu.setAdapter(new ArrayAdapter<>(mActivity, R.layout.overflow_item, mUpcomingMenuItems));
         menu.setAnchorView(v);
         menu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
