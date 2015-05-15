@@ -14,6 +14,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
@@ -64,6 +66,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        mCounter.setText("0" + getResources().getString(R.string.max_title_length));
         mTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -114,7 +117,9 @@ public class CreateEventFragment extends Fragment {
         mLimitSwitch = (Switch) rootView.findViewById(R.id.limit_switch);
 
         mPay.setOnFocusChangeListener(mEditTextFocusChangedListener);
+        mPay.setOnKeyListener(mOnKeyDownListener);
         mLimit.setOnFocusChangeListener(mEditTextFocusChangedListener);
+        mLimit.setOnKeyListener(mOnKeyDownListener);
         mPaySwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
         mLimitSwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
 
@@ -237,6 +242,21 @@ public class CreateEventFragment extends Fragment {
                 editText.setText(getResources().getString(R.string.limit));
         }
     };
+
+    EditText.OnKeyListener mOnKeyDownListener = new View.OnKeyListener(){
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                v.clearFocus();
+                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                return true;
+            }
+            return false;
+        }
+    };
+
 
     public Event saveNewEvent() {
         String title = mTitle.getText().toString();

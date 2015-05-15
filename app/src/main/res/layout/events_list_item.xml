@@ -52,11 +52,12 @@
                 android:layout_centerInParent="true"
                 android:layout_toRightOf="@id/eventImage"
                 android:gravity="left"
-                android:text="Tylko 15 znakow!"
+                android:text="Tylko 25 znakow0 0!"
                 android:paddingBottom="8dp"
                 android:textStyle="bold"
                 android:textColor="@color/black_87"
                 android:textSize="24sp"
+                android:maxLines="1"
                 android:ellipsize="end" />
 
             <TextView

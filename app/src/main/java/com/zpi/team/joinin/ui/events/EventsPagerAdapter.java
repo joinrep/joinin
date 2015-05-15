@@ -136,7 +136,7 @@ class EventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAdapte
         float width = 112 * density;
         popup.setWidth((int) width);
         popup.setVerticalOffset((int) marginPixels);
-        popup.setHorizontalOffset(-106 * (int) density);
+        popup.setHorizontalOffset(-68 * (int) density);
         popup.show();
 
     }

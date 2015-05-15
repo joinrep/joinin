@@ -19,14 +19,14 @@
                 android:hint="@string/enter_title"
                 android:singleLine="true"
                 android:textStyle="bold"
-                android:maxLength="15"
+                android:maxLength="@integer/max_title_length"
                 android:inputType="textCapSentences"/>
 
             <TextView
                 android:id="@+id/counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0/15"
+                android:text="@string/max_title_length"
                 android:textColor="@color/colorAccent"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"

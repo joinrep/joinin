@@ -57,8 +57,9 @@ public class DialogListAdapter extends ArrayAdapter {
                 id = user.getFacebookId();
             }
 
+            Log.d("DialogListAdapter", source + ", " + user.getLoginId());
 //            new LoadProfilePhoto(photo, mContext).execute(source, id);
-            photo.setImageResource(R.drawable.ic_launcher);
+//            photo.setImageResource(R.drawable.ic_launcher);
 
             String nameAndSurname = user.getFirstName() + " " + user.getLastName();
             title.setText(nameAndSurname);

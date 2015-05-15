@@ -13,4 +13,6 @@
     <dimen name="add_button_margin">16dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="text_padding">16dp</dimen>
+
+    <integer  name="max_title_length">25</integer>
 </resources>
