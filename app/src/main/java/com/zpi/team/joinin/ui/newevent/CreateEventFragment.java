@@ -276,11 +276,7 @@ public class CreateEventFragment extends Fragment {
         String out = "Title: " + title + "\nStart time: " + mCalendarStart.toString() + "\nEnd time: " + mCalendarEnd.toString() +
                 "\nDescription: " + description + "\nAddress: " + address + "\nLimit: " + limit + "\nCost: " + cost;
         Log.d("CreateEventFragment", "saveNewEvent(), " + out);
-        /**
-         * TODO
-         * - adres poki co tylko jako string, przydalby sie konstruktor
-         * - przypisanie uzytkownika
-         */
+
         newEvent.setLocation(new Address(0, "city", "street", "street", address));
         newEvent.setOrganizer(SessionStorage.getInstance().getUser());
         newEvent.setCategory((Category) mCategories.getSelectedItem());

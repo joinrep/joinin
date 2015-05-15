@@ -24,6 +24,7 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -40,6 +41,7 @@ import com.zpi.team.joinin.repository.UserRepository;
 import com.zpi.team.joinin.signin.LogOutDialog;
 import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
+import com.zpi.team.joinin.ui.common.CustomPopupMenu;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
 import com.zpi.team.joinin.ui.events.AllEventsFragment;
 
@@ -93,6 +95,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
             mDrawerLayout.setStatusBarBackgroundColor(
@@ -328,6 +331,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

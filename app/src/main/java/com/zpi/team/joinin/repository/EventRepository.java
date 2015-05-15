@@ -40,7 +40,7 @@ public class EventRepository implements IRepository<Event> {
     private static String url_participate_event = hostname + "participate_event.php";
     private static String url_events_by_category = hostname + "get_events_by_category.php";
     private static String url_events_by_participant = hostname + "get_events_by_participant.php";
-    private static String url_events_by_organizer = hostname + "get_events_by_participant.php";
+    private static String url_events_by_organizer = hostname + "get_events_by_organizer.php";
     private static String url_cancel_event = hostname + "delete_event.php";
 
     // JSON Node names
@@ -313,7 +313,7 @@ public class EventRepository implements IRepository<Event> {
     }
 
     public List<Event> getByOrganizer(User organizer) {
-        return getByParticipant(organizer, false);
+        return getByOrganizer(organizer, false);
     }
 
     public List<Event> getByOrganizer(User organizer, boolean canceled) {
@@ -324,7 +324,7 @@ public class EventRepository implements IRepository<Event> {
 
         JSONObject json = jParser.makeHttpRequest(url_events_by_organizer, "GET", params);
 
-        Log.d("Participant Events: ", json.toString());
+        Log.d("Organizer Events: ", json.toString());
 
         List<Event> result = new ArrayList<Event>();
 
