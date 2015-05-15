@@ -49,17 +49,13 @@ public class DialogListAdapter extends ArrayAdapter {
 
             // TODO jak beda prawdziwi userzy
             String source, id;
-            if(user.getGoogleId() != null){
-                source = SignInActivity.GOOGLE;
-                id = user.getGoogleId();
-            }else{
-                source = SignInActivity.FACEBOOK;
-                id = user.getFacebookId();
-            }
+
+            source = user.getSource();
+            id = user.getLoginId();
 
             Log.d("DialogListAdapter", source + ", " + user.getLoginId());
-//            new LoadProfilePhoto(photo, mContext).execute(source, id);
-//            photo.setImageResource(R.drawable.ic_launcher);
+            new LoadProfilePhoto(photo, mContext).execute(source, id);
+            //photo.setImageResource(R.drawable.ic_launcher);
 
             String nameAndSurname = user.getFirstName() + " " + user.getLastName();
             title.setText(nameAndSurname);

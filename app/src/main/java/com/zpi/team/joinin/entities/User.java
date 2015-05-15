@@ -1,5 +1,7 @@
 package com.zpi.team.joinin.entities;
 
+import com.zpi.team.joinin.signin.SignInActivity;
+
 import java.util.List;
 
 /**
@@ -59,6 +61,10 @@ public class User {
     }
 
     public String getLoginId() {return googleId != null ? googleId : facebookId; }
+
+    public String getSource() {
+        return googleId != null ? SignInActivity.GOOGLE : SignInActivity.FACEBOOK;
+    }
 
     public String getFirstName() {
         return firstName;
