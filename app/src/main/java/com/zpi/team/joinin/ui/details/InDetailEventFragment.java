@@ -87,7 +87,7 @@ public class InDetailEventFragment extends Fragment {
                 mDescription.setText(event.getDescription());
                 mParticipants = event.getParticipants();
                 if (mParticipantsCount != 0){
-                    updateParticipantsHeader(mParticipantsCount);
+                    updateParticipantsHeader();
                     mBarParticipants.setVisibility(View.GONE);
                 }
                 mBarDescription.setVisibility(View.GONE);
@@ -100,8 +100,11 @@ public class InDetailEventFragment extends Fragment {
         mInDetailEvent = SessionStorage.getInstance().getEventInDetail();
         if (mInDetailEvent.getParticipantsCount() == 0) {
             mPpl.setText(getString(R.string.no_participants));
+            mPpl.setEnabled(false);
         }
-        mPpl.setOnClickListener(new View.OnClickListener() {
+
+
+        View.OnClickListener participantsClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Dialog dialog = new Dialog(getActivity());
@@ -111,7 +114,9 @@ public class InDetailEventFragment extends Fragment {
                 list.setAdapter(new DialogListAdapter(getActivity(), mParticipants));
                 dialog.show();
             }
-        });
+        };
+
+        mPpl.setOnClickListener(participantsClickListener);
 
         mTitle.setText(mInDetailEvent.getName());
         mCategory.setText(mInDetailEvent.getCategory().getName());
@@ -130,8 +135,8 @@ public class InDetailEventFragment extends Fragment {
         else mPriceContent.setVisibility(View.GONE);
 
 
-        if (mInDetailEvent.getStartTime().getTimeInMillis() > System.currentTimeMillis()) {
-            ((View)mParticipate.getParent()).setVisibility(View.INVISIBLE);
+        if (mInDetailEvent.getStartTime().getTimeInMillis() < System.currentTimeMillis()) {
+            ((View)mParticipate.getParent()).setVisibility(View.GONE);
         } else {
             toggleParticipateBtn(mInDetailEvent, false);
             mParticipate.setOnClickListener(new View.OnClickListener() {
@@ -171,33 +176,35 @@ public class InDetailEventFragment extends Fragment {
         if (event.getParticipate()) {
             mParticipate.setText(getResources().getString(R.string.not_participate_event));
             if(update) {
-                updateParticipantsHeader(++mParticipantsCount);
+                ++mParticipantsCount;
+                updateParticipantsHeader();
             }
         } else {
             if (event.getLimit() - mParticipantsCount > 0) {
                 mParticipate.setText(getResources().getString(R.string.participate_event));
                 if(update) {
-                    updateParticipantsHeader(--mParticipantsCount);
+                    --mParticipantsCount;
+                    updateParticipantsHeader();
                 }
             } else {
-                ((View)mParticipate.getParent()).setVisibility(View.INVISIBLE);
+                ((View)mParticipate.getParent()).setVisibility(View.GONE);
             }
         }
     }
 
-    private void updateParticipantsHeader(int count) {
-        Log.d("updateParticipants", mParticipantsCount + ", " + count);
+    private void updateParticipantsHeader() {
+        Log.d("updateParticipants", mParticipantsCount + "");
         String postscript;
-        if(count == 0) {
+        if(mParticipantsCount == 0) {
             mPpl.setText(getResources().getString(R.string.no_participants));
-            mPpl.setClickable(false);
+            mPpl.setEnabled(false);
             mPpl.setTextColor(getResources().getColor(R.color.black_87));
         } else {
-            if (count == 1) postscript = getResources().getString(R.string.participant);
+            if (mParticipantsCount == 1) postscript = getResources().getString(R.string.participant);
             else postscript = getResources().getString(R.string.participants);
 
-            mPpl.setText(count + " " + postscript);
-            mPpl.setClickable(true);
+            mPpl.setText(mParticipantsCount + " " + postscript);
+            mPpl.setEnabled(true);
             mPpl.setTextColor(getResources().getColor(R.color.colorPrimary));
         }
     }
