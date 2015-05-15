@@ -91,6 +91,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setOnMenuItemClickListener(this);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
             mDrawerLayout.setStatusBarBackgroundColor(
@@ -357,6 +358,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

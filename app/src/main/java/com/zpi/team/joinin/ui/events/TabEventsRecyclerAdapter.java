@@ -1,7 +1,7 @@
 package com.zpi.team.joinin.ui.events;
 
-import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
+import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.repository.EventRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -70,9 +72,9 @@ public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecy
 
     @Override
     public TabEventsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                    int viewType) {
+                                                                  int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.myevents_list_item, parent, false);
+                .inflate(R.layout.tabevents_list_item, parent, false);
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
@@ -97,10 +99,45 @@ public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecy
         } else {
             holder.mParticipants.setText(event.getParticipantsCount() + " / " + event.getLimit());
         }
+
+//        toggleParticipateBtn(event, holder);
+//        holder.mMore.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // TODO MK dropdown menu - dodać usuwanie uczestnictwa
+//                event.setParticipate(!event.getParticipate());
+//                toggleParticipateBtn(event, holder);
+//                new ToggleParticipate(event).execute();
+//            }
+//        });
     }
 
     @Override
     public int getItemCount() {
         return mEvents.size();
+    }
+
+    private void toggleParticipateBtn(Event event, ViewHolder holder) {
+        if (event.getParticipate()) {
+            ((View) holder.mImage.getParent()).setAlpha(1f);
+        } else {
+            ((View) holder.mImage.getParent()).setAlpha(0.5f);
+        }
+    }
+
+    private class ToggleParticipate extends AsyncTask<String, String, String> {
+        SessionStorage storage = SessionStorage.getInstance();
+        private Event event;
+
+        ToggleParticipate(Event event) {
+            super();
+            this.event = event;
+        }
+
+        protected String doInBackground(String... args) {
+            new EventRepository().participate(event, storage.getUser(), event.getParticipate());
+            return "dumb";
+        }
+
     }
 }

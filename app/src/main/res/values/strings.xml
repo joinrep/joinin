@@ -64,6 +64,9 @@
     <string name="no_events_available">Nie znaleziono wydarzeń</string>
     <string name="participate_event">Dołącz</string>
     <string name="not_participate_event">Rezygnuj</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="hello_world">Hello world!</string>
 
     <string name="filter_hide_full">Ukryj pełne</string>
     <string name="filter_only_free">Ukryj płatne</string>

@@ -15,4 +15,5 @@
     <dimen name="text_padding">16dp</dimen>
 
     <integer  name="max_title_length">25</integer>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 </resources>

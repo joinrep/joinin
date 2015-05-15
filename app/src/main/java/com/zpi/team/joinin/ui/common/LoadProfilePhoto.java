@@ -43,7 +43,7 @@ public class LoadProfilePhoto extends AsyncTask<String, Void, Bitmap> {
     protected Bitmap doInBackground(String... params) {
         float density = mContext.getResources().getDisplayMetrics().density;
         int pixels = 66 * (int) density;
-        Log.d("LoadProfilePhoto", "doInBack(),"+SignInActivity.GOOGLE);
+        Log.d("LoadProfilePhoto", "doInBackground()");
         String url = null;
         if(params[0].equals(SignInActivity.GOOGLE))
             url = getGooglePhotoUrl(params[1]);
