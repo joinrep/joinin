@@ -151,7 +151,6 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 
     @Override
     public void onRecyclerViewItemClicked(View v, int position) {
-        RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
         SessionStorage.getInstance().setEventInDetail(mAdapter.getItem(position));
         Intent detail = new Intent(getActivity(), InDetailEventActivity.class);
         startActivityForResult(detail, INDETAIL_EVENT_REQUEST);

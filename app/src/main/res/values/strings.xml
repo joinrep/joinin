@@ -47,8 +47,14 @@
     <string name="no_participants">Brak uczestników</string>
     <string name="participants">uczestników</string>
     <string name="participant">uczestnik</string>
-    !--My events -->    <string name="upcoming">Nadchodzące</string>
+    !--My events -->
+    <string name="upcoming">Nadchodzące</string>
     <string name="past">Minione</string>
+    <string name="cancel_event">Odwołaj</string>
+    <string name="edit_event">Edytuj</string>
+    <string name="leave_event">Zrezygnuj</string>
+    <string name="msg_cancel_event">Czy odwołać wydarzenie?</string>
+    <string name="msg_leave_event">Czy wypisać z wydarzenia?</string>
     <string name="title_activity_sign_in">SignInActivity</string>
     !--Others -->
     <string name="loading_events">Trwa ładowanie wydarzeń...</string>
