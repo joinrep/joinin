@@ -31,6 +31,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
     private Context mContext;
     private OnRecyclerViewClickListener mItemListener;
     private Filter mEventFilter;
+    private EventsSorter mEventsSorter;
 
     public EventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener) {
         mEvents = events;
@@ -122,6 +123,13 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
             mEventFilter = new EventsFilter(this, mEvents);
         }
         return mEventFilter;
+    }
+
+    public EventsSorter getSorter() {
+        if (mEventsSorter == null) {
+            mEventsSorter = new EventsSorter(this, mFilteredEvents);
+        }
+        return mEventsSorter;
     }
 
     public Event getItem(int id) {

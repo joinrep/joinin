@@ -70,5 +70,8 @@
 
     <string name="filter_hide_full">Ukryj pełne</string>
     <string name="filter_only_free">Ukryj płatne</string>
+    <string name="sort_alpha">Alfabetycznie</string>
+    <string name="sort_start">Data wydarzenia</string>
+    <string name="sort_create">Data dodania</string>
 
 </resources>
