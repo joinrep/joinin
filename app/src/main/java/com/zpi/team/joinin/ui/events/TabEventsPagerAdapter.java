@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.common.CustomPopupMenu;
 import com.zpi.team.joinin.ui.common.ToggleParticipate;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
@@ -171,7 +172,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                     menu.dismiss();
                 } else if (option.equals(mActivity.getResources().getString(R.string.edit_event))) {
 //                        mCallerActivity.startActivity(new Intent(mCallerActivity, SignInActivity.class));
-//                        mCallerActivity.finish();
+
                 }
             }
         });

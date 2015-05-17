@@ -18,6 +18,7 @@ import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.ui.common.ToggleParticipate;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -109,7 +110,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
                     event.setParticipantsCount(event.getParticipantsCount() - 1);
                 }
                 toggleParticipateBtn(event, holder);
-                new ToggleParticipate(event).execute();
+                new ToggleParticipate().execute(event);
 
             }
         });
@@ -151,22 +152,4 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
     public int getItemCount() {
         return mFilteredEvents.size();
     }
-
-
-    private class ToggleParticipate extends AsyncTask<String, String, String> {
-        SessionStorage storage = SessionStorage.getInstance();
-        private Event event;
-
-        ToggleParticipate(Event event) {
-            super();
-            this.event = event;
-        }
-
-        protected String doInBackground(String... args) {
-            new EventRepository().participate(event, storage.getUser(), event.getParticipate());
-            return "dumb";
-        }
-
-    }
-
 }

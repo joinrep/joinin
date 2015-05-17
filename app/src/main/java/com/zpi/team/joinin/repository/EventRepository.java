@@ -82,15 +82,9 @@ public class EventRepository implements IRepository<Event> {
                 String street2 = addressJSON.getString(AddressRepository.TAG_STREET2);
                 String location_name = addressJSON.getString(AddressRepository.TAG_LOCATION_NAME);
                 result.setLocation(new Address(0,city,street1,street2,location_name));
-
-                JSONObject organizerJSON = eventJSON.getJSONObject(UserRepository.TAG_ORGANIZER);
-                int user_id = organizerJSON.getInt(UserRepository.TAG_USER_ID);
-                String facebook_id = organizerJSON.getString(UserRepository.TAG_FACEBOOK_ID);
-                String google_id = organizerJSON.getString(UserRepository.TAG_GOOGLE_ID);
-                String first_name = organizerJSON.getString(UserRepository.TAG_FIRST_NAME);
-                String last_name = organizerJSON.getString(UserRepository.TAG_LAST_NAME);
-                result.setOrganizer(new User(user_id, facebook_id, google_id, first_name, last_name));
                 */
+
+
 
                 JSONArray participantsJSON = eventJSON.getJSONArray(UserRepository.TAG_PARTICIPANTS);
                 List<User> participants = new ArrayList<User>();

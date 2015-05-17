@@ -4,16 +4,10 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.zpi.team.joinin.R;
-import com.zpi.team.joinin.database.SessionStorage;
-import com.zpi.team.joinin.entities.Event;
-import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
-import com.zpi.team.joinin.ui.newevent.CreateEventFragment;
 
 public class InDetailEventActivity extends ActionBarActivity{
 
@@ -39,11 +33,22 @@ public class InDetailEventActivity extends ActionBarActivity{
                         .commit();
             }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.event_details, menu);
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == android.R.id.home) {
             finish();
+        }
+        else if(id == R.id.action_organizer){
+            InDetailEventFragment details =  (InDetailEventFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
+            details.showOrganizerInfo();
         }
         return super.onOptionsItemSelected(item);
     }

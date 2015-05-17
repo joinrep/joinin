@@ -47,6 +47,10 @@
     <string name="no_participants">Brak uczestników</string>
     <string name="participants">uczestników</string>
     <string name="participant">uczestnik</string>
+    <string name="action_organizer">Dane organizatora</string>
+    <string name="organizer">Organizator</string>
+    <string name="mobile">Telefon:</string>
+    <string name="mail">E-mail:</string>
     !--My events -->
     <string name="upcoming">Nadchodzące</string>
     <string name="past">Minione</string>
