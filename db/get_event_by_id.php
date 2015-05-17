@@ -9,7 +9,7 @@ if (isset($_GET["event_id"]) && isset($_GET["user_id"])) {
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
 
-	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants, (SELECT 'true' FROM Participate WHERE joined_event = E.event_id AND participant_id = $user_id) isParticipant FROM Event E JOIN Category C ON E.category = C.category_id LEFT JOIN Address A  ON E.address = A.address_id WHERE E.event_id = $event_id";
+	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants, (SELECT 'true' FROM Participate WHERE joined_event = E.event_id AND participant_id = $user_id) isParticipant FROM Event E JOIN Category C ON E.category = C.category_id LEFT JOIN Address A  ON E.address = A.address_id LEFT JOIN MyUser U ON E.organizer = U.user_id WHERE E.event_id = $event_id";
 	$result = mysql_query($query) or die(mysql_error());
 	if (mysql_num_rows($result) > 0) {
 		if ($row = mysql_fetch_array($result)) {

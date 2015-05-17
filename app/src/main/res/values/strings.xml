@@ -54,6 +54,7 @@
     <string name="loading_events">Trwa ładowanie wydarzeń...</string>
     <string name="loading_favorite_category">Aktualizowanie ulubionych kategorii...</string>
     <string name="loading_participate_event">Aktualizowanie uczestnictwa w wydarzeniu...</string>
+    <string name="creating_event">Tworzenie nowego wydarzenia...</string>
     <string name="are_u_sure">Czy wylogować z konta?</string>
     <string name="logout">Wyloguj</string>
     <string name="cancel">Anuluj</string>
@@ -73,5 +74,7 @@
     <string name="sort_alpha">Alfabetycznie</string>
     <string name="sort_start">Data wydarzenia</string>
     <string name="sort_create">Data dodania</string>
+
+    <string name="event_full">Wydarzenie jest już pełne.</string>
 
 </resources>

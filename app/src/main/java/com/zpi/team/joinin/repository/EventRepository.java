@@ -1,16 +1,14 @@
 package com.zpi.team.joinin.repository;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.util.Log;
 
 import com.zpi.team.joinin.database.JSONParser;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Address;
 import com.zpi.team.joinin.entities.Category;
-import com.zpi.team.joinin.entities.Comment;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
+import com.zpi.team.joinin.repository.exceptions.EventFullException;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -22,10 +20,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -45,6 +40,7 @@ public class EventRepository implements IRepository<Event> {
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
+    private static final String TAG_MESSAGE = "message";
     private static final String TAG_EVENT = "event";
     private static final String TAG_EVENTS = "events";
     private static final String TAG_ID = "id";
@@ -58,6 +54,8 @@ public class EventRepository implements IRepository<Event> {
     private static final String TAG_PARTICIPANTS = "participants";
     private static final String TAG_CATEGORY_ID = "category_id";
     private static final String TAG_IS_PARTICIPANT = "is_participant";
+
+    private static final String ERROR_EVENT_FULL = "Event is full";
 
     public Event getById(User user, int eventID) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -75,7 +73,7 @@ public class EventRepository implements IRepository<Event> {
                 JSONObject eventJSON = json.getJSONObject(TAG_EVENT);
                 result = parseSimpleEvent(eventJSON);
 
-                /*
+
                 JSONObject addressJSON = eventJSON.getJSONObject(AddressRepository.TAG_ADDRESS);
                 String city = addressJSON.getString(AddressRepository.TAG_CITY);
                 String street1 = addressJSON.getString(AddressRepository.TAG_STREET1);
@@ -90,17 +88,17 @@ public class EventRepository implements IRepository<Event> {
                 String first_name = organizerJSON.getString(UserRepository.TAG_FIRST_NAME);
                 String last_name = organizerJSON.getString(UserRepository.TAG_LAST_NAME);
                 result.setOrganizer(new User(user_id, facebook_id, google_id, first_name, last_name));
-                */
+
 
                 JSONArray participantsJSON = eventJSON.getJSONArray(UserRepository.TAG_PARTICIPANTS);
                 List<User> participants = new ArrayList<User>();
                 for (int i = 0; i < participantsJSON.length(); i++) {
                     JSONObject participantJSON = participantsJSON.getJSONObject(i);
-                    int user_id = participantJSON.getInt(UserRepository.TAG_USER_ID);
-                    String facebook_id = participantJSON.getString(UserRepository.TAG_FACEBOOK_ID);
-                    String google_id = participantJSON.getString(UserRepository.TAG_GOOGLE_ID);
-                    String first_name = participantJSON.getString(UserRepository.TAG_FIRST_NAME);
-                    String last_name = participantJSON.getString(UserRepository.TAG_LAST_NAME);
+                    user_id = participantJSON.getInt(UserRepository.TAG_USER_ID);
+                    facebook_id = participantJSON.getString(UserRepository.TAG_FACEBOOK_ID);
+                    google_id = participantJSON.getString(UserRepository.TAG_GOOGLE_ID);
+                    first_name = participantJSON.getString(UserRepository.TAG_FIRST_NAME);
+                    last_name = participantJSON.getString(UserRepository.TAG_LAST_NAME);
 
                     if ("null".equals(facebook_id)) {
                         facebook_id = null;
@@ -289,16 +287,18 @@ public class EventRepository implements IRepository<Event> {
         }
     }
 
-    public void participate(Event event, User user) {
+    public void participate(Event event, User user) throws EventFullException {
         participate(event, user, true);
     }
 
-    public void participate(Event event, User user, boolean participate) {
+    public void participate(Event event, User user, boolean participate) throws EventFullException {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("event_id", "" + event.getId()));
             params.add(new BasicNameValuePair("user_id", "" + user.getUserId()));
             params.add(new BasicNameValuePair("participate", "" + participate));
             JSONObject json = jParser.makeHttpRequest(url_participate_event, "POST", params);
+            Log.d("Participate", json.toString());
+
             // check for success tag
             try {
                 int success = json.getInt(TAG_SUCCESS);
@@ -306,6 +306,10 @@ public class EventRepository implements IRepository<Event> {
                     // successfully created
                 } else {
                     // failed to create
+                    String message = json.getString(TAG_MESSAGE);
+                    if (ERROR_EVENT_FULL.equals(message)) {
+                        throw new EventFullException();
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
