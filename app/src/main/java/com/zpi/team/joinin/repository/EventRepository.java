@@ -81,6 +81,7 @@ public class EventRepository implements IRepository<Event> {
                 String location_name = addressJSON.getString(AddressRepository.TAG_LOCATION_NAME);
                 result.setLocation(new Address(0,city,street1,street2,location_name));
 
+
                 JSONObject organizerJSON = eventJSON.getJSONObject(UserRepository.TAG_ORGANIZER);
                 int user_id = organizerJSON.getInt(UserRepository.TAG_USER_ID);
                 String facebook_id = organizerJSON.getString(UserRepository.TAG_FACEBOOK_ID);

@@ -9,11 +9,14 @@ import android.content.IntentSender.SendIntentException;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -32,6 +35,7 @@ import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.MyPreferences;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.User;
+import com.zpi.team.joinin.ui.common.AnimatedConnectionDialog;
 import com.zpi.team.joinin.ui.main.MainActivity;
 
 public class SignInActivity extends Activity implements
@@ -76,6 +80,9 @@ public class SignInActivity extends Activity implements
     private ProgressBar mBarLoading;
     private String mLoginSource, mPersonId, mPersonName, mPersonMail;
 
+    private RelativeLayout mInternetView;
+    private Button mRetry;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +126,7 @@ public class SignInActivity extends Activity implements
 
 
         mGoogleBtn = (Button) findViewById(R.id.google_button);
-        mGoogleBtn.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/catull-regular.ttf"));
+        mGoogleBtn.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/catull-regular.ttf"));
         mGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,6 +135,17 @@ public class SignInActivity extends Activity implements
                     authentication();
                     if (InternetConnection.isAvailable(SignInActivity.this)) {
                         mGoogleApiClient.connect();
+                    }else {
+                        final AnimatedConnectionDialog dialog = new AnimatedConnectionDialog(SignInActivity.this);
+                        dialog.clear();
+                        dialog.setOnRetryListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.startAnimation();
+                                mGoogleBtn.performClick();
+                            }
+                        });
+                        dialog.replayAnimation();
                     }
                 }
             }
@@ -136,39 +154,67 @@ public class SignInActivity extends Activity implements
         final com.facebook.login.widget.LoginButton btn = new LoginButton(SignInActivity.this);
 
         LoginManager.getInstance().logOut();
-        mFacebookBtn =  (Button) findViewById(R.id.facebook_button);
+        mFacebookBtn = (Button) findViewById(R.id.facebook_button);
         mFacebookBtn.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/fb-letter-faces.ttf"));
         mFacebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Log.d("SignInActivity", "btnCLicked");
-                btn.performClick();
+
+                if (InternetConnection.isAvailable(SignInActivity.this)) {
+                    btn.performClick();
+                }else {
+                    final AnimatedConnectionDialog dialog = new AnimatedConnectionDialog(SignInActivity.this);
+                    dialog.clear();
+                    dialog.setOnRetryListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.startAnimation();
+                            mFacebookBtn.performClick();
+                        }
+                    });
+                    dialog.replayAnimation();
+                }
             }
         });
-
-
 
         mBarLoading = (ProgressBar) findViewById(R.id.bar_loading);
         mSignWith = (TextView) findViewById(R.id.sign_with);
 
-        if(MyPreferences.isAlreadyLoggedIn()){
+        if (MyPreferences.isAlreadyLoggedIn()) {
             Log.d("SignInActivity", "already logged in");
             hideSignInComponents();
             signInData = MyPreferences.getIntent(MyPreferences.SIGN_IN_INTENT);
 
             User loggedInUser = loadAccountDataIntent();
             SessionStorage.getInstance().setUser(loggedInUser);
-
-            new PrepareContent().execute();
+            prepareContent();
         }
     }
 
-    private void hideSignInComponents(){
+    private void prepareContent() {
+        if (InternetConnection.isAvailable(SignInActivity.this)) {
+            new PrepareContent().execute();
+        } else {
+            final AnimatedConnectionDialog dialog = new AnimatedConnectionDialog(this);
+            dialog.setOnRetryListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.startAnimation();
+                    prepareContent();
+                }
+            });
+            dialog.replayAnimation();
+        }
+    }
+
+    private void hideSignInComponents() {
         mSignWith.setVisibility(View.GONE);
         mGoogleBtn.setVisibility(View.GONE);
         mFacebookBtn.setVisibility(View.GONE);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -256,7 +302,7 @@ public class SignInActivity extends Activity implements
         finish();
     }
 
-    private void saveAccountDataIntent(){
+    private void saveAccountDataIntent() {
         signInData.putExtra(PERSON_ID, mPersonId);
         signInData.putExtra(PERSON_NAME, mPersonName);
         signInData.putExtra(PERSON_MAIL, mPersonMail);
@@ -311,7 +357,7 @@ public class SignInActivity extends Activity implements
         }
     }
 
-    private class PrepareContent extends AsyncTask<Void,Void,Void>{
+    private class PrepareContent extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             mBarLoading.setVisibility(View.VISIBLE);

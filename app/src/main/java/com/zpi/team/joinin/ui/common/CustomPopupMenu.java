@@ -47,4 +47,8 @@ public class CustomPopupMenu {
         mPopupMenu.show();
     }
 
+    public void dismiss(){
+        mPopupMenu.dismiss();
+    }
+
 }

@@ -14,4 +14,12 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar">
     </FrameLayout>
+
+    <include
+        android:id="@+id/view_nointernet"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/view_nointernet"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

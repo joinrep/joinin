@@ -1,7 +1,9 @@
 package com.zpi.team.joinin.ui.details;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,7 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,17 +24,20 @@ import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
+import com.zpi.team.joinin.ui.common.ToggleParticipate;
 import com.zpi.team.joinin.repository.exceptions.EventFullException;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class InDetailEventFragment extends Fragment {
-    public static String INDETAIL_EVENT_ID = "indetail_event_id";
+    private final String TAG = "InDetailEventFragment";
     private TextView mTitle, mCategory, mPpl, mLimit, mPrice, mDescription, mLocalization, mStartTime, mEndTime;
     private View mLimitContent, mPriceContent;
     private ProgressBar mBarParticipants, mBarLocalization, mBarDescription;
     private Event mInDetailEvent;
+    private User mOrganizer;
     private List<User> mParticipants;
     private Button mParticipate;
     private int mParticipantsCount;
@@ -85,6 +92,8 @@ public class InDetailEventFragment extends Fragment {
 
             @Override
             protected void onPostExecute(Event event) {
+                //TODO null poki co
+                mOrganizer = event.getOrganizer();
                 mLocalization.setText(event.getLocation().getLocationName());
                 mDescription.setText(event.getDescription());
                 mParticipants = event.getParticipants();
@@ -105,14 +114,13 @@ public class InDetailEventFragment extends Fragment {
             mPpl.setEnabled(false);
         }
 
-
         View.OnClickListener participantsClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Dialog dialog = new Dialog(getActivity());
                 dialog.setContentView(R.layout.dialog_participants);
                 ListView list = (ListView) dialog.findViewById(R.id.dialog_participants);
-
+                Log.d(TAG, "onClick(), "+ mParticipants.size());
                 list.setAdapter(new DialogListAdapter(getActivity(), mParticipants));
                 dialog.show();
             }
@@ -154,7 +162,7 @@ public class InDetailEventFragment extends Fragment {
                         mInDetailEvent.setParticipantsCount(mInDetailEvent.getParticipantsCount() - 1);
                     }
                     toggleParticipateBtn(mInDetailEvent, true);
-                    new ToggleParticipate(mInDetailEvent).execute();
+                    new ToggleParticipate(getActivity()).execute(mInDetailEvent);
                 }
             });
         }
@@ -211,25 +219,49 @@ public class InDetailEventFragment extends Fragment {
         }
     }
 
-    private class ToggleParticipate extends AsyncTask<Void, Void, Void> {
-        SessionStorage storage = SessionStorage.getInstance();
-        private Event event;
-
-        ToggleParticipate(Event event) {
-            super();
-            this.event = event;
-        }
-
-        protected Void doInBackground(Void... args) {
-            try {
-                new EventRepository().participate(event, storage.getUser(), event.getParticipate());
-
-            } catch (EventFullException e) {
-                Toast.makeText(getActivity(), R.string.event_full, Toast.LENGTH_LONG).show();
-            };
-            return null;
-        }
+    public void showOrganizerInfo() {
+        Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_organizer_info);
+        dialog.setTitle(getResources().getString(R.string.organizer));
+        inflate(dialog);
+        dialog.show();
 
     }
 
+
+    private void inflate(Dialog view){
+        final ProgressBar bar = (ProgressBar) view.findViewById(R.id.bar_photo);
+        bar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.bar_gray), PorterDuff.Mode.SRC_IN);
+        final ImageView photo = (ImageView) view.findViewById(R.id.photo);
+        TextView name = (TextView) view.findViewById(R.id.organizer_name);
+        TextView surname = (TextView) view.findViewById(R.id.organizer_surname);
+
+        //TODO pociagnac organizatora
+        mOrganizer = mInDetailEvent.getOrganizer();
+        String source = mOrganizer.getSource();
+        String id = mOrganizer.getLoginId();
+
+        new AsyncTask<String, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                bar.setVisibility(View.VISIBLE);
+                photo.setVisibility(View.GONE);
+            }
+
+            @Override
+            protected Void doInBackground(String... params) {
+                new LoadProfilePhoto(photo, getActivity()).execute(params[0], params[1]);
+                return  null;
+            }
+
+            @Override
+            protected void onPostExecute(Void v) {
+                bar.setVisibility(View.GONE);
+                photo.setVisibility(View.VISIBLE);
+            }
+        }.execute(source, id);
+
+        name.setText(mOrganizer.getFirstName());
+        surname.setText(mOrganizer.getLastName());
+    }
 }

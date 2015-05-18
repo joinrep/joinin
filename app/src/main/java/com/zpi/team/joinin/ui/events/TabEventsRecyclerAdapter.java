@@ -3,6 +3,7 @@ package com.zpi.team.joinin.ui.events;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +24,23 @@ import java.util.List;
  * Created by Arkadiusz on 2015-05-06.
  */
 public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecyclerAdapter.ViewHolder> {
+    private final static String TAG = "TabEventsRecyclerAdapter";
     private List<Event> mEvents;
     private Context mContext;
     private OnRecyclerViewClickListener mItemListener;
     private OnPopUpListener mPopupListener;
+    private boolean mWithMenu;
 
-    public TabEventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener, OnPopUpListener popupListener) {
+    public TabEventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener, OnPopUpListener popupListener, boolean withMenu) {
         mEvents = events;
         mContext = context;
         mItemListener = listener;
         mPopupListener = popupListener;
+        mWithMenu = withMenu;
     }
 
     public interface OnPopUpListener {
-        public void showPopUp(View v);
+        public void showPopUp(View v, Event event, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -45,6 +49,7 @@ public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecy
         public TextView mParticipants;
         public TextView mDate;
         public ImageView mImage, mMore;
+        public Event mEventBelonging;
 
         public ViewHolder(View v) {
             super(v);
@@ -55,7 +60,10 @@ public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecy
             mDate = (TextView) v.findViewById(R.id.eventDate);
             mImage = (ImageView) v.findViewById(R.id.eventImage);
             mMore = (ImageView) v.findViewById(R.id.more);
-            mMore.setOnClickListener(this);
+            if(mWithMenu)
+                mMore.setOnClickListener(this);
+            else
+                mMore.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -63,7 +71,7 @@ public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecy
             int id = v.getId();
             switch (id) {
                 case R.id.more:
-                    mPopupListener.showPopUp(mMore);
+                    mPopupListener.showPopUp(mMore, mEventBelonging, this.getPosition());
                     break;
                 default:
                     mItemListener.onRecyclerViewItemClicked(v, this.getPosition());
@@ -102,50 +110,11 @@ public class TabEventsRecyclerAdapter extends RecyclerView.Adapter<TabEventsRecy
             holder.mParticipants.setText(event.getParticipantsCount() + " / " + event.getLimit());
         }
 
-//        toggleParticipateBtn(event, holder);
-//        holder.mMore.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // TODO MK dropdown menu - dodać usuwanie uczestnictwa
-//                event.setParticipate(!event.getParticipate());
-//                toggleParticipateBtn(event, holder);
-//                new ToggleParticipate(event).execute();
-//            }
-//        });
+        holder.mEventBelonging = event;
     }
 
     @Override
     public int getItemCount() {
         return mEvents.size();
-    }
-
-    private void toggleParticipateBtn(Event event, ViewHolder holder) {
-        if (event.getParticipate()) {
-            ((View) holder.mImage.getParent()).setAlpha(1f);
-        } else {
-            ((View) holder.mImage.getParent()).setAlpha(0.5f);
-        }
-    }
-
-    private class ToggleParticipate extends AsyncTask<String, String, String> {
-        SessionStorage storage = SessionStorage.getInstance();
-        private Event event;
-
-        ToggleParticipate(Event event) {
-            super();
-            this.event = event;
-        }
-
-        protected String doInBackground(String... args) {
-            try {
-                new EventRepository().participate(event, storage.getUser(), event.getParticipate());
-
-            } catch (EventFullException e) {
-                Toast.makeText(mContext, R.string.event_full, Toast.LENGTH_LONG).show();
-            };
-
-            return "dumb";
-        }
-
     }
 }
