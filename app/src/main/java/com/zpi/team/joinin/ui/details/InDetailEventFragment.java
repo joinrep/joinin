@@ -1,9 +1,7 @@
 package com.zpi.team.joinin.ui.details;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,13 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
@@ -26,7 +22,6 @@ import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
 import com.zpi.team.joinin.ui.common.ToggleParticipate;
-import com.zpi.team.joinin.repository.exceptions.EventFullException;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -236,8 +231,6 @@ public class InDetailEventFragment extends Fragment {
         TextView name = (TextView) view.findViewById(R.id.organizer_name);
         TextView surname = (TextView) view.findViewById(R.id.organizer_surname);
 
-        //TODO pociagnac organizatora
-        mOrganizer = mInDetailEvent.getOrganizer();
         String source = mOrganizer.getSource();
         String id = mOrganizer.getLoginId();
 
