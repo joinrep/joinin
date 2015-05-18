@@ -9,6 +9,7 @@ import android.graphics.Outline;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
+import com.zpi.team.joinin.ui.common.AnimatedConnectionDialog;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
 
@@ -46,6 +48,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 
     private RecyclerView mEventsRecycler;
     private TextView mEmptyView;
+    private View mAddEventButton;
 
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -71,7 +74,6 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 //        } else {
 //            view = super.onCreateView(inflater, container, savedInstanceState);
 //        }
-
         mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         mEventsRecycler = (RecyclerView) view.findViewById(R.id.eventsList);
         mEventsRecycler.setHasFixedSize(true);
@@ -86,8 +88,8 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
             public void onRefresh() {
                 //TODO jesli zmieni sie cos w bazie ofc
                 Log.d("EventsFragment", "refresh()");
-                mAdapter.notifyDataSetChanged();;
-                //mEventsRecycler.getAdapter().notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
+                ;
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -100,9 +102,9 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
     }
 
     private void addButtonTo(View v) {
-        View addEventButton = v.findViewById(R.id.add_event_button);
+        mAddEventButton = v.findViewById(R.id.add_event_button);
         if (Build.VERSION.SDK_INT >= 21) {
-            addEventButton.setOutlineProvider(new ViewOutlineProvider() {
+            mAddEventButton.setOutlineProvider(new ViewOutlineProvider() {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public void getOutline(View view, Outline outline) {
@@ -110,23 +112,45 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
                     outline.setOval(0, 0, diameter, diameter);
                 }
             });
-            addEventButton.setClipToOutline(true);
+            mAddEventButton.setClipToOutline(true);
         }
 
-        addEventButton.setOnClickListener(new View.OnClickListener() {
+        mAddEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivityForResult(new Intent(getActivity(), CreateEventActivity.class), CREATE_EVENT_REQUEST);
             }
         });
+
+//        mAddEventButton.setVisibility(View.GONE);
     }
 
     public void inflateWithEvents() {
-        if (InternetConnection.isAvailable(getActivity()))
+        if (InternetConnection.isAvailable(getActivity())) {
             new LoadEvents().execute();
-        else
-            Toast.makeText(getActivity(), "Brak połączenia z Internetem.", Toast.LENGTH_SHORT).show();
+//            mAddEventButton.setVisibility(View.VISIBLE);
+            if (isFloatingActionButtonVisible())
+                mAddEventButton.animate().translationYBy(-mAddEventButton.getTranslationY());
+        } else {
+//            InternetConnection.setViewToRaise(mAddEventButton);
+
+            Log.d("EventsRec", "inflateWithEvents()");
+            final AnimatedConnectionDialog dialog = new AnimatedConnectionDialog(getActivity());
+            dialog.clear();
+            if (isFloatingActionButtonVisible())
+                dialog.setViewToRaise(mAddEventButton);
+            dialog.setOnRetryListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.startAnimation();
+                    inflateWithEvents();
+                }
+            });
+            dialog.replayAnimation();
+        }
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

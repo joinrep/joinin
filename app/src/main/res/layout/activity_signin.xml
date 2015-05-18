@@ -3,6 +3,7 @@
     android:id="@+id/sign_in_content"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:animateLayoutChanges="true"
     android:background="@drawable/main_background">
 
 
@@ -32,6 +33,7 @@
         android:layout_below="@id/sign_with"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
+         android:layout_marginBottom="5dp"
         android:gravity="center_horizontal"
         android:padding="@dimen/keyline_1">
 
@@ -60,4 +62,12 @@
         android:layout_marginTop="150dp"
         android:indeterminate="true"
         android:visibility="gone" />
+
+    <include
+        android:id="@+id/view_nointernet"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/view_nointernet"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

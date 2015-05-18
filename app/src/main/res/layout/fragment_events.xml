@@ -23,6 +23,8 @@
         android:id="@+id/add_event_button"
         android:layout_width="@dimen/diameter"
         android:layout_height="@dimen/diameter"
+
+        android:translationY="80dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="@dimen/add_button_margin"

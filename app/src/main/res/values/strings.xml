@@ -67,6 +67,8 @@
     <string name="are_u_sure">Czy wylogować z konta?</string>
     <string name="logout">Wyloguj</string>
     <string name="cancel">Anuluj</string>
+    <string name="no_iternet">Brak połączenia</string>
+    <string name="retry">Ponów próbę</string>
 
 
     <string name="facebook_app_id">1559652434287421</string>
