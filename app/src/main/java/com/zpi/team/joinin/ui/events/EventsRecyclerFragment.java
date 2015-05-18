@@ -225,6 +225,10 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
         mAdapter.getFilter().filter(constraint);
     }
 
+    public void sort(String constraint) {
+        mAdapter.getSorter().sort(constraint);
+    }
+
 //    @Override
 //    public void onResume() {
 //        if (this != null) {

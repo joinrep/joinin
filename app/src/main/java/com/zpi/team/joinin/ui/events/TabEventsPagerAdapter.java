@@ -191,7 +191,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                             event.getParticipants().remove(SessionStorage.getInstance().getUser());
                             event.setParticipantsCount(event.getParticipantsCount() - 1);
                             notifyEventRemoved(position);
-                        new ToggleParticipate().execute(event);
+                        new ToggleParticipate(mActivity).execute(event);
                         } else if (msg.equals(mActivity.getResources().getString(R.string.msg_cancel_event))) {
 
                             Log.d(TAG, "onCreateDialog(), odwolaj");

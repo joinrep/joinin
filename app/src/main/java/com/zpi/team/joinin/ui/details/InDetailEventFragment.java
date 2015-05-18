@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
@@ -25,6 +26,7 @@ import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
 import com.zpi.team.joinin.ui.common.ToggleParticipate;
+import com.zpi.team.joinin.repository.exceptions.EventFullException;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -160,7 +162,7 @@ public class InDetailEventFragment extends Fragment {
                         mInDetailEvent.setParticipantsCount(mInDetailEvent.getParticipantsCount() - 1);
                     }
                     toggleParticipateBtn(mInDetailEvent, true);
-                    new ToggleParticipate().execute(mInDetailEvent);
+                    new ToggleParticipate(getActivity()).execute(mInDetailEvent);
                 }
             });
         }
@@ -226,6 +228,7 @@ public class InDetailEventFragment extends Fragment {
 
     }
 
+
     private void inflate(Dialog view){
         final ProgressBar bar = (ProgressBar) view.findViewById(R.id.bar_photo);
         bar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.bar_gray), PorterDuff.Mode.SRC_IN);
@@ -234,7 +237,7 @@ public class InDetailEventFragment extends Fragment {
         TextView surname = (TextView) view.findViewById(R.id.organizer_surname);
 
         //TODO pociagnac organizatora
-        mOrganizer = SessionStorage.getInstance().getUser();
+        mOrganizer = mInDetailEvent.getOrganizer();
         String source = mOrganizer.getSource();
         String id = mOrganizer.getLoginId();
 

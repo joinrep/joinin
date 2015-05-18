@@ -43,6 +43,7 @@ import com.zpi.team.joinin.ui.events.AllEventsFragment;
 import com.zpi.team.joinin.ui.events.ByCategoryEventsFragment;
 import com.zpi.team.joinin.ui.events.EventsFilter;
 import com.zpi.team.joinin.ui.events.EventsRecyclerFragment;
+import com.zpi.team.joinin.ui.events.EventsSorter;
 import com.zpi.team.joinin.ui.events.MyOwnEventsFragment;
 import com.zpi.team.joinin.ui.events.ParticipateEventsFragment;
 import com.zpi.team.joinin.ui.nav.NavDrawerAdapter;
@@ -268,8 +269,15 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
                             fragment.filter(EventsFilter.SHOW_ALL);
                         }
                     }
-
                     break;
+                case R.id.action_sort_alpha:
+                    fragment.sort(EventsSorter.ALPHABETICAL);
+                    break;
+                case R.id.action_sort_create:
+                    fragment.sort(EventsSorter.CREATE_DATE);
+                    break;
+                case R.id.action_sort_start:
+                    fragment.sort(EventsSorter.START_DATE);
             }
         }
         return false;
@@ -363,7 +371,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_sort).setVisible(!drawerOpen);
         menu.findItem(R.id.action_filter).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }

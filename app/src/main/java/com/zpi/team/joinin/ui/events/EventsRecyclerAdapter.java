@@ -12,6 +12,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
@@ -19,6 +20,8 @@ import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.common.ToggleParticipate;
+import com.zpi.team.joinin.ui.common.ToggleParticipate;
+import com.zpi.team.joinin.repository.exceptions.EventFullException;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -32,6 +35,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
     private Context mContext;
     private OnRecyclerViewClickListener mItemListener;
     private Filter mEventFilter;
+    private EventsSorter mEventsSorter;
 
     public EventsRecyclerAdapter(Context context, List<Event> events, OnRecyclerViewClickListener listener) {
         mEvents = events;
@@ -110,8 +114,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
                     event.setParticipantsCount(event.getParticipantsCount() - 1);
                 }
                 toggleParticipateBtn(event, holder);
-                new ToggleParticipate().execute(event);
-
+                new ToggleParticipate(mContext).execute(event);
             }
         });
 
@@ -123,6 +126,13 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
             mEventFilter = new EventsFilter(this, mEvents);
         }
         return mEventFilter;
+    }
+
+    public EventsSorter getSorter() {
+        if (mEventsSorter == null) {
+            mEventsSorter = new EventsSorter(this, mFilteredEvents);
+        }
+        return mEventsSorter;
     }
 
     public Event getItem(int id) {
