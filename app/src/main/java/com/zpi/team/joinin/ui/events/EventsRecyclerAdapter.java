@@ -130,6 +130,8 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
     public EventsSorter getSorter() {
         if (mEventsSorter == null) {
             mEventsSorter = new EventsSorter(this, mFilteredEvents);
+        } else {
+            mEventsSorter.update(mFilteredEvents);
         }
         return mEventsSorter;
     }

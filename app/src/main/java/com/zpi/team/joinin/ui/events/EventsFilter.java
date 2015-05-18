@@ -73,5 +73,6 @@ public class EventsFilter extends Filter {
             Log.e("Values: ", results.values.toString());
         }
         mAdapter.publishFilteredEvents((ArrayList<Event>) results.values);
+        mAdapter.getSorter().sort(EventsSorter.DEFAULT);
     }
 }

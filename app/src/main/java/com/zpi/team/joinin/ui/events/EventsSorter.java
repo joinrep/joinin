@@ -16,10 +16,13 @@ public class EventsSorter {
     public final static String ALPHABETICAL = "alphabetical";
     public final static String CREATE_DATE = "create_date";
     public final static String START_DATE = "start_date";
+    public final static String DEFAULT = "default";
 
     private EventsRecyclerAdapter mAdapter;
     private List<Event> mData;
     private String lastSort = "";
+
+    private String[] sortingRule = new String[] {null, null};
 
     private static Comparator<Event> mAlphabeticalComparator = new Comparator<Event>() {
         private Collator collator = Collator.getInstance(new Locale("pl", "PL"));
@@ -50,39 +53,63 @@ public class EventsSorter {
         mData = events;
     }
 
-    public void sort(CharSequence constraint) {
-        String currentSort = constraint.toString();
-        switch(constraint.toString()) {
-            case ALPHABETICAL:
-                if (lastSort.equals(currentSort)) {
-                    Collections.sort(mData, Collections.reverseOrder(mAlphabeticalComparator));
-                    lastSort = "";
+    public void update(List<Event> events) {
+        mData = events;
+    }
+
+    private Comparator<Event> getSortingRule(String constraint) {
+        boolean negation = false;
+
+        if (DEFAULT.equals(constraint)) {
+            if (sortingRule[1] != null) {
+                negation = true;
+                constraint = sortingRule[1];
+            } else if (sortingRule[0] != null){
+                constraint = sortingRule[0];
+            } else {
+                return mStartDateComparator;
+            }
+        } else {
+            if (sortingRule[0] != null) {
+                if (sortingRule[0].equals(constraint)) {
+                    if (sortingRule[1] != null) {
+                        sortingRule[1] = null;
+                    } else {
+                        negation = true;
+                        sortingRule[1] = constraint;
+                    }
                 } else {
-                    Collections.sort(mData, mAlphabeticalComparator);
-                    lastSort = currentSort;
+                    sortingRule[0] = constraint;
                 }
+            } else {
+                sortingRule[0] = constraint;
+            }
+        }
+
+        Comparator<Event> comparator = null;
+        switch(constraint) {
+            case ALPHABETICAL:
+                comparator = mAlphabeticalComparator;
                 break;
 
             case START_DATE:
-                if (lastSort.equals(currentSort)) {
-                    Collections.sort(mData, Collections.reverseOrder(mStartDateComparator));
-                    lastSort = "";
-                } else {
-                    Collections.sort(mData, mStartDateComparator);
-                    lastSort = currentSort;
-                }
+                comparator = mStartDateComparator;
                 break;
 
             case CREATE_DATE:
-                if (lastSort.equals(currentSort)) {
-                    Collections.sort(mData, Collections.reverseOrder(mCreateDateComparator));
-                    lastSort = "";
-                } else {
-                    Collections.sort(mData, mCreateDateComparator);
-                    lastSort = currentSort;
-                }
+                comparator = mCreateDateComparator;
                 break;
         }
+
+        if (negation) {
+            comparator = Collections.reverseOrder(comparator);
+        }
+
+        return comparator;
+    }
+
+    public void sort(CharSequence constraint) {
+        Collections.sort(mData, getSortingRule(constraint.toString()));
         mAdapter.notifyDataSetChanged();
     }
 
