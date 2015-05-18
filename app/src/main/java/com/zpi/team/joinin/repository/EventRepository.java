@@ -88,6 +88,14 @@ public class EventRepository implements IRepository<Event> {
                 String google_id = organizerJSON.getString(UserRepository.TAG_GOOGLE_ID);
                 String first_name = organizerJSON.getString(UserRepository.TAG_FIRST_NAME);
                 String last_name = organizerJSON.getString(UserRepository.TAG_LAST_NAME);
+
+                if ("null".equals(facebook_id)) {
+                    facebook_id = null;
+                }
+                if ("null".equals(google_id)) {
+                    google_id = null;
+                }
+
                 result.setOrganizer(new User(user_id, facebook_id, google_id, first_name, last_name));
 
 
