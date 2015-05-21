@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
-import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
+import com.zpi.team.joinin.ui.common.OnToolbarModificationListener;
 
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
 
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
-    private OnToolbarElevationListener mOnToolbarElevationListener;
+    private OnToolbarModificationListener mOnToolbarModificationListener;
 
     @Override
     public int getType() {
@@ -43,7 +43,7 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mOnToolbarElevationListener = (OnToolbarElevationListener) activity;
+            mOnToolbarModificationListener = (OnToolbarModificationListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnToolbarElevationListener");
@@ -53,12 +53,15 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mOnToolbarElevationListener.setToolbarElevation(true);
+        mOnToolbarModificationListener.setToolbarElevation(true);
+        mOnToolbarModificationListener.setSortFilterIconsVisibility(true);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mOnToolbarElevationListener.setToolbarElevation(false);
+        mOnToolbarModificationListener.setToolbarElevation(false);
+        mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
         super.inflateWithEvents();
         return inflater.inflate(R.layout.fragment_participate_events, container, false);
     }

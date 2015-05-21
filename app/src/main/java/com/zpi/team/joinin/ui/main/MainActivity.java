@@ -38,7 +38,7 @@ import com.zpi.team.joinin.signin.LogOutDialog;
 import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.categories.CategoriesFragment;
 import com.zpi.team.joinin.ui.common.LoadProfilePhoto;
-import com.zpi.team.joinin.ui.common.OnToolbarElevationListener;
+import com.zpi.team.joinin.ui.common.OnToolbarModificationListener;
 import com.zpi.team.joinin.ui.events.AllEventsFragment;
 import com.zpi.team.joinin.ui.events.ByCategoryEventsFragment;
 import com.zpi.team.joinin.ui.events.EventsFilter;
@@ -52,8 +52,8 @@ import com.zpi.team.joinin.ui.nav.NavDrawerItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements OnToolbarElevationListener, View.OnClickListener, Toolbar.OnMenuItemClickListener {
-
+public class MainActivity extends ActionBarActivity implements OnToolbarModificationListener, View.OnClickListener, Toolbar.OnMenuItemClickListener {
+    private final String TAG = "MainActivity";
     private final static int ALL = 1;
     private final static int PARTICIPATE = 2;
     private final static int MYOWN = 3;
@@ -61,6 +61,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
     private Toolbar mToolbar;
     private CharSequence mTitle;
+    private boolean mSortFilterMenuVisibility;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -92,6 +93,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setOnMenuItemClickListener(this);
+        mSortFilterMenuVisibility = true;
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
@@ -173,7 +175,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             String id = personData.getStringExtra(SignInActivity.PERSON_ID);
             String name = personData.getStringExtra(SignInActivity.PERSON_NAME);
             String mail = personData.getStringExtra(SignInActivity.PERSON_MAIL);
-            Log.d("MainActivity" , "getLoginSource(), " + MyPreferences.getLoginSource());
+            Log.d("MainActivity", "getLoginSource(), " + MyPreferences.getLoginSource());
             new LoadProfilePhoto(personPhoto, this).execute(MyPreferences.getLoginSource(), id);
             personName.setText(name);
             if (mail == null) mail = "Zalogowany przez Facebook";
@@ -238,7 +240,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch(id){
+        switch (id) {
             case R.id.logout:
                 Log.d("MainActivity", " onClick(), loggin out");
                 logout();
@@ -252,7 +254,8 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             EventsRecyclerFragment fragment = (EventsRecyclerFragment) mCurrentFragment;
             menuItem.setChecked(!menuItem.isChecked());
             switch (menuItem.getItemId()) {
-                case R.id.action_filter_full: case R.id.action_filter_free:
+                case R.id.action_filter_full:
+                case R.id.action_filter_free:
                     Log.d("Filter", "");
                     MenuItem fullItem = mMenu.findItem(R.id.action_filter_full);
                     MenuItem freeItem = mMenu.findItem(R.id.action_filter_free);
@@ -283,7 +286,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
         return false;
     }
 
-    private void logout(){
+    private void logout() {
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("com.zpi.team.joinin.ACTION_LOGOUT");
         sendBroadcast(broadcastIntent);
@@ -292,11 +295,11 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectMenuItem(position);
+            selectNavDrawerItem(position);
         }
     }
 
-    private void selectMenuItem(int position) {
+    private void selectNavDrawerItem(int position) {
         mCurrentFragment = null;
         switch (position) {
             case ALL:
@@ -317,7 +320,6 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
                 break;
             default:
                 if (position > ADD_CATEGORY_POSITION && position <= ADD_CATEGORY_POSITION + favCategories.size()) {
-                    Log.d("click", favCategories.get(position - (ADD_CATEGORY_POSITION + 1)).getName());
                     setToolbarElevation(true);
                     mCurrentFragment = new ByCategoryEventsFragment().setCategory(favCategories.get(position - (ADD_CATEGORY_POSITION + 1)));
                 }
@@ -329,6 +331,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
 
     public void switchFragment(Fragment fragment, int position) {
         if (fragment != null) {
+            mCurrentFragment = fragment;
             mCurrentPosition = position;
             Log.d("Bundle", Integer.toString(position));
             FragmentManager fragmentManager = getFragmentManager();
@@ -346,6 +349,11 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             getSupportActionBar().setElevation(getResources().getDimension(R.dimen.toolbar_elevation));
         else
             getSupportActionBar().setElevation(0);
+    }
+
+    public void setSortFilterIconsVisibility(boolean state) {
+        mSortFilterMenuVisibility = state;
+        invalidateOptionsMenu();
     }
 
     private void syncToolbarTitleAndMenuItemCheckedState(int position) {
@@ -371,8 +379,12 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_sort).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_filter).setVisible(!drawerOpen);
+        MenuItem sort = menu.findItem(R.id.action_sort);
+        MenuItem filter = menu.findItem(R.id.action_filter);
+
+        boolean visibility = mSortFilterMenuVisibility && !drawerOpen;
+            sort.setVisible(visibility);
+            filter.setVisible(visibility);
         return super.onPrepareOptionsMenu(menu);
     }
 

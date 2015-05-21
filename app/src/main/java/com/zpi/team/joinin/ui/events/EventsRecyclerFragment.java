@@ -28,6 +28,7 @@ import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.signin.InternetConnection;
 import com.zpi.team.joinin.ui.common.AnimatedConnectionDialog;
+import com.zpi.team.joinin.ui.common.OnToolbarModificationListener;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
 
@@ -38,7 +39,6 @@ import java.util.List;
  */
 
 public abstract class EventsRecyclerFragment extends Fragment implements OnRecyclerViewClickListener {
-
     private static int CREATE_EVENT_REQUEST = 1;
     private static int INDETAIL_EVENT_REQUEST = 2;
     public final static int ALL = 1;
@@ -52,8 +52,8 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    //private List<Event> mEvents;
-    EventsRecyclerAdapter mAdapter;
+    private EventsRecyclerAdapter mAdapter;
+    private OnToolbarModificationListener mOnToolbarModificationListener;
 
     public abstract int getType();
 
@@ -65,6 +65,16 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
         return null;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mOnToolbarModificationListener = (OnToolbarModificationListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnToolbarElevationListener");
+        }
+    }
     //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -121,20 +131,16 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
                 startActivityForResult(new Intent(getActivity(), CreateEventActivity.class), CREATE_EVENT_REQUEST);
             }
         });
-
-//        mAddEventButton.setVisibility(View.GONE);
     }
 
     public void inflateWithEvents() {
         if (InternetConnection.isAvailable(getActivity())) {
+            mOnToolbarModificationListener.setSortFilterIconsVisibility(true);
             new LoadEvents().execute();
-//            mAddEventButton.setVisibility(View.VISIBLE);
             if (isFloatingActionButtonVisible())
                 mAddEventButton.animate().translationYBy(-mAddEventButton.getTranslationY());
         } else {
-//            InternetConnection.setViewToRaise(mAddEventButton);
-
-            Log.d("EventsRec", "inflateWithEvents()");
+            mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
             final AnimatedConnectionDialog dialog = new AnimatedConnectionDialog(getActivity());
             dialog.clear();
             if (isFloatingActionButtonVisible())
@@ -149,8 +155,6 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
             dialog.replayAnimation();
         }
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -211,7 +215,6 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
         protected void onPostExecute(Void v) {
             onCustomPostExecute(mEvents);
             progressDialog.dismiss();
-
         }
     }
 
@@ -228,18 +231,4 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
     public void sort(String constraint) {
         mAdapter.getSorter().sort(constraint);
     }
-
-//    @Override
-//    public void onResume() {
-//        if (this != null) {
-//            super.onResume();
-//            if (mEventsRecycler != null) {
-//                RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
-//                if (adapter != null) {
-//                    adapter.notifyDataSetChanged();
-//                }
-//            }
-//        }
-//    }
-
 }
