@@ -65,6 +65,8 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
         return null;
     }
 
+    public TextView getEmptyView() {return mEmptyView;}
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -84,6 +86,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 //        } else {
 //            view = super.onCreateView(inflater, container, savedInstanceState);
 //        }
+
         mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         mEventsRecycler = (RecyclerView) view.findViewById(R.id.eventsList);
         mEventsRecycler.setHasFixedSize(true);
@@ -140,20 +143,25 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
             if (isFloatingActionButtonVisible())
                 mAddEventButton.animate().translationYBy(-mAddEventButton.getTranslationY());
         } else {
-            mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
-            final AnimatedConnectionDialog dialog = new AnimatedConnectionDialog(getActivity());
-            dialog.clear();
-            if (isFloatingActionButtonVisible())
-                dialog.setViewToRaise(mAddEventButton);
-            dialog.setOnRetryListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.startAnimation();
-                    inflateWithEvents();
-                }
-            });
-            dialog.replayAnimation();
+            showNoConnectionDialog();
         }
+    }
+
+    public void showNoConnectionDialog(){
+        getEmptyView().setVisibility(View.VISIBLE);
+        mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
+        final AnimatedConnectionDialog dialog = new AnimatedConnectionDialog(getActivity());
+        dialog.clear();
+        if (isFloatingActionButtonVisible())
+            dialog.setViewToRaise(mAddEventButton);
+        dialog.setOnRetryListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.startAnimation();
+                inflateWithEvents();
+            }
+        });
+        dialog.replayAnimation();
     }
 
     @Override
@@ -172,8 +180,8 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
     }
 
     private void checkIfEmpty() {
-        if (mEmptyView != null) {
-            mEmptyView.setVisibility(mEventsRecycler.getAdapter().getItemCount() > 0 ? View.GONE : View.VISIBLE);
+        if (getEmptyView() != null) {
+            getEmptyView().setVisibility(mEventsRecycler.getAdapter().getItemCount() > 0 ? View.GONE : View.VISIBLE);
         }
     }
 

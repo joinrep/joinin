@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
@@ -27,6 +28,7 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
 
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
+    private TextView mEmptyView;
     private OnToolbarModificationListener mOnToolbarModificationListener;
 
     @Override
@@ -38,6 +40,9 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
     public boolean isFloatingActionButtonVisible() {
         return false;
     }
+
+    @Override
+    public TextView getEmptyView() {return mEmptyView;}
 
     @Override
     public void onAttach(Activity activity) {
@@ -62,8 +67,10 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mOnToolbarModificationListener.setToolbarElevation(false);
         mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
+        View view = inflater.inflate(R.layout.fragment_participate_events, container, false);
+        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         super.inflateWithEvents();
-        return inflater.inflate(R.layout.fragment_participate_events, container, false);
+        return view;
     }
 
     @Override
