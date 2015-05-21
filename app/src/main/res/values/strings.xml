@@ -77,6 +77,8 @@
     <string name="no_events_available">Nie znaleziono wydarzeń</string>
     <string name="participate_event">Dołącz</string>
     <string name="not_participate_event">Rezygnuj</string>
+    <string name="no_room">Brak miejsc</string>
+    <string name="took_place">Odbyło się</string>
 
     <string name="hello_world">Hello world!</string>
 

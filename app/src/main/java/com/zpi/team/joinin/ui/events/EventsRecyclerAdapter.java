@@ -1,27 +1,22 @@
 package com.zpi.team.joinin.ui.events;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
-import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.ui.common.StateButton;
 import com.zpi.team.joinin.ui.common.ToggleParticipate;
-import com.zpi.team.joinin.ui.common.ToggleParticipate;
-import com.zpi.team.joinin.repository.exceptions.EventFullException;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -45,25 +40,24 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTitle;
         public TextView mAddress;
         public TextView mTime;
         public TextView mDate;
         public ImageView mImage;
         public ImageView mStar;
-        public Button mParticipate;
+        public StateButton mParticipate;
 
         public ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
-            mTitle = (TextView)v.findViewById(R.id.eventName);
-            mAddress = (TextView)v.findViewById(R.id.eventAddress);
-            mTime = (TextView)v.findViewById(R.id.eventTime);
-            mDate = (TextView)v.findViewById(R.id.eventDate);
-            mImage = (ImageView)v.findViewById(R.id.eventImage);
-            mStar = (ImageView)v.findViewById(R.id.imgParticipant);
-            mParticipate = (Button)v.findViewById(R.id.btnParticipate);
+            mTitle = (TextView) v.findViewById(R.id.eventName);
+            mAddress = (TextView) v.findViewById(R.id.eventAddress);
+            mTime = (TextView) v.findViewById(R.id.eventTime);
+            mDate = (TextView) v.findViewById(R.id.eventDate);
+            mImage = (ImageView) v.findViewById(R.id.eventImage);
+            mParticipate = (StateButton) v.findViewById(R.id.btnParticipate);
         }
 
         @Override
@@ -97,12 +91,12 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM");
         holder.mDate.setText(dateFormat.format(event.getStartTime().getTime()));
 
-        toggleParticipateBtn(event, holder);
-        //TODO sprawdzenie czy sa wolne miejsca, jesli nie to przycisk nieaktywny/'brak miejsc'
+        adjustParticipateBtn(event, holder);
+
         holder.mParticipate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("participate", ""+event.getId() + ":" + event.getName());
+                Log.d("participate", "" + event.getId() + ":" + event.getName());
 
                 event.setParticipate(!event.getParticipate());
                 User currentUser = SessionStorage.getInstance().getUser();
@@ -113,7 +107,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
                     event.getParticipants().remove(currentUser);
                     event.setParticipantsCount(event.getParticipantsCount() - 1);
                 }
-                toggleParticipateBtn(event, holder);
+                adjustParticipateBtn(event, holder);
                 new ToggleParticipate(mContext).execute(event);
             }
         });
@@ -150,14 +144,15 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
         notifyDataSetChanged();
     }
 
-    private void toggleParticipateBtn(Event event, ViewHolder holder) {
-        if (event.getParticipate()) {
-            holder.mParticipate.setText(mContext.getResources().getString(R.string.not_participate_event));
-            holder.mStar.setVisibility(View.VISIBLE);
-        } else {
-            holder.mParticipate.setText(mContext.getResources().getString(R.string.participate_event));
-            holder.mStar.setVisibility(View.INVISIBLE);
-        }
+    private void adjustParticipateBtn(Event event, ViewHolder holder) {
+        if (event.getParticipantsCount() == event.getLimit() && !event.getParticipate())
+            holder.mParticipate.setNoRoomState();
+        else if (event.getEndTime().getTimeInMillis() < System.currentTimeMillis())
+            holder.mParticipate.setPastState();
+        else if (event.getParticipate())
+            holder.mParticipate.setLeaveState();
+        else
+            holder.mParticipate.setJoinState();
     }
 
     @Override

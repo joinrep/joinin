@@ -55,7 +55,7 @@
         android:background="@color/white_100"
         android:layout_alignParentBottom="true">
 
-        <Button
+        <com.zpi.team.joinin.ui.common.StateButton
             android:id="@+id/btnParticipate"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
