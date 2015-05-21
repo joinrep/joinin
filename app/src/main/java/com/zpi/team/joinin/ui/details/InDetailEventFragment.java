@@ -65,43 +65,6 @@ public class InDetailEventFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-//        final int eventId = getActivity().getIntent().getExtras().getInt(INDETAIL_EVENT_ID);
-        final int eventId = mInDetailEvent.getId();
-        mParticipantsCount = mInDetailEvent.getParticipantsCount();
-        new AsyncTask<Void, Void, Event>() {
-            @Override
-            protected void onPreExecute() {
-                mBarDescription.setVisibility(View.VISIBLE);
-                mBarLocalization.setVisibility(View.VISIBLE);
-                if (mParticipantsCount != 0)
-                    mBarParticipants.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            protected Event doInBackground(Void... params) {
-                return new EventRepository().getById(SessionStorage.getInstance().getUser(),eventId);
-            }
-
-            @Override
-            protected void onPostExecute(Event event) {
-                //TODO null poki co
-                mOrganizer = event.getOrganizer();
-                mLocalization.setText(event.getLocation().getLocationName());
-                mDescription.setText(event.getDescription());
-                mParticipants = event.getParticipants();
-                if (mParticipantsCount != 0){
-                    updateParticipantsHeader();
-                    mBarParticipants.setVisibility(View.GONE);
-                }
-                mBarDescription.setVisibility(View.GONE);
-                mBarLocalization.setVisibility(View.GONE);
-            }
-        }.execute();
-    }
-
     private void fillViews() {
         mInDetailEvent = SessionStorage.getInstance().getEventInDetail();
         if (mInDetailEvent.getParticipantsCount() == 0) {
@@ -162,6 +125,43 @@ public class InDetailEventFragment extends Fragment {
             });
         }
     }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final int eventId = mInDetailEvent.getId();
+        mParticipantsCount = mInDetailEvent.getParticipantsCount();
+        new AsyncTask<Void, Void, Event>() {
+            @Override
+            protected void onPreExecute() {
+                mBarDescription.setVisibility(View.VISIBLE);
+                mBarLocalization.setVisibility(View.VISIBLE);
+                if (mParticipantsCount != 0)
+                    mBarParticipants.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected Event doInBackground(Void... params) {
+                return new EventRepository().getById(SessionStorage.getInstance().getUser(),eventId);
+            }
+
+            @Override
+            protected void onPostExecute(Event event) {
+                mOrganizer = event.getOrganizer();
+                mLocalization.setText(event.getLocation().getLocationName());
+                mDescription.setText(event.getDescription());
+                mParticipants = event.getParticipants();
+                if (mParticipantsCount != 0){
+                    updateParticipantsHeader();
+                    mBarParticipants.setVisibility(View.GONE);
+                }
+                mBarDescription.setVisibility(View.GONE);
+                mBarLocalization.setVisibility(View.GONE);
+            }
+        }.execute();
+    }
+
+
 
 
     private void setPpl(int number) {
@@ -237,8 +237,8 @@ public class InDetailEventFragment extends Fragment {
         new AsyncTask<String, Void, Void>() {
             @Override
             protected void onPreExecute() {
-                bar.setVisibility(View.VISIBLE);
                 photo.setVisibility(View.GONE);
+                bar.setVisibility(View.VISIBLE);
             }
 
             @Override

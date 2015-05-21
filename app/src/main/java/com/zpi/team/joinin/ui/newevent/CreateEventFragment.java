@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -36,6 +37,7 @@ import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
+import com.zpi.team.joinin.repository.exceptions.EventFullException;
 import com.zpi.team.joinin.ui.newevent.CategoryAdapter;
 
 import java.text.SimpleDateFormat;
@@ -44,12 +46,14 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CreateEventFragment extends Fragment {
+    private final String TAG = "CreateEventFragment";
     private TextView mStartDate, mEndDate, mStartTime, mEndTime, mCounter;
     private EditText mTitle, mDescription, mAddress, mLimit, mPay;
     private Spinner mCategories;
     private Calendar mCalendarStart, mCalendarEnd;
     private SimpleDateFormat mDateFormat, mTimeFormat;
     private Switch mLimitSwitch, mPaySwitch;
+    private CheckBox mParticipationBox;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,8 +113,9 @@ public class CreateEventFragment extends Fragment {
         mCategories = (Spinner) rootView.findViewById(R.id.categorySpinner);
         mCategories.setAdapter(new CategoryAdapter(getActivity(), R.layout.spinner, SessionStorage.getInstance().getCategories()));
 
-        mDescription = (EditText) rootView.findViewById(R.id.description);
         mAddress = (EditText) rootView.findViewById(R.id.localization);
+        mDescription = (EditText) rootView.findViewById(R.id.description);
+        mParticipationBox = (CheckBox) rootView.findViewById(R.id.participation_box);
         mLimit = (EditText) rootView.findViewById(R.id.limit);
         mPay = (EditText) rootView.findViewById(R.id.pay);
         mPaySwitch = (Switch) rootView.findViewById(R.id.pay_switch);
@@ -126,7 +131,6 @@ public class CreateEventFragment extends Fragment {
         return rootView;
     }
 
-    // TODO data pocz < data kon
     public boolean isFilled() {
         return mTitle.getText().toString().trim().length() != 0 &&
                 !((Category) mCategories.getSelectedItem()).getName().contentEquals(getResources().getString(R.string.choose_category)) &&
@@ -146,11 +150,11 @@ public class CreateEventFragment extends Fragment {
             mAddress.setHintTextColor(color);
         if (isEmpty(mDescription))
             mDescription.setHintTextColor(color);
-        if(!datesAreValid()) {
+        if (!datesAreValid()) {
             mEndDate.setTextColor(color);
             mEndTime.setTextColor(color);
         }
-        if(((Category) mCategories.getSelectedItem()).getName().contentEquals(getResources().getString(R.string.choose_category)))
+        if (((Category) mCategories.getSelectedItem()).getName().contentEquals(getResources().getString(R.string.choose_category)))
             ((TextView) mCategories.getSelectedView()).setTextColor(color);
     }
 
@@ -249,7 +253,7 @@ public class CreateEventFragment extends Fragment {
         }
     };
 
-    EditText.OnKeyListener mOnKeyDownListener = new View.OnKeyListener(){
+    EditText.OnKeyListener mOnKeyDownListener = new View.OnKeyListener() {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -280,7 +284,9 @@ public class CreateEventFragment extends Fragment {
         newEvent.setLocation(new Address(0, "city", "street", "street", address));
         newEvent.setOrganizer(SessionStorage.getInstance().getUser());
         newEvent.setCategory((Category) mCategories.getSelectedItem());
-        new SaveNewEvent().execute(newEvent);
+
+        boolean isOrganizerParticipating = mParticipationBox.isChecked();
+        new SaveNewEvent().execute(newEvent, isOrganizerParticipating);
 
         return newEvent;
     }
@@ -297,10 +303,22 @@ public class CreateEventFragment extends Fragment {
         return defaultValue;
     }
 
-    private class SaveNewEvent extends AsyncTask<Event, Void, Void> {
+    private class SaveNewEvent extends AsyncTask<Object, Void, Void> {
 
-        protected Void doInBackground(Event... event) {
-            new EventRepository().create(event[0]);
+        protected Void doInBackground(Object... eventInfo) {
+            Event event = (Event) eventInfo[0];
+            new EventRepository().create(event);
+
+            if ((boolean) eventInfo[1]) {
+                String n = event.getOrganizer().getLastName();
+                Log.d(TAG, "organizer is participating; " + n );
+
+                try {
+                    new EventRepository().participate(event, event.getOrganizer());
+                } catch (EventFullException e) {
+                    e.printStackTrace();
+                }
+            }
             return null;
         }
     }

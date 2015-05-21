@@ -391,7 +391,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarElevatio
             // TODO set real user in storage, wywalić marka kosa
             User userToLogIn = storage.getUser();
             if (userToLogIn == null) {
-                userToLogIn = new User("Marek", "Kos");
+                userToLogIn = new User("", "");
                 userToLogIn.setFacebookId("999788396717633");
             }
             storage.setUser(new UserRepository().loginUser(userToLogIn));

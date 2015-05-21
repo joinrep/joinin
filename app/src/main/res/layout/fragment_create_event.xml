@@ -17,20 +17,20 @@
                 style="@style/FormEditText"
                 android:layout_marginLeft="@dimen/keyline_1"
                 android:hint="@string/enter_title"
-                android:singleLine="true"
-                android:textStyle="bold"
+                android:inputType="textCapSentences"
                 android:maxLength="@integer/max_title_length"
-                android:inputType="textCapSentences"/>
+                android:singleLine="true"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/max_title_length"
-                android:textColor="@color/colorAccent"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/keyline_1" />
+                android:layout_marginRight="@dimen/keyline_1"
+                android:text="@string/max_title_length"
+                android:textColor="@color/colorAccent" />
         </RelativeLayout>
 
         <View style="@style/Divider" />
@@ -39,42 +39,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/keyline_1"
-            android:orientation="horizontal"
-            android:layout_marginRight="@dimen/keyline_1">
+            android:layout_marginRight="@dimen/keyline_1"
+            android:orientation="horizontal">
 
             <ImageView
                 style="@style/FormIcon"
-                android:src="@drawable/ic_form_time"
-                android:baselineAlignBottom="false"
                 android:layout_gravity="top"
-                android:layout_marginTop="14dp" />
+                android:layout_marginTop="14dp"
+                android:baselineAlignBottom="false"
+                android:src="@drawable/ic_form_time" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/start_date"
                     style="@style/FormTextView"
-                    android:text="niedziela, 29 mar 2015"/>
+                    android:text="niedziela, 29 mar 2015" />
 
                 <TextView
-                    android:layout_width="wrap_content"
                     android:id="@+id/end_date"
                     style="@style/FormTextView"
-                    android:text="niedziela, 30 mar 2015"/>
+                    android:layout_width="wrap_content"
+                    android:text="niedziela, 30 mar 2015" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="right">
+                android:gravity="right"
+                android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/start_time"
                     style="@style/FormTextView"
-                    android:text="20:15"/>
+                    android:text="20:15" />
 
                 <TextView
                     android:id="@+id/end_time"
@@ -97,17 +99,17 @@
             <ImageView
                 android:id="@+id/ic_cat"
                 style="@style/FormIcon"
-                android:src="@drawable/ic_form_category"
+                android:layout_centerVertical="true"
                 android:layout_gravity="top"
-                android:layout_centerVertical="true" />
+                android:src="@drawable/ic_form_category" />
 
             <Spinner
-                android:layout_toRightOf="@id/ic_cat"
                 android:id="@+id/categorySpinner"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ic_cat"
                 android:prompt="@string/choose_category"
-                android:spinnerMode="dropdown"/>
+                android:spinnerMode="dropdown" />
         </RelativeLayout>
 
 
@@ -126,16 +128,16 @@
             <ImageView
                 android:id="@+id/ic_place"
                 style="@style/FormIcon"
-                android:src="@drawable/ic_form_place"
+                android:layout_centerVertical="true"
                 android:layout_gravity="top"
-                android:layout_centerVertical="true" />
+                android:src="@drawable/ic_form_place" />
 
             <EditText
-                android:layout_toRightOf="@id/ic_place"
                 android:id="@+id/localization"
                 style="@style/FormEditText"
-                android:singleLine="true"
-                android:hint="@string/add_localization" />
+                android:layout_toRightOf="@id/ic_place"
+                android:hint="@string/add_localization"
+                android:singleLine="true" />
         </RelativeLayout>
 
         <View
@@ -152,15 +154,15 @@
             <ImageView
                 android:id="@+id/ic_desc"
                 style="@style/FormIcon"
-                android:src="@drawable/ic_form_description"
                 android:layout_gravity="top"
                 android:layout_marginTop="@dimen/keyline_1"
-                android:adjustViewBounds="false" />
+                android:adjustViewBounds="false"
+                android:src="@drawable/ic_form_description" />
 
             <EditText
-                android:layout_toRightOf="@id/ic_desc"
                 android:id="@+id/description"
                 style="@style/FormEditText"
+                android:layout_toRightOf="@id/ic_desc"
                 android:hint="@string/add_description"
                 android:inputType="textMultiLine" />
         </RelativeLayout>
@@ -179,26 +181,46 @@
             <ImageView
                 android:id="@+id/ic_limit"
                 style="@style/FormIcon"
-                android:src="@drawable/ic_form_limit"
+                android:layout_centerVertical="true"
                 android:layout_gravity="top"
-                android:layout_centerVertical="true" />
+                android:src="@drawable/ic_form_limit" />
+
+            <CheckBox
+                android:id="@+id/participation_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/ic_limit"
+                android:checked="true" />
+
+            <TextView
+                style="@style/FormTextView"
+                android:layout_toRightOf="@id/participation_box"
+                android:text="@string/navdrawer_participate" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="@dimen/keyline_1">
 
             <Switch
                 android:id="@+id/limit_switch"
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
 
             <EditText
-                android:layout_toRightOf="@id/ic_limit"
-                android:layout_toLeftOf="@id/limit_switch"
                 android:id="@+id/limit"
                 style="@style/FormEditText"
+                android:layout_toLeftOf="@id/limit_switch"
+                android:focusable="false"
                 android:hint="@string/set_number_of_ppl"
-                android:text="@string/limit"
                 android:singleLine="true"
-                android:focusable="false" />
+                android:text="@string/limit" />
         </RelativeLayout>
 
         <View
@@ -215,27 +237,27 @@
             <ImageView
                 android:id="@+id/ic_pay"
                 style="@style/FormIcon"
-                android:src="@drawable/ic_form_money"
+                android:layout_centerVertical="true"
                 android:layout_gravity="top"
-                android:layout_centerVertical="true" />
+                android:src="@drawable/ic_form_money" />
 
             <Switch
                 android:id="@+id/pay_switch"
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"/>
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
 
             <EditText
-                android:layout_toRightOf="@id/ic_pay"
-                android:layout_toLeftOf="@id/pay_switch"
                 android:id="@+id/pay"
                 style="@style/FormEditText"
-                android:textColor="@color/black_87"
+                android:layout_toLeftOf="@id/pay_switch"
+                android:layout_toRightOf="@id/ic_pay"
+                android:focusable="false"
                 android:hint="@string/set_price"
-                android:text="@string/pay"
                 android:singleLine="true"
-                android:focusable="false" />
+                android:text="@string/pay"
+                android:textColor="@color/black_87" />
         </RelativeLayout>
     </LinearLayout>
 
