@@ -8,10 +8,10 @@ if (isset($_GET["category_id"]) && isset($_GET["user_id"])) {
 	$db = new DB_CONNECT();
 	mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
-	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants, (SELECT 'true' FROM Participate WHERE joined_event = E.event_id AND participant_id = $user_id) isParticipant FROM Event E LEFT JOIN Address A  ON E.address = A.address_id WHERE canceled = 'N' AND category = $category_id";
+	$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants, (SELECT 'true' FROM Participate WHERE joined_event = E.event_id AND participant_id = $user_id) isParticipant FROM Event E LEFT JOIN Address A  ON E.address = A.address_id WHERE canceled = 'N' AND category = $category_id  AND start_time > DATE_ADD(NOW(),INTERVAL 6 hour)";
 	if (isset($_GET['canceled'])) {
 		if ($_GET['canceled'] === 'Y') {
-			$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants, (SELECT 'true' FROM Participate WHERE joined_event = E.event_id AND participant_id = $user_id) isParticipant FROM Event E LEFT JOIN Address A  ON E.address = A.address_id WHERE category = $category_id";
+			$query = "SELECT *, (SELECT COUNT(*) FROM Participate WHERE joined_event = E.event_id GROUP BY joined_event) participants, (SELECT 'true' FROM Participate WHERE joined_event = E.event_id AND participant_id = $user_id) isParticipant FROM Event E LEFT JOIN Address A  ON E.address = A.address_id WHERE category = $category_id  AND start_time > DATE_ADD(NOW(),INTERVAL 6 hour)";
 		}
 	}
 

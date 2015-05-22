@@ -185,7 +185,7 @@ public class InDetailEventFragment extends Fragment {
                 updateParticipantsHeader();
             }
         } else {
-            if (event.getLimit() - mParticipantsCount > 0) {
+            if (event.getLimit() == -1 || event.getLimit() - mParticipantsCount > 0) {
                 mParticipate.setText(getResources().getString(R.string.participate_event));
                 if(update) {
                     --mParticipantsCount;

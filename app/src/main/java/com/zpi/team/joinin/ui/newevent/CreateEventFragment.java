@@ -359,6 +359,8 @@ public class CreateEventFragment extends Fragment {
                 Log.d(TAG, "organizer is participating; " + n );
 
                 try {
+                    event.setParticipate(true);
+                    event.setParticipantsCount(1);
                     new EventRepository().participate(event, event.getOrganizer());
                 } catch (EventFullException e) {
                     e.printStackTrace();

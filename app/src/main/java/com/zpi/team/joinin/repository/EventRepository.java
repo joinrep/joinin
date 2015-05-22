@@ -32,6 +32,7 @@ public class EventRepository implements IRepository<Event> {
     private static String url_all_events = hostname + "get_all_events.php";
     private static String url_event_by_id = hostname + "get_event_by_id.php";
     private static String url_create_event = hostname + "create_event.php";
+    private static String url_edit_event = hostname + "edit_event.php";
     private static String url_participate_event = hostname + "participate_event.php";
     private static String url_events_by_category = hostname + "get_events_by_category.php";
     private static String url_events_by_participant = hostname + "get_events_by_participant.php";
@@ -44,6 +45,7 @@ public class EventRepository implements IRepository<Event> {
     private static final String TAG_EVENT = "event";
     private static final String TAG_EVENTS = "events";
     private static final String TAG_ID = "id";
+    private static final String TAG_EVENT_ID = "event_id";
     private static final String TAG_NAME = "name";
     private static final String TAG_START = "start_time";
     private static final String TAG_END = "end_time";
@@ -264,8 +266,9 @@ public class EventRepository implements IRepository<Event> {
         return result;
     }
 
-    public void create(Event entity) {
+    private List<NameValuePair> getKeyValueEvent(Event entity) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair(TAG_EVENT_ID, "" + entity.getId()));
         params.add(new BasicNameValuePair("event_name", entity.getName()));
         params.add(new BasicNameValuePair(TAG_START, "" + entity.getStartTime().getTimeInMillis()));
         params.add(new BasicNameValuePair(TAG_END, "" + entity.getEndTime().getTimeInMillis()));
@@ -280,6 +283,11 @@ public class EventRepository implements IRepository<Event> {
         params.add(new BasicNameValuePair(AddressRepository.TAG_STREET2, entity.getLocation().getStreet2()));
         params.add(new BasicNameValuePair(AddressRepository.TAG_LOCATION_NAME, entity.getLocation().getLocationName()));
         params.add(new BasicNameValuePair("organizer", "" + entity.getOrganizer().getUserId()));
+        return params;
+    }
+
+    public void create(Event entity) {
+        List<NameValuePair> params = getKeyValueEvent(entity);
 
         JSONObject json = jParser.makeHttpRequest(url_create_event, "POST", params);
         // TODO catch exceptions
@@ -287,7 +295,28 @@ public class EventRepository implements IRepository<Event> {
         try {
             int success = json.getInt(TAG_SUCCESS);
             if (success == 1) {
-                // successfully created
+                int eventId = json.getInt(TAG_EVENT_ID);
+                entity.setId(eventId);
+            } else {
+                // failed to create
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void edit(Event entity) {
+        List<NameValuePair> params = getKeyValueEvent(entity);
+
+        JSONObject json = jParser.makeHttpRequest(url_edit_event, "POST", params);
+        Log.d("Edit event:", json.toString());
+
+        // TODO catch exceptions
+        // check for success tag
+        try {
+            int success = json.getInt(TAG_SUCCESS);
+            if (success == 1) {
+
             } else {
                 // failed to create
             }

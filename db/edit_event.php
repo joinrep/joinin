@@ -2,12 +2,13 @@
 // array for JSON response
 $response = array();
  
-if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['end_time']) && isset($_POST['description']) &&
+if(isset($_POST['event_id']) && isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['end_time']) && isset($_POST['description']) &&
 	isset($_POST['notes']) && isset($_POST['limit']) && isset($_POST['cost']) && isset($_POST['category']) && isset($_POST['location']) && 
 	isset($_POST['city']) && isset($_POST['street1']) && isset($_POST['street2']) && isset($_POST['location_name'])&& isset($_POST['organizer'])) {
 
 	date_default_timezone_set("Europe/Warsaw");
-		
+	
+	$event_id = $_POST['event_id'];
 	$event_name = $_POST['event_name'];
 	$start_time = date("Y-m-d H:i:s",$_POST['start_time']/1000);
 	$end_time = date("Y-m-d H:i:s",$_POST['end_time']/1000);
@@ -37,31 +38,19 @@ if(isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['e
 		}	
 	}
 	
-	$query = "INSERT INTO Event(event_id, event_name, start_time, end_time, description, size_limit, cost, canceled, category, organizer, address) VALUES (NULL, '$event_name', '$start_time', '$end_time', '$description', $limit, $cost, 'N', $category, $organizer, $location)";
-    $result = mysql_query($query);
+	$query = "UPDATE Event SET event_name = '$event_name', start_time = '$start_time', end_time = '$end_time', description = '$description', size_limit = $limit, cost = $cost, category = $category, organizer = $organizer, address = $location WHERE event_id = $event_id";
+	$result = mysql_query($query);
  
     // check if row inserted or not
     if ($result) {
-		$result = mysql_query("SELECT MAX(event_id) ev_id FROM Event");
-		if (mysql_num_rows($result) > 0) {
-			$row = mysql_fetch_array($result);
-			
-			$response["event_id"] = $row["ev_id"];
-			
-			// successfully inserted into database
-			$response["success"] = 1;
-			$response["message"] = "Event successfully created. Query: ".$query;
-	 
-			// echoing JSON response
-			echo json_encode($response);
-		} else {
-			// required field is missing
-			$response["success"] = 0;
-			$response["message"] = "Couldn't find created event in DB.";
-		 
-			// echoing JSON response
-			echo json_encode($response);
-		}
+		
+		// successfully inserted into database
+		$response["success"] = 1;
+		$response["message"] = "Event successfully updated. Query: ".$query;
+ 
+		// echoing JSON response
+		echo json_encode($response);
+
     } else {
         // failed to insert row
         $response["success"] = 0;
