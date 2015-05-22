@@ -19,10 +19,11 @@ import android.widget.TextView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
-import com.zpi.team.joinin.signin.SignInActivity;
 import com.zpi.team.joinin.ui.common.CustomPopupMenu;
 import com.zpi.team.joinin.ui.common.ToggleParticipate;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
+import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
+import com.zpi.team.joinin.ui.newevent.CreateEventFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +115,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
         return view;
     }
 
-    private void notifyEventRemoved(int position){
+    private void notifyEventRemoved(int position) {
         mViewList.get(UPCOMING_TYPE).remove(position);
         mViews.get(UPCOMING_TYPE).getAdapter().notifyItemRemoved(position);
 
@@ -168,11 +169,11 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                     onCreateDialog(mActivity.getResources().getString(R.string.msg_leave_event), leave, event, position).show();
                     menu.dismiss();
                 } else if (option.equals(cancel)) {
-                    onCreateDialog(mActivity.getResources().getString(R.string.msg_cancel_event), cancel,null, position).show();
+                    onCreateDialog(mActivity.getResources().getString(R.string.msg_cancel_event), cancel, null, position).show();
                     menu.dismiss();
                 } else if (option.equals(mActivity.getResources().getString(R.string.edit_event))) {
-//                        mCallerActivity.startActivity(new Intent(mCallerActivity, SignInActivity.class));
-
+                    mActivity.startActivityForResult(asIntent(event), CreateEventActivity.EDIT_MY_EVENT_REQUEST);
+                    menu.dismiss();
                 }
             }
         });
@@ -180,6 +181,22 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
         menu.show();
 
     }
+
+    private Intent asIntent(Event event) {
+        Intent intent = new Intent(mActivity, CreateEventActivity.class);
+        intent.putExtra("request code", CreateEventActivity.EDIT_MY_EVENT_REQUEST);
+        intent.putExtra(CreateEventFragment.TITLE, event.getName());
+        intent.putExtra(CreateEventFragment.START_CALENDAR, event.getStartTime().getTimeInMillis());
+        intent.putExtra(CreateEventFragment.END_CALENDAR, event.getEndTime().getTimeInMillis());
+        intent.putExtra(CreateEventFragment.CATEGORY, event.getCategory().getName());
+        intent.putExtra(CreateEventFragment.LOCALIZATION, event.getLocation().getLocationName());
+        intent.putExtra(CreateEventFragment.DESCRIPTION, event.getNotes());
+        intent.putExtra(CreateEventFragment.PARTICIPATION, event.getParticipate());
+        intent.putExtra(CreateEventFragment.PPL_LIMIT, event.getLimit());
+        intent.putExtra(CreateEventFragment.COST, event.getCost());
+        return intent;
+    }
+
 
     private Dialog onCreateDialog(final String msg, String msgPositive, final Event event, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -191,7 +208,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                             event.getParticipants().remove(SessionStorage.getInstance().getUser());
                             event.setParticipantsCount(event.getParticipantsCount() - 1);
                             notifyEventRemoved(position);
-                        new ToggleParticipate(mActivity).execute(event);
+                            new ToggleParticipate(mActivity).execute(event);
                         } else if (msg.equals(mActivity.getResources().getString(R.string.msg_cancel_event))) {
 
                             Log.d(TAG, "onCreateDialog(), odwolaj");

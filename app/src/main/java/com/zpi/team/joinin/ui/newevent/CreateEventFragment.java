@@ -1,6 +1,5 @@
 package com.zpi.team.joinin.ui.newevent;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -28,25 +27,30 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Address;
 import com.zpi.team.joinin.entities.Category;
 import com.zpi.team.joinin.entities.Event;
-import com.zpi.team.joinin.entities.User;
 import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.repository.exceptions.EventFullException;
-import com.zpi.team.joinin.ui.newevent.CategoryAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class CreateEventFragment extends Fragment {
     private final String TAG = "CreateEventFragment";
+    public final static String TITLE = "title";
+    public final static String START_CALENDAR = "start_time";
+    public final static String END_CALENDAR = "end_time";
+    public final static String CATEGORY ="category";
+    public final static String LOCALIZATION = "localization";
+    public final static String DESCRIPTION = "description";
+    public final static String PARTICIPATION = "participation";
+    public final static String PPL_LIMIT = "ppl_limit";
+    public final static String COST = "cost";
+
     private TextView mStartDate, mEndDate, mStartTime, mEndTime, mCounter;
     private EditText mTitle, mDescription, mAddress, mLimit, mPay;
     private Spinner mCategories;
@@ -129,6 +133,48 @@ public class CreateEventFragment extends Fragment {
         mLimitSwitch.setOnCheckedChangeListener(mSwitchCheckedListner);
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Bundle data = getArguments();
+        if(data != null){
+            mTitle.setText(data.getString(TITLE));
+            mCalendarStart.setTimeInMillis(data.getLong(START_CALENDAR));
+            mCalendarEnd.setTimeInMillis(data.getLong(END_CALENDAR));
+            mStartDate.setText(mDateFormat.format(mCalendarStart.getTime()));
+            mStartTime.setText(mTimeFormat.format(mCalendarStart.getTime()));
+            mEndDate.setText(mDateFormat.format(mCalendarEnd.getTime()));
+            mEndTime.setText(mTimeFormat.format(mCalendarEnd.getTime()));
+            mCategories.setSelection(getCategoryPosition(data.getString(CATEGORY)));
+            mAddress.setText(data.getString(LOCALIZATION));
+            mDescription.setText(data.getString(DESCRIPTION));
+            mParticipationBox.setChecked(data.getBoolean(PARTICIPATION));
+            int limit = data.getInt(PPL_LIMIT);
+            if(limit != -1){
+                mLimitSwitch.setChecked(true);
+                mLimit.setText(Integer.toString(limit));
+            }
+            double cost = data.getDouble(COST);
+            if(cost != 0){
+                mPaySwitch.setChecked(true);
+                mPay.setText(Double.toString(cost));
+            }
+
+            mTitle.requestFocus();
+        }
+    }
+
+    private int getCategoryPosition(String category) {
+        int position = 0;
+        for (int i = 0; i < mCategories.getAdapter().getCount() ; i++) {
+            String name = ((Category)mCategories.getAdapter().getItem(i)).getName();
+            if(name.equals(category)){
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 
     public boolean isFilled() {
@@ -266,7 +312,6 @@ public class CreateEventFragment extends Fragment {
             return false;
         }
     };
-
 
     public Event saveNewEvent() {
         String title = mTitle.getText().toString();

@@ -31,6 +31,7 @@ import com.zpi.team.joinin.ui.common.AnimatedConnectionDialog;
 import com.zpi.team.joinin.ui.common.OnToolbarModificationListener;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
+import com.zpi.team.joinin.ui.newevent.CreateEventFragment;
 
 import java.util.List;
 
@@ -39,7 +40,8 @@ import java.util.List;
  */
 
 public abstract class EventsRecyclerFragment extends Fragment implements OnRecyclerViewClickListener {
-    private static int CREATE_EVENT_REQUEST = 1;
+    private final String TAG = "EventsRecyclerFragment";
+
     private static int INDETAIL_EVENT_REQUEST = 2;
     public final static int ALL = 1;
     public final static int BY_CATEGORY = 2;
@@ -131,7 +133,9 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
         mAddEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), CreateEventActivity.class), CREATE_EVENT_REQUEST);
+                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+                intent.putExtra("request code", CreateEventActivity.CREATE_EVENT_REQUEST);
+                startActivityForResult(intent,  CreateEventActivity.CREATE_EVENT_REQUEST);
             }
         });
     }
@@ -166,7 +170,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CREATE_EVENT_REQUEST) {
+        if (requestCode ==  CreateEventActivity.CREATE_EVENT_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 Event newEvent = SessionStorage.getInstance().getNewlyCreated();
                 if (newEvent != null) mAdapter.putItem(newEvent);

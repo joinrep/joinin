@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.entities.Event;
 import com.zpi.team.joinin.ui.common.OnToolbarModificationListener;
+import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
 
 import java.util.List;
 
@@ -20,6 +22,7 @@ import java.util.List;
  * Created by Arkadiusz on 2015-04-25.
  */
 public class MyOwnEventsFragment extends EventsRecyclerFragment {
+    private final String TAG = "MyOwnEventsFragment";
     private static int INDETAIL_EVENT_REQUEST = 2;
     private SlidingTabLayout mSlidingTabLayout;
     private ViewPager mViewPager;
@@ -88,6 +91,14 @@ public class MyOwnEventsFragment extends EventsRecyclerFragment {
         if (requestCode == INDETAIL_EVENT_REQUEST) {
             PagerAdapter adapter = mViewPager.getAdapter();
             adapter.notifyDataSetChanged();
+        } else if (requestCode == CreateEventActivity.EDIT_MY_EVENT_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                Log.d(TAG, "result ok");
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+
+                Log.d(TAG, "result canceled");
+            }
         }
     }
 }

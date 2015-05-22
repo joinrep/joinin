@@ -39,18 +39,20 @@
 
         <Button
             android:id="@+id/google_button"
-            android:background="@drawable/google_oval"
+            android:background="@color/google"
             android:text="@string/google"
             android:visibility="visible"
-            style="@style/LoginButton"/>
+            style="@style/LoginButton"
+            android:elegantTextHeight="true" />
 
         <Button
             android:id="@+id/facebook_button"
-            android:background="@drawable/facebook_oval"
+            android:background="@color/facebook"
             android:text="@string/facebook"
             android:visibility="visible"
             style="@style/LoginButton"
-            android:layout_marginLeft="25dp" />
+            android:layout_marginLeft="25dp"
+            android:elegantTextHeight="true" />
     </LinearLayout>
 
     <ProgressBar
