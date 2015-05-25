@@ -4,7 +4,7 @@ $response = array();
  
 if(isset($_POST['event_id']) && isset($_POST['event_name']) && isset($_POST['start_time']) && isset($_POST['end_time']) && isset($_POST['description']) &&
 	isset($_POST['notes']) && isset($_POST['limit']) && isset($_POST['cost']) && isset($_POST['category']) && isset($_POST['location']) && 
-	isset($_POST['city']) && isset($_POST['street1']) && isset($_POST['street2']) && isset($_POST['location_name'])&& isset($_POST['organizer'])) {
+	isset($_POST['city']) && isset($_POST['street1']) && isset($_POST['street2']) && isset($_POST['location_name'])) {
 
 	date_default_timezone_set("Europe/Warsaw");
 	
@@ -22,7 +22,6 @@ if(isset($_POST['event_id']) && isset($_POST['event_name']) && isset($_POST['sta
 	$street1 = $_POST['street1'];
 	$street2 = $_POST['street2'];
 	$location_name = $_POST['location_name'];
-	$organizer = $_POST['organizer'];
 	
 	$response = array();
 	require_once(dirname(__FILE__).'/db_connect.php');
@@ -38,7 +37,7 @@ if(isset($_POST['event_id']) && isset($_POST['event_name']) && isset($_POST['sta
 		}	
 	}
 	
-	$query = "UPDATE Event SET event_name = '$event_name', start_time = '$start_time', end_time = '$end_time', description = '$description', size_limit = $limit, cost = $cost, category = $category, organizer = $organizer, address = $location WHERE event_id = $event_id";
+	$query = "UPDATE Event SET event_name = '$event_name', start_time = '$start_time', end_time = '$end_time', description = '$description', size_limit = $limit, cost = $cost, category = $category, address = $location WHERE event_id = $event_id";
 	$result = mysql_query($query);
  
     // check if row inserted or not

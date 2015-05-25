@@ -282,12 +282,12 @@ public class EventRepository implements IRepository<Event> {
         params.add(new BasicNameValuePair(AddressRepository.TAG_STREET1, entity.getLocation().getStreet1()));
         params.add(new BasicNameValuePair(AddressRepository.TAG_STREET2, entity.getLocation().getStreet2()));
         params.add(new BasicNameValuePair(AddressRepository.TAG_LOCATION_NAME, entity.getLocation().getLocationName()));
-        params.add(new BasicNameValuePair("organizer", "" + entity.getOrganizer().getUserId()));
         return params;
     }
 
     public void create(Event entity) {
         List<NameValuePair> params = getKeyValueEvent(entity);
+        params.add(new BasicNameValuePair("organizer", "" + entity.getOrganizer().getUserId()));
 
         JSONObject json = jParser.makeHttpRequest(url_create_event, "POST", params);
         // TODO catch exceptions
