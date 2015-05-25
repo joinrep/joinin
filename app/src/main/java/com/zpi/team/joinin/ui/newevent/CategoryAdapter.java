@@ -5,8 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.zpi.team.joinin.R;
@@ -18,10 +16,10 @@ import java.util.List;
  * Created by Arkadiusz on 2015-04-03.
  */
 public class CategoryAdapter extends ArrayAdapter {
-    Context mContext;
-    List<Category> mCategories;
-    boolean isFirst = true;
-    String firstElement;
+    private Context mContext;
+    private List<Category> mCategories;
+    private boolean usePlaceholder = true;
+    private String placeholder;
 
     public CategoryAdapter(Context context, int layout, List<Category> categories) {
         super(context,layout);
@@ -32,18 +30,13 @@ public class CategoryAdapter extends ArrayAdapter {
     }
 
     private void setPromptText(){
-        String prompt = mContext.getResources().getString(R.string.choose_category);
-        this.firstElement = mCategories.get(0).getName();
-        mCategories.get(0).setName(prompt);
+        this.placeholder = mContext.getResources().getString(R.string.choose_category);
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         // TODO AK wycentrowac nad zaznaczonym
-        if(isFirst) {
-            mCategories.get(0).setName(firstElement);
-            isFirst = false;
-        }
+        usePlaceholder = false;
         return getCustomView(position, convertView, parent);
     }
 
@@ -60,10 +53,16 @@ public class CategoryAdapter extends ArrayAdapter {
         TextView category = (TextView) v.findViewById(R.id.categoryField);
         category.setText(mCategories.get(position).getName());
 
-        if(position == 0 && isFirst)
+        if(position == 0 && usePlaceholder) {
+            category.setText(placeholder);
             category.setTextColor(mContext.getResources().getColor(R.color.black_54));
+        }
 
         return category;
+    }
+
+    public void usePlaceholder(boolean usePlaceholder) {
+        this.usePlaceholder = usePlaceholder;
     }
 
     @Override

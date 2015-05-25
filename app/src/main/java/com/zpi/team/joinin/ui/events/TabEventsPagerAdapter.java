@@ -188,7 +188,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
         intent.putExtra(CreateEventFragment.TITLE, event.getName());
         intent.putExtra(CreateEventFragment.START_CALENDAR, event.getStartTime().getTimeInMillis());
         intent.putExtra(CreateEventFragment.END_CALENDAR, event.getEndTime().getTimeInMillis());
-        intent.putExtra(CreateEventFragment.CATEGORY, event.getCategory().getName());
+        intent.putExtra(CreateEventFragment.CATEGORY, event.getCategory().getId());
         intent.putExtra(CreateEventFragment.LOCALIZATION, event.getLocation().getLocationName());
         intent.putExtra(CreateEventFragment.DESCRIPTION, event.getDescription());
         intent.putExtra(CreateEventFragment.PARTICIPATION, event.getParticipate());

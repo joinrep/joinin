@@ -146,7 +146,8 @@ public class CreateEventFragment extends Fragment {
             mStartTime.setText(mTimeFormat.format(mCalendarStart.getTime()));
             mEndDate.setText(mDateFormat.format(mCalendarEnd.getTime()));
             mEndTime.setText(mTimeFormat.format(mCalendarEnd.getTime()));
-            mCategories.setSelection(getCategoryPosition(data.getString(CATEGORY)));
+            ((CategoryAdapter) mCategories.getAdapter()).usePlaceholder(false);
+            mCategories.setSelection(getCategoryPosition(data.getInt(CATEGORY)));
             mAddress.setText(data.getString(LOCALIZATION));
             mDescription.setText(data.getString(DESCRIPTION));
             mParticipationBox.setChecked(data.getBoolean(PARTICIPATION));
@@ -165,11 +166,11 @@ public class CreateEventFragment extends Fragment {
         }
     }
 
-    private int getCategoryPosition(String category) {
+    private int getCategoryPosition(int categoryId) {
         int position = 0;
         for (int i = 0; i < mCategories.getAdapter().getCount() ; i++) {
-            String name = ((Category)mCategories.getAdapter().getItem(i)).getName();
-            if(name.equals(category)){
+            int category = ((Category)mCategories.getAdapter().getItem(i)).getId();
+            if(categoryId == category){
                 position = i;
                 break;
             }
