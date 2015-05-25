@@ -1,0 +1,268 @@
+-- phpMyAdmin SQL Dump
+-- version 2.11.4
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: May 18, 2015 at 03:31 AM
+-- Server version: 5.1.57
+-- PHP Version: 5.2.17
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `a9649108_joinin`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Address`
+--
+
+CREATE TABLE `Address` (
+  `address_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `city` varchar(30) COLLATE utf8_polish_ci NOT NULL,
+  `street1` varchar(30) COLLATE utf8_polish_ci DEFAULT NULL,
+  `street2` varchar(30) COLLATE utf8_polish_ci DEFAULT NULL,
+  `location_name` varchar(40) COLLATE utf8_polish_ci NOT NULL,
+  PRIMARY KEY (`address_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=23 ;
+
+--
+-- Dumping data for table `Address`
+--
+
+INSERT INTO `Address` VALUES(1, 'Wroc³aw', 'Grabiszyñska 40', '', 'Szko³a podstawowa nr 5');
+INSERT INTO `Address` VALUES(2, 'city', 'street', 'street', 'wro');
+INSERT INTO `Address` VALUES(3, 'city', 'street', 'street', 'wro');
+INSERT INTO `Address` VALUES(4, 'city', 'street', 'street', 'ff');
+INSERT INTO `Address` VALUES(5, 'city', 'street', 'street', 'Siata');
+INSERT INTO `Address` VALUES(6, 'city', 'street', 'street', 'Lodowisko');
+INSERT INTO `Address` VALUES(7, 'city', 'street', 'street', 'ul. Krótka 12 Wroc³aw');
+INSERT INTO `Address` VALUES(8, 'city', 'street', 'street', 'hkk');
+INSERT INTO `Address` VALUES(9, 'city', 'street', 'street', 'jdjdjdjdjrjdjdj');
+INSERT INTO `Address` VALUES(10, 'city', 'street', 'street', 'politechnika');
+INSERT INTO `Address` VALUES(11, 'city', 'street', 'street', 'Wroc³aw');
+INSERT INTO `Address` VALUES(12, 'city', 'street', 'street', 'shhdj');
+INSERT INTO `Address` VALUES(13, 'city', 'street', 'street', 'nowa');
+INSERT INTO `Address` VALUES(14, 'city', 'street', 'street', 'weo');
+INSERT INTO `Address` VALUES(15, 'city', 'street', 'street', 'tutu');
+INSERT INTO `Address` VALUES(16, 'city', 'street', 'street', 'plac');
+INSERT INTO `Address` VALUES(17, 'city', 'street', 'street', 'Bonzo sklep');
+INSERT INTO `Address` VALUES(18, 'city', 'street', 'street', 'dfffd');
+INSERT INTO `Address` VALUES(19, 'city', 'street', 'street', 'ghg');
+INSERT INTO `Address` VALUES(20, 'city', 'street', 'street', 'fgg');
+INSERT INTO `Address` VALUES(21, 'city', 'street', 'street', 'ff');
+INSERT INTO `Address` VALUES(22, 'city', 'street', 'street', 'gem');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Category`
+--
+
+CREATE TABLE `Category` (
+  `category_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(255) COLLATE utf8_polish_ci NOT NULL,
+  `icon_path` varchar(255) COLLATE utf8_polish_ci NOT NULL,
+  `category_color` varchar(7) COLLATE utf8_polish_ci NOT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=81 ;
+
+--
+-- Dumping data for table `Category`
+--
+
+INSERT INTO `Category` VALUES(10, 'Pi³ka no¿na', 'ic_category_football', '#DCEDC8');
+INSERT INTO `Category` VALUES(20, 'Siatkówka', 'ic_category_volleyball', '#FFF9C4');
+INSERT INTO `Category` VALUES(30, 'Koszykówka', 'ic_category_basketball', '#FFE0B2');
+INSERT INTO `Category` VALUES(40, 'Wycieczki rowerowe', 'ic_category_bike', '#B2DFDB');
+INSERT INTO `Category` VALUES(50, 'Wycieczki piesze', 'ic_category_hiking', '#C5CAE9');
+INSERT INTO `Category` VALUES(60, 'Krêgle', 'ic_category_bowling', '#EA80FC');
+INSERT INTO `Category` VALUES(70, 'Tenis', 'ic_category_tennis', '#FFE0B2');
+INSERT INTO `Category` VALUES(80, 'Inne', 'ic_category_other', '#CFD8DC');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Event`
+--
+
+CREATE TABLE `Event` (
+  `event_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_name` varchar(255) COLLATE utf8_polish_ci NOT NULL,
+  `start_time` datetime NOT NULL,
+  `end_time` datetime NOT NULL,
+  `description` text COLLATE utf8_polish_ci,
+  `size_limit` int(10) DEFAULT NULL,
+  `cost` decimal(11,2) DEFAULT NULL,
+  `canceled` varchar(1) COLLATE utf8_polish_ci DEFAULT 'N',
+  `category` int(10) unsigned NOT NULL,
+  `organizer` int(10) unsigned NOT NULL,
+  `address` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`event_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=26 ;
+
+--
+-- Dumping data for table `Event`
+--
+
+INSERT INTO `Event` VALUES(1, 'Ga³a po szkole', '2015-03-15 15:00:00', '2015-03-15 18:00:00', 'Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis.', 20, 0.00, 'N', 10, 1, 1);
+INSERT INTO `Event` VALUES(2, 'Faza grupowa', '2015-03-15 16:00:00', '2015-03-15 17:00:00', 'Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis.', 10, 5.00, 'N', 10, 1, 1);
+INSERT INTO `Event` VALUES(3, 'DUNK MASTER', '2015-03-22 12:00:00', '2015-03-22 18:00:00', 'Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis.', 10, 2.50, 'Y', 20, 1, 1);
+INSERT INTO `Event` VALUES(4, 'Siata', '2015-03-21 15:00:00', '2015-03-21 18:00:00', 'Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis. Jakiœ fajny i d³ugi opis.', 100, 5.50, 'N', 20, 1, 1);
+INSERT INTO `Event` VALUES(25, 'Turniej w tenisa', '2015-05-18 09:00:49', '2015-05-18 10:00:49', 'turniej', 25, 25.00, 'N', 70, 8, 22);
+INSERT INTO `Event` VALUES(15, 'Cossssss nowego', '2015-05-11 09:04:27', '2015-05-11 10:04:27', 'SF gminnej', -1, 0.00, 'N', 40, 1, 12);
+INSERT INTO `Event` VALUES(16, 'Nowe', '2015-05-11 09:05:07', '2015-05-11 10:05:07', 'dudjieked', -1, 0.00, 'N', 20, 8, 13);
+INSERT INTO `Event` VALUES(17, 'Male wydarzenie', '2015-05-12 21:43:45', '2015-05-12 22:43:45', 'eee', 0, 0.00, 'N', 80, 1, 14);
+INSERT INTO `Event` VALUES(18, 'No i co cwaniaczku raz dw', '2015-05-15 07:20:23', '2015-05-15 08:20:23', 'titi', -1, 0.00, 'N', 60, 1, 15);
+INSERT INTO `Event` VALUES(19, 'Wielkie otwarcie', '2015-05-16 15:27:43', '2015-05-17 16:27:43', 'parasola w twojej dupie', -1, 0.00, 'N', 80, 10, 16);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Favorites`
+--
+
+CREATE TABLE `Favorites` (
+  `subscriber` int(10) unsigned NOT NULL,
+  `category` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`subscriber`,`category`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+--
+-- Dumping data for table `Favorites`
+--
+
+INSERT INTO `Favorites` VALUES(1, 10);
+INSERT INTO `Favorites` VALUES(1, 20);
+INSERT INTO `Favorites` VALUES(1, 30);
+INSERT INTO `Favorites` VALUES(1, 40);
+INSERT INTO `Favorites` VALUES(1, 50);
+INSERT INTO `Favorites` VALUES(1, 60);
+INSERT INTO `Favorites` VALUES(1, 80);
+INSERT INTO `Favorites` VALUES(6, 30);
+INSERT INTO `Favorites` VALUES(8, 10);
+INSERT INTO `Favorites` VALUES(8, 20);
+INSERT INTO `Favorites` VALUES(8, 30);
+INSERT INTO `Favorites` VALUES(8, 60);
+INSERT INTO `Favorites` VALUES(8, 70);
+INSERT INTO `Favorites` VALUES(8, 80);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Following`
+--
+
+CREATE TABLE `Following` (
+  `follower` int(10) unsigned NOT NULL,
+  `follows` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`follower`,`follows`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+--
+-- Dumping data for table `Following`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `MyComment`
+--
+
+CREATE TABLE `MyComment` (
+  `comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `comment_timestamp` datetime NOT NULL,
+  `comment_body` varchar(255) COLLATE utf8_polish_ci DEFAULT NULL,
+  `parent_comment` int(10) unsigned DEFAULT NULL,
+  `event` int(10) unsigned NOT NULL,
+  `author` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`comment_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `MyComment`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `MyUser`
+--
+
+CREATE TABLE `MyUser` (
+  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `facebook_id` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
+  `google_id` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
+  `first_name` varchar(50) COLLATE utf8_polish_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8_polish_ci NOT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `facebook_id` (`facebook_id`),
+  UNIQUE KEY `google_id` (`google_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=11 ;
+
+--
+-- Dumping data for table `MyUser`
+--
+
+INSERT INTO `MyUser` VALUES(10, NULL, '111812198517325862724', 'Arkadiusz', 'Karbowy');
+INSERT INTO `MyUser` VALUES(6, NULL, '115408626733612630477', 'Micha³', 'Konieczny');
+INSERT INTO `MyUser` VALUES(1, '999788396717633', NULL, 'Micha³', 'Konieczny');
+INSERT INTO `MyUser` VALUES(8, '869920273054937', NULL, 'Micha³', 'Skiba');
+INSERT INTO `MyUser` VALUES(2, NULL, '117909649976279550182', 'Micha³', 'Skiba');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Participate`
+--
+
+CREATE TABLE `Participate` (
+  `joined_event` int(10) unsigned NOT NULL DEFAULT '0',
+  `participant_id` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`joined_event`,`participant_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+--
+-- Dumping data for table `Participate`
+--
+
+INSERT INTO `Participate` VALUES(0, 1);
+INSERT INTO `Participate` VALUES(1, 1);
+INSERT INTO `Participate` VALUES(1, 2);
+INSERT INTO `Participate` VALUES(1, 6);
+INSERT INTO `Participate` VALUES(1, 8);
+INSERT INTO `Participate` VALUES(1, 10);
+INSERT INTO `Participate` VALUES(2, 1);
+INSERT INTO `Participate` VALUES(2, 10);
+INSERT INTO `Participate` VALUES(4, 1);
+INSERT INTO `Participate` VALUES(5, 1);
+INSERT INTO `Participate` VALUES(8, 1);
+INSERT INTO `Participate` VALUES(10, 1);
+INSERT INTO `Participate` VALUES(12, 1);
+INSERT INTO `Participate` VALUES(13, 1);
+INSERT INTO `Participate` VALUES(14, 1);
+INSERT INTO `Participate` VALUES(16, 8);
+INSERT INTO `Participate` VALUES(20, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Points`
+--
+
+CREATE TABLE `Points` (
+  `joined_event` int(10) unsigned NOT NULL DEFAULT '0',
+  `participant_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `evaluator` int(10) unsigned NOT NULL,
+  `point` int(5) DEFAULT NULL,
+  PRIMARY KEY (`joined_event`,`participant_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+--
+-- Dumping data for table `Points`
+--
+
