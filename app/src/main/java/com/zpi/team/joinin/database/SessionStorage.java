@@ -66,5 +66,10 @@ public class SessionStorage {
 
     public void setEventInDetail(Event event) { mInDetail = event; }
 
+    private Event mEventToEdit = null;
+
+    public Event getEventToEdit() { return mEventToEdit; }
+
+    public void setEventToEdit(Event event) { mEventToEdit = event; }
 
 }

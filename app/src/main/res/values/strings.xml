@@ -6,7 +6,7 @@
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
     <string name="title_activity_create_event">Nowe wydarzenie</string>
-
+    <string name="title_edit_event">Edycja wydarzenia</string>
 
     !-- Signin -->
     <string name="google">g+</string>
@@ -70,6 +70,9 @@
     <string name="cancel">Anuluj</string>
     <string name="no_iternet">Brak połączenia</string>
     <string name="retry">Ponów próbę</string>
+    <string name="joined_to_event">Dołączono do wydarzenia.</string>
+    <string name="left_event">Zrezygnowano z wydarzenia.</string>
+    <string name="canceled_event">Odwołano wydarzenie.</string>
 
 
     <string name="facebook_app_id">1559652434287421</string>

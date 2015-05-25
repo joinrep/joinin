@@ -44,8 +44,10 @@ public class CreateEventActivity extends ActionBarActivity  {
         });
 
         mData = getIntent();
-        if(mData.getIntExtra("request code", -1) == EDIT_MY_EVENT_REQUEST)
+        if(mData.getIntExtra("request code", -1) == EDIT_MY_EVENT_REQUEST){
             mMode = EDIT_MY_EVENT_REQUEST;
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_edit_event));
+        }
         else if(mData.getIntExtra("request code", -1) == CREATE_EVENT_REQUEST)
             mMode = CREATE_EVENT_REQUEST ;
 
@@ -55,7 +57,7 @@ public class CreateEventActivity extends ActionBarActivity  {
         android.app.Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
             fragment = new CreateEventFragment();
-            if(mMode == EDIT_MY_EVENT_REQUEST) fragment.setArguments(mData.getExtras());
+//            if(mMode == EDIT_MY_EVENT_REQUEST) fragment.setArguments(mData.getExtras());
             fm.beginTransaction()
                     .add(R.id.fragmentContainer, fragment)
                     .commit();
@@ -74,9 +76,10 @@ public class CreateEventActivity extends ActionBarActivity  {
         int id = item.getItemId();
 
         if (id == R.id.action_save) {
+
+            CreateEventFragment form = (CreateEventFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
             if(mMode == CREATE_EVENT_REQUEST) {
                 Log.d("CreateEventActivity", "CREATE, ok");
-                CreateEventFragment form = (CreateEventFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
 
                 if (form.isFilled()) {
                     Event event = form.saveNewEvent();
@@ -88,6 +91,9 @@ public class CreateEventActivity extends ActionBarActivity  {
                 }
             }else if(mMode == EDIT_MY_EVENT_REQUEST) {
                 Log.d("CreateEventActivity", "EDIT, ok");
+                form.editEvent();
+                setResult(RESULT_OK);
+                finish();
             }
             return true;
         }

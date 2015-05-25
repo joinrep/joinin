@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,10 +16,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
 import com.zpi.team.joinin.entities.Event;
+import com.zpi.team.joinin.repository.EventRepository;
 import com.zpi.team.joinin.ui.common.CustomPopupMenu;
 import com.zpi.team.joinin.ui.common.ToggleParticipate;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
@@ -41,7 +44,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
     private Activity mActivity;
     private String[] mPageTitle;
     private int mType;
-    private String[] mUpcomingMenuItems, mHistoryMenuItems;
+    private String[] mUpcomingMenuItems;
     private List<Event> mUpcomingEvents = new ArrayList<Event>();
     private List<Event> mHistoryEvents = new ArrayList<Event>();
     private List<List<Event>> mViewList = new ArrayList<List<Event>>();
@@ -76,7 +79,6 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
         eventsRecycler.setItemAnimator(new DefaultItemAnimator());
 
         boolean includeMenu = false;
-//        final List<Event> eventsList;
         switch (position) {
             case UPCOMING_TYPE:
                 mViewList.add(mUpcomingEvents);
@@ -89,8 +91,6 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                 break;
             case HISTORY_TYPE:
                 mViewList.add(mHistoryEvents);
-//                if(mType == EventsRecyclerFragment.MY_OWN) mHistoryMenuItems = new String[]{"Usuń"};
-//                else if(mType == EventsRecyclerFragment.PARTICIPATE) mHistoryMenuItems = new String[]{};
                 break;
             default:
                 mViewList.add(new ArrayList<Event>());
@@ -166,55 +166,44 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                 String cancel = mActivity.getResources().getString(R.string.cancel_event);
 
                 if (option.equals(leave)) {
-                    onCreateDialog(mActivity.getResources().getString(R.string.msg_leave_event), leave, event, position).show();
+                    leaveEvent(event, position);
+                    Toast.makeText(mActivity, mActivity.getResources().getString(R.string.left_event), Toast.LENGTH_SHORT).show();
                     menu.dismiss();
                 } else if (option.equals(cancel)) {
-                    onCreateDialog(mActivity.getResources().getString(R.string.msg_cancel_event), cancel, null, position).show();
+                    onCreateDialog(mActivity.getResources().getString(R.string.msg_cancel_event), cancel, event, position).show();
+                    Toast.makeText(mActivity, mActivity.getResources().getString(R.string.canceled_event), Toast.LENGTH_SHORT).show();
                     menu.dismiss();
                 } else if (option.equals(mActivity.getResources().getString(R.string.edit_event))) {
-                    mActivity.startActivityForResult(asIntent(event), CreateEventActivity.EDIT_MY_EVENT_REQUEST);
+                    SessionStorage.getInstance().setEventToEdit(event);
+                    Intent intent = new Intent(mActivity, CreateEventActivity.class);
+                    intent.putExtra("request code", CreateEventActivity.EDIT_MY_EVENT_REQUEST);
+                    mActivity.startActivityForResult(intent, CreateEventActivity.EDIT_MY_EVENT_REQUEST);
                     menu.dismiss();
                 }
             }
         });
-
         menu.show();
-
     }
 
-    private Intent asIntent(Event event) {
-        Intent intent = new Intent(mActivity, CreateEventActivity.class);
-        intent.putExtra("request code", CreateEventActivity.EDIT_MY_EVENT_REQUEST);
-        intent.putExtra(CreateEventFragment.TITLE, event.getName());
-        intent.putExtra(CreateEventFragment.START_CALENDAR, event.getStartTime().getTimeInMillis());
-        intent.putExtra(CreateEventFragment.END_CALENDAR, event.getEndTime().getTimeInMillis());
-        intent.putExtra(CreateEventFragment.CATEGORY, event.getCategory().getId());
-        intent.putExtra(CreateEventFragment.LOCALIZATION, event.getLocation().getLocationName());
-        intent.putExtra(CreateEventFragment.DESCRIPTION, event.getDescription());
-        intent.putExtra(CreateEventFragment.PARTICIPATION, event.getParticipate());
-        intent.putExtra(CreateEventFragment.PPL_LIMIT, event.getLimit());
-        intent.putExtra(CreateEventFragment.COST, event.getCost());
-        return intent;
+    private void leaveEvent(Event event, int position) {
+        event.setParticipate(!event.getParticipate());
+        event.getParticipants().remove(SessionStorage.getInstance().getUser());
+        event.setParticipantsCount(event.getParticipantsCount() - 1);
+        notifyEventRemoved(position);
+        new ToggleParticipate(mActivity).execute(event);
     }
-
 
     private Dialog onCreateDialog(final String msg, String msgPositive, final Event event, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setMessage(msg)
                 .setPositiveButton(msgPositive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (msg.equals(mActivity.getResources().getString(R.string.msg_leave_event))) {
-                            event.setParticipate(!event.getParticipate());
-                            event.getParticipants().remove(SessionStorage.getInstance().getUser());
-                            event.setParticipantsCount(event.getParticipantsCount() - 1);
+                        if (msg.equals(mActivity.getResources().getString(R.string.msg_cancel_event))) {
+
+                            Log.d(TAG, "onCreateDialog(), odwolano");
                             notifyEventRemoved(position);
-                            new ToggleParticipate(mActivity).execute(event);
-                        } else if (msg.equals(mActivity.getResources().getString(R.string.msg_cancel_event))) {
-
-                            Log.d(TAG, "onCreateDialog(), odwolaj");
+                            new CancelEvent().execute(event);
                         }
-
-
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -224,4 +213,12 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
         return builder.create();
     }
 
+    private class CancelEvent extends AsyncTask<Event, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Event... event) {
+            new EventRepository().cancel(event[0], true);
+            return null;
+        }
+    }
 }
