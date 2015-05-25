@@ -3,6 +3,7 @@ package com.zpi.team.joinin.ui.events;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
@@ -101,9 +103,11 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAd
                 event.setParticipate(!event.getParticipate());
                 User currentUser = SessionStorage.getInstance().getUser();
                 if (event.getParticipate()) {
+                    Toast.makeText(mContext, mContext.getResources().getString(R.string.joined_to_event), Toast.LENGTH_SHORT).show();
                     event.getParticipants().add(currentUser);
                     event.setParticipantsCount(event.getParticipantsCount() + 1);
                 } else {
+                    Toast.makeText(mContext, mContext.getResources().getString(R.string.left_event), Toast.LENGTH_SHORT).show();
                     event.getParticipants().remove(currentUser);
                     event.setParticipantsCount(event.getParticipantsCount() - 1);
                 }

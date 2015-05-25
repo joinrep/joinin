@@ -180,6 +180,14 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
         } else if (requestCode == INDETAIL_EVENT_REQUEST) {
             //RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
             mAdapter.notifyDataSetChanged();
+        } else if (requestCode == CreateEventActivity.EDIT_MY_EVENT_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                mAdapter.notifyDataSetChanged();
+
+                Log.d(TAG, "onActivityResult(), result ok");
+            }
+
+            SessionStorage.getInstance().setEventToEdit(null);
         }
     }
 
