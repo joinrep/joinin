@@ -23,6 +23,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -58,6 +60,7 @@ public class CreateEventFragment extends Fragment {
     private SimpleDateFormat mDateFormat, mTimeFormat;
     private Switch mLimitSwitch, mPaySwitch;
     private CheckBox mParticipationBox;
+    private RelativeLayout mParticipationFrame;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,6 +122,7 @@ public class CreateEventFragment extends Fragment {
 
         mAddress = (EditText) rootView.findViewById(R.id.localization);
         mDescription = (EditText) rootView.findViewById(R.id.description);
+        mParticipationFrame = (RelativeLayout)rootView.findViewById(R.id.participation_content);
         mParticipationBox = (CheckBox) rootView.findViewById(R.id.participation_box);
         mLimit = (EditText) rootView.findViewById(R.id.limit);
         mPay = (EditText) rootView.findViewById(R.id.pay);
@@ -149,7 +153,8 @@ public class CreateEventFragment extends Fragment {
             mCategories.setSelection(getCategoryPosition(data.getString(CATEGORY)));
             mAddress.setText(data.getString(LOCALIZATION));
             mDescription.setText(data.getString(DESCRIPTION));
-            mParticipationBox.setChecked(data.getBoolean(PARTICIPATION));
+//            mParticipationBox.setChecked(data.getBoolean(PARTICIPATION));
+            mParticipationFrame.setVisibility(View.GONE);
             int limit = data.getInt(PPL_LIMIT);
             if(limit != -1){
                 mLimitSwitch.setChecked(true);
@@ -313,41 +318,6 @@ public class CreateEventFragment extends Fragment {
         }
     };
 
-    public Event saveNewEvent() {
-        String title = mTitle.getText().toString();
-        String description = mDescription.getText().toString();
-        String address = mAddress.getText().toString();
-        int limit = (int) parseEditText(mLimitSwitch, mLimit, -1d);
-        double cost = parseEditText(mPaySwitch, mPay, 0d);
-
-        final Event newEvent = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, limit, cost, false, 0, false);
-
-        String out = "Title: " + title + "\nStart time: " + mCalendarStart.toString() + "\nEnd time: " + mCalendarEnd.toString() +
-                "\nDescription: " + description + "\nAddress: " + address + "\nLimit: " + limit + "\nCost: " + cost;
-        Log.d("CreateEventFragment", "saveNewEvent(), " + out);
-
-        newEvent.setLocation(new Address(0, "city", "street", "street", address));
-        newEvent.setOrganizer(SessionStorage.getInstance().getUser());
-        newEvent.setCategory((Category) mCategories.getSelectedItem());
-
-        boolean isOrganizerParticipating = mParticipationBox.isChecked();
-        new SaveNewEvent().execute(newEvent, isOrganizerParticipating);
-
-        return newEvent;
-    }
-
-    private double parseEditText(Switch theSwitch, EditText et, double defaultValue) {
-        if (theSwitch.isChecked()) {
-            String text = et.getText().toString();
-            if (text.contains(" "))
-                defaultValue = Double.parseDouble((String) text.subSequence(0, text.indexOf(" ")));
-            else
-                defaultValue = Double.parseDouble(text);
-        }
-
-        return defaultValue;
-    }
-
     private class SaveNewEvent extends AsyncTask<Object, Void, Void> {
 
         protected Void doInBackground(Object... eventInfo) {
@@ -369,6 +339,57 @@ public class CreateEventFragment extends Fragment {
             return null;
         }
     }
+
+    public Event saveNewEvent(){
+        Event newEvent = parseForm();
+        boolean isOrganizerParticipating = mParticipationBox.isChecked();
+        new SaveNewEvent().execute(newEvent, isOrganizerParticipating);
+        return newEvent;
+    }
+
+    public Event parseForm() {
+        String title = mTitle.getText().toString();
+        String description = mDescription.getText().toString();
+        String address = mAddress.getText().toString();
+        int limit = (int) parseEditText(mLimitSwitch, mLimit, -1d);
+        double cost = parseEditText(mPaySwitch, mPay, 0d);
+
+        final Event event = new Event(0, title, mCalendarStart, mCalendarEnd, description, description, limit, cost, false, 0, false);
+
+        String out = "Title: " + title + "\nStart time: " + mCalendarStart.toString() + "\nEnd time: " + mCalendarEnd.toString() +
+                "\nDescription: " + description + "\nAddress: " + address + "\nLimit: " + limit + "\nCost: " + cost;
+        Log.d("CreateEventFragment", "parseForm(), " + out);
+
+        event.setLocation(new Address(0, "city", "street", "street", address));
+        event.setOrganizer(SessionStorage.getInstance().getUser());
+        event.setCategory((Category) mCategories.getSelectedItem());
+
+        return event;
+    }
+
+    private double parseEditText(Switch theSwitch, EditText et, double defaultValue) {
+        if (theSwitch.isChecked()) {
+            String text = et.getText().toString();
+            if (text.contains(" "))
+                defaultValue = Double.parseDouble((String) text.subSequence(0, text.indexOf(" ")));
+            else
+                defaultValue = Double.parseDouble(text);
+        }
+
+        return defaultValue;
+    }
+
+    private class EditEvent extends AsyncTask<Event, Void, Void> {
+        protected Void doInBackground(Event... event) {
+            new EventRepository().edit(event[0]);
+            return null;
+        }
+    }
+
+    public void editEvent(){
+        new EditEvent().execute(parseForm());
+    }
+
 
     private class DateAndTimeListener implements View.OnClickListener {
         DatePickerDialog.OnDateSetListener mStartDateListener = new DatePickerDialog.OnDateSetListener() {

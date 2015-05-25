@@ -181,47 +181,54 @@
             <ImageView
                 android:id="@+id/ic_limit"
                 style="@style/FormIcon"
-                android:layout_centerVertical="true"
                 android:layout_gravity="top"
-                android:src="@drawable/ic_form_limit" />
-
-            <CheckBox
-                android:id="@+id/participation_box"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/ic_limit"
-                android:checked="true" />
-
-            <TextView
-                style="@style/FormTextView"
-                android:layout_toRightOf="@id/participation_box"
-                android:text="@string/navdrawer_participate" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="56dp"
-            android:layout_marginRight="@dimen/keyline_1">
+                android:src="@drawable/ic_form_limit"
+                android:layout_marginTop="@dimen/keyline_1" />
 
             <Switch
                 android:id="@+id/limit_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
+                android:layout_alignParentEnd="false"
+                android:layout_marginTop="12dp" />
 
             <EditText
                 android:id="@+id/limit"
                 style="@style/FormEditText"
+                android:layout_toRightOf="@id/ic_limit"
                 android:layout_toLeftOf="@id/limit_switch"
                 android:focusable="false"
                 android:hint="@string/set_number_of_ppl"
                 android:singleLine="true"
                 android:text="@string/limit" />
+
+            <RelativeLayout
+                android:id="@+id/participation_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="@dimen/keyline_1"
+                android:orientation="horizontal"
+                android:layout_below="@id/limit">
+
+                <CheckBox
+                    android:id="@+id/participation_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:checked="true"
+                    android:visibility="visible" />
+
+                <TextView
+                    style="@style/FormTextView"
+                    android:layout_toRightOf="@id/participation_box"
+                    android:text="@string/navdrawer_participate"
+                    android:visibility="visible" />
+            </RelativeLayout>
         </RelativeLayout>
+
+
 
         <View
             style="@style/Divider"
