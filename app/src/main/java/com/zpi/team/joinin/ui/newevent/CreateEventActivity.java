@@ -57,7 +57,7 @@ public class CreateEventActivity extends ActionBarActivity  {
         android.app.Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
             fragment = new CreateEventFragment();
-            if(mMode == EDIT_MY_EVENT_REQUEST) fragment.setArguments(mData.getExtras());
+//            if(mMode == EDIT_MY_EVENT_REQUEST) fragment.setArguments(mData.getExtras());
             fm.beginTransaction()
                     .add(R.id.fragmentContainer, fragment)
                     .commit();
@@ -92,6 +92,8 @@ public class CreateEventActivity extends ActionBarActivity  {
             }else if(mMode == EDIT_MY_EVENT_REQUEST) {
                 Log.d("CreateEventActivity", "EDIT, ok");
                 form.editEvent();
+                setResult(RESULT_OK);
+                finish();
             }
             return true;
         }

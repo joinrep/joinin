@@ -26,6 +26,7 @@ if (isset($_GET["user_id"])) {
 			$event["size_limit"] = $row["size_limit"];
 			$event["cost"] = $row["cost"];
 			$event["category_id"] = $row["category"];
+			$event["description"] = $row["description"];
 			if ($row["participants"]) {
 				$event["participants"] = $row["participants"];
 			} else {

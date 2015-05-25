@@ -378,6 +378,8 @@ public class EventRepository implements IRepository<Event> {
                     JSONObject eventJSON = events.getJSONObject(i);
 
                     Event event = parseSimpleEvent(eventJSON);
+                    String description = eventJSON.getString(TAG_DESCRIPTION);
+                    event.setDescription(description);
 
                     result.add(event);
                 }

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -172,7 +173,10 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                     onCreateDialog(mActivity.getResources().getString(R.string.msg_cancel_event), cancel, null, position).show();
                     menu.dismiss();
                 } else if (option.equals(mActivity.getResources().getString(R.string.edit_event))) {
-                    mActivity.startActivityForResult(asIntent(event), CreateEventActivity.EDIT_MY_EVENT_REQUEST);
+                    SessionStorage.getInstance().setEventToEdit(event);
+                    Intent intent = new Intent(mActivity, CreateEventActivity.class);
+                    intent.putExtra("request code", CreateEventActivity.EDIT_MY_EVENT_REQUEST);
+                    mActivity.startActivityForResult(intent, CreateEventActivity.EDIT_MY_EVENT_REQUEST);
                     menu.dismiss();
                 }
             }
@@ -182,20 +186,19 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
 
     }
 
-    private Intent asIntent(Event event) {
-        Intent intent = new Intent(mActivity, CreateEventActivity.class);
-        intent.putExtra("request code", CreateEventActivity.EDIT_MY_EVENT_REQUEST);
-        intent.putExtra(CreateEventFragment.TITLE, event.getName());
-        intent.putExtra(CreateEventFragment.START_CALENDAR, event.getStartTime().getTimeInMillis());
-        intent.putExtra(CreateEventFragment.END_CALENDAR, event.getEndTime().getTimeInMillis());
-        intent.putExtra(CreateEventFragment.CATEGORY, event.getCategory().getName());
-        intent.putExtra(CreateEventFragment.LOCALIZATION, event.getLocation().getLocationName());
-        intent.putExtra(CreateEventFragment.DESCRIPTION, event.getNotes());
-//        intent.putExtra(CreateEventFragment.PARTICIPATION, event.getParticipate());
-        intent.putExtra(CreateEventFragment.PPL_LIMIT, event.getLimit());
-        intent.putExtra(CreateEventFragment.COST, event.getCost());
-        return intent;
-    }
+//    private Intent asIntent() {
+//        Intent intent = new Intent(mActivity, CreateEventActivity.class);
+//        intent.putExtra("request code", CreateEventActivity.EDIT_MY_EVENT_REQUEST);
+//        intent.putExtra(CreateEventFragment.TITLE, event.getName());
+//        intent.putExtra(CreateEventFragment.START_CALENDAR, event.getStartTime().getTimeInMillis());
+//        intent.putExtra(CreateEventFragment.END_CALENDAR, event.getEndTime().getTimeInMillis());
+//        intent.putExtra(CreateEventFragment.CATEGORY, event.getCategory().getName());
+//        intent.putExtra(CreateEventFragment.LOCALIZATION, event.getLocation().getLocationName());
+//        intent.putExtra(CreateEventFragment.DESCRIPTION, event.getDescription());
+//        intent.putExtra(CreateEventFragment.PPL_LIMIT, event.getLimit());
+//        intent.putExtra(CreateEventFragment.COST, event.getCost());
+//        return intent;
+//    }
 
 
     private Dialog onCreateDialog(final String msg, String msgPositive, final Event event, final int position) {
@@ -224,4 +227,11 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
         return builder.create();
     }
 
+    private class CancelEvent extends AsyncTask<Event, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Event... params) {
+            return null;
+        }
+    }
 }

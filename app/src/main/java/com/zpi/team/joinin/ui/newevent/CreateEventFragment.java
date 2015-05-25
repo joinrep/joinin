@@ -141,26 +141,26 @@ public class CreateEventFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Bundle data = getArguments();
+        Event data = SessionStorage.getInstance().getEventToEdit();
         if(data != null){
-            mTitle.setText(data.getString(TITLE));
-            mCalendarStart.setTimeInMillis(data.getLong(START_CALENDAR));
-            mCalendarEnd.setTimeInMillis(data.getLong(END_CALENDAR));
+            mTitle.setText(data.getName());
+            mCalendarStart= data.getStartTime();
+            mCalendarEnd= data.getEndTime();
             mStartDate.setText(mDateFormat.format(mCalendarStart.getTime()));
             mStartTime.setText(mTimeFormat.format(mCalendarStart.getTime()));
             mEndDate.setText(mDateFormat.format(mCalendarEnd.getTime()));
             mEndTime.setText(mTimeFormat.format(mCalendarEnd.getTime()));
-            mCategories.setSelection(getCategoryPosition(data.getString(CATEGORY)));
-            mAddress.setText(data.getString(LOCALIZATION));
-            mDescription.setText(data.getString(DESCRIPTION));
-//            mParticipationBox.setChecked(data.getBoolean(PARTICIPATION));
+
+            mCategories.setSelection(getCategoryPosition(data.getCategory().getName()));
+            mAddress.setText(data.getLocation().getLocationName());
+            mDescription.setText(data.getDescription());
             mParticipationFrame.setVisibility(View.GONE);
-            int limit = data.getInt(PPL_LIMIT);
+            int limit = data.getLimit();
             if(limit != -1){
                 mLimitSwitch.setChecked(true);
                 mLimit.setText(Integer.toString(limit));
             }
-            double cost = data.getDouble(COST);
+            double cost = data.getCost();
             if(cost != 0){
                 mPaySwitch.setChecked(true);
                 mPay.setText(Double.toString(cost));
@@ -367,6 +367,28 @@ public class CreateEventFragment extends Fragment {
         return event;
     }
 
+    public Event parseEventToEdit(){
+        String title = mTitle.getText().toString();
+        String description = mDescription.getText().toString();
+        String address = mAddress.getText().toString();
+        int limit = (int) parseEditText(mLimitSwitch, mLimit, -1d);
+        double cost = parseEditText(mPaySwitch, mPay, 0d);
+
+        Event event = SessionStorage.getInstance().getEventToEdit();
+        event.setName(title);
+        event.setDescription(description);
+        event.setLimit(limit);
+        event.setCost(cost);
+        event.setLocation(new Address(0, "city", "street", "street", address));
+        event.setCategory((Category) mCategories.getSelectedItem());
+
+
+        String out = "Title: " + title + "\nStart time: " + mCalendarStart.toString() + "\nEnd time: " + mCalendarEnd.toString() +
+                "\nDescription: " + description + "\nAddress: " + address + "\nLimit: " + limit + "\nCost: " + cost;
+        Log.d("CreateEventFragment", "parseEventToEdit(), " + out);
+
+        return event;
+    }
     private double parseEditText(Switch theSwitch, EditText et, double defaultValue) {
         if (theSwitch.isChecked()) {
             String text = et.getText().toString();
@@ -387,7 +409,7 @@ public class CreateEventFragment extends Fragment {
     }
 
     public void editEvent(){
-        new EditEvent().execute(parseForm());
+        new EditEvent().execute(parseEventToEdit());
     }
 
 
