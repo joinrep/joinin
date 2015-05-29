@@ -9,7 +9,6 @@ import android.graphics.Outline;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zpi.team.joinin.R;
 import com.zpi.team.joinin.database.SessionStorage;
@@ -31,7 +29,6 @@ import com.zpi.team.joinin.ui.common.AnimatedConnectionDialog;
 import com.zpi.team.joinin.ui.common.OnToolbarModificationListener;
 import com.zpi.team.joinin.ui.details.InDetailEventActivity;
 import com.zpi.team.joinin.ui.newevent.CreateEventActivity;
-import com.zpi.team.joinin.ui.newevent.CreateEventFragment;
 
 import java.util.List;
 
@@ -174,11 +171,11 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
             if (resultCode == Activity.RESULT_OK) {
                 Event newEvent = SessionStorage.getInstance().getNewlyCreated();
                 if (newEvent != null) mAdapter.putItem(newEvent);
+                mAdapter.notifyDataSetChanged();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
             }
         } else if (requestCode == INDETAIL_EVENT_REQUEST) {
-            //RecyclerView.Adapter adapter = mEventsRecycler.getAdapter();
             mAdapter.notifyDataSetChanged();
         } else if (requestCode == CreateEventActivity.EDIT_MY_EVENT_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {

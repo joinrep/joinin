@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -74,6 +75,7 @@ public class MainActivity extends ActionBarActivity implements OnToolbarModifica
     private int mCurrentPosition;
     private List<Category> favCategories = new ArrayList<Category>();
     Fragment mCurrentFragment;
+    private boolean sortArrowPointsDown = true;
 
     private static Context mContext;
 
@@ -275,15 +277,41 @@ public class MainActivity extends ActionBarActivity implements OnToolbarModifica
                     break;
                 case R.id.action_sort_alpha:
                     fragment.sort(EventsSorter.ALPHABETICAL);
+                    setSortIcon(R.id.action_sort_alpha);
                     break;
                 case R.id.action_sort_create:
                     fragment.sort(EventsSorter.CREATE_DATE);
+                    setSortIcon(R.id.action_sort_create);
                     break;
                 case R.id.action_sort_start:
                     fragment.sort(EventsSorter.START_DATE);
+                    setSortIcon(R.id.action_sort_start);
             }
         }
         return false;
+    }
+
+    private void setSortIcon(int menuItemId) {
+        MenuItem sortMenuItem = mMenu.findItem(menuItemId);
+        boolean hasIcon = sortMenuItem.getIcon() != null;
+        clearSortIcons();
+
+        if (hasIcon && sortArrowPointsDown) {
+            sortMenuItem.setIcon(R.drawable.ic_arrow_up);
+            sortArrowPointsDown = false;
+        } else {
+            sortMenuItem.setIcon(R.drawable.ic_arrow_down);
+            sortArrowPointsDown = true;
+        }
+        sortMenuItem.getIcon().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+    }
+
+    private void clearSortIcons() {
+        int[] menuItemIds = new int[] {R.id.action_sort_alpha, R.id.action_sort_start, R.id.action_sort_create};
+        for(int menuItemId : menuItemIds) {
+            MenuItem menuItem = mMenu.findItem(menuItemId);
+            menuItem.setIcon(null);
+        }
     }
 
     private void logout() {
@@ -372,6 +400,10 @@ public class MainActivity extends ActionBarActivity implements OnToolbarModifica
     public boolean onCreateOptionsMenu(Menu menu) {
         mMenu = menu;
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem sortMenuItem = mMenu.findItem(R.id.action_sort_create);
+        sortMenuItem.setIcon(R.drawable.ic_arrow_down);
+        sortMenuItem.getIcon().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+        sortArrowPointsDown = true;
         return true;
     }
 
