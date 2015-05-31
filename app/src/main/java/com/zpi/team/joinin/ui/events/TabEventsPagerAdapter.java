@@ -171,7 +171,6 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                     menu.dismiss();
                 } else if (option.equals(cancel)) {
                     onCreateDialog(mActivity.getResources().getString(R.string.msg_cancel_event), cancel, event, position).show();
-                    Toast.makeText(mActivity, mActivity.getResources().getString(R.string.canceled_event), Toast.LENGTH_SHORT).show();
                     menu.dismiss();
                 } else if (option.equals(mActivity.getResources().getString(R.string.edit_event))) {
                     SessionStorage.getInstance().setEventToEdit(event);
@@ -203,6 +202,7 @@ class TabEventsPagerAdapter extends PagerAdapter implements TabEventsRecyclerAda
                             Log.d(TAG, "onCreateDialog(), odwolano");
                             notifyEventRemoved(position);
                             new CancelEvent().execute(event);
+                            Toast.makeText(mActivity, mActivity.getResources().getString(R.string.canceled_event), Toast.LENGTH_SHORT).show();
                         }
                     }
                 })

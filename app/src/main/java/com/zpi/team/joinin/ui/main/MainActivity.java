@@ -413,7 +413,6 @@ public class MainActivity extends ActionBarActivity implements OnToolbarModifica
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         MenuItem sort = menu.findItem(R.id.action_sort);
         MenuItem filter = menu.findItem(R.id.action_filter);
-
         boolean visibility = mSortFilterMenuVisibility && !drawerOpen;
             sort.setVisible(visibility);
             filter.setVisible(visibility);

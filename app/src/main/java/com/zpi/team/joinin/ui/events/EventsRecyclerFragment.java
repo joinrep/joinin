@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Outline;
 import android.os.AsyncTask;
@@ -167,6 +168,7 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult");
         if (requestCode ==  CreateEventActivity.CREATE_EVENT_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 Event newEvent = SessionStorage.getInstance().getNewlyCreated();
@@ -183,8 +185,6 @@ public abstract class EventsRecyclerFragment extends Fragment implements OnRecyc
 
                 Log.d(TAG, "onActivityResult(), result ok");
             }
-
-            SessionStorage.getInstance().setEventToEdit(null);
         }
     }
 

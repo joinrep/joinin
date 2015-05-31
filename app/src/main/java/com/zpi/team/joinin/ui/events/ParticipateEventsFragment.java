@@ -65,11 +65,12 @@ public class ParticipateEventsFragment extends EventsRecyclerFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mOnToolbarModificationListener.setToolbarElevation(false);
-        mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
         View view = inflater.inflate(R.layout.fragment_participate_events, container, false);
         mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         super.inflateWithEvents();
+
+        mOnToolbarModificationListener.setToolbarElevation(false);
+        mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
         return view;
     }
 
