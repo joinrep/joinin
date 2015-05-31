@@ -62,11 +62,12 @@ public class MyOwnEventsFragment extends EventsRecyclerFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mOnToolbarModificationListener.setToolbarElevation(false);
-        mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
         View view = inflater.inflate(R.layout.fragment_myevents, container, false);
         mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         super.inflateWithEvents();
+
+        mOnToolbarModificationListener.setToolbarElevation(false);
+        mOnToolbarModificationListener.setSortFilterIconsVisibility(false);
         return view;
     }
 
@@ -88,6 +89,7 @@ public class MyOwnEventsFragment extends EventsRecyclerFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult");
         if (requestCode == INDETAIL_EVENT_REQUEST) {
             PagerAdapter adapter = mViewPager.getAdapter();
             adapter.notifyDataSetChanged();

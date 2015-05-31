@@ -38,8 +38,8 @@ public class CreateEventActivity extends ActionBarActivity  {
             public void onClick(View v) {
                 setResult(RESULT_CANCELED);
                 Log.d("CreateEventActivity", "setResult(), canceled");
+                SessionStorage.getInstance().setEventToEdit(null);
                 finish();
-
             }
         });
 
