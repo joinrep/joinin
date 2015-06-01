@@ -1,0 +1,13 @@
+1. slajd tytu³owy - temat, autorzy, informacje, data miejsce
+2. spis treœci
+3. slajdy szczegó³owe:
+	-cel
+	-zakres
+	-u¿ytkownicy
+	-u¿yte technologie, narzêdzia
+	- prezentacja aplikacji
+4. zakoñczenie -  podsumowanie (porównanie plany i co zosta³o zrealizowane, jakieœ 	podzial pracy dla cz³onków zespo³u)
+
+5. literatura
+
+numeracja stron, czcionka 24, b³êdy w pisowni i nie mo¿e byæ 'i' 'w' 'z' na koñcu lini (ctrl+shift+space)
